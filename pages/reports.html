@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BloodConnect - Reports</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ♥
+            </div>
+
+            <div>
+                <h2>BloodConnect</h2>
+                <span>Save Lives Together</span>
+            </div>
+
+        </div>
+
+
+        <!-- ================= NAVIGATION ================= -->
+
+        <nav>
+
+            <a class="nav-item" href="../index.html">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="inventory.html">
+                <span>🩸</span>
+                Blood Inventory
+            </a>
+
+            <a class="nav-item" href="donors.html">
+                <span>♟</span>
+                Donors
+            </a>
+
+            <a class="nav-item" href="blood-requests.html">
+                <span>▤</span>
+                Blood Requests
+            </a>
+
+            <a class="nav-item" href="hospitals.html">
+                <span>▦</span>
+                Hospitals
+            </a>
+
+            <a class="nav-item" href="transactions.html">
+                <span>⇄</span>
+                Transactions
+            </a>
+
+            <a class="nav-item active" href="reports.html">
+                <span>▥</span>
+                Reports
+            </a>
+
+            <a class="nav-item" href="settings.html">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-quote">
+            “A single unit of blood can save up to 3 lives.”
+        </div>
+
+
+        <a class="logout" href="#">
+            <span>↪</span>
+            Logout
+        </a>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+
+        <!-- ================= TOP BAR ================= -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                onclick="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+
+            <div class="search">
+
+                ⌕
+
+                <input
+                    type="text"
+                    placeholder="Search reports..."
+                >
+
+            </div>
+
+
+            <div class="top-user">
+
+                <span class="notification">
+
+                    ♧
+
+                    <b>3</b>
+
+                </span>
+
+
+                <div class="avatar">
+                    A
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Admin
+                    </strong>
+
+                    <small>
+                        Blood Bank
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= PAGE CONTENT ================= -->
+
+        <section class="content">
+
+
+            <!-- ================= PAGE HEADING ================= -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Reports
+                    </h1>
+
+                    <p>
+                        View blood bank performance and activity reports.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="exportReport()">
+
+                    ↓ Export Report
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= REPORT FILTER ================= -->
+
+            <div class="filter-bar card">
+
+                <select
+                    id="reportPeriod"
+                    onchange="updateReport()">
+
+                    <option value="today">
+                        Today
+                    </option>
+
+                    <option value="week">
+                        This Week
+                    </option>
+
+                    <option value="month" selected>
+                        This Month
+                    </option>
+
+                    <option value="year">
+                        This Year
+                    </option>
+
+                </select>
+
+
+                <select
+                    id="reportType"
+                    onchange="updateReport()">
+
+                    <option value="all">
+                        All Reports
+                    </option>
+
+                    <option value="donation">
+                        Donation Report
+                    </option>
+
+                    <option value="issue">
+                        Blood Issue Report
+                    </option>
+
+                    <option value="inventory">
+                        Inventory Report
+                    </option>
+
+                    <option value="request">
+                        Blood Request Report
+                    </option>
+
+                </select>
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="resetReportFilters()">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= SUMMARY CARDS ================= -->
+
+            <div class="stats">
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon red">
+                        🩸
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Donations
+                        </span>
+
+                        <strong>
+                            156
+                        </strong>
+
+                        <em class="up">
+                            ↑ +12%
+                        </em>
+
+                        <small>
+                            This month
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Blood Issued
+                        </span>
+
+                        <strong>
+                            98
+                        </strong>
+
+                        <em class="up">
+                            ↑ +8%
+                        </em>
+
+                        <small>
+                            Units issued
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon orange">
+                        ♟
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Active Donors
+                        </span>
+
+                        <strong>
+                            982
+                        </strong>
+
+                        <em class="orange-text">
+                            ↑ +6%
+                        </em>
+
+                        <small>
+                            Eligible donors
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon blue">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Requests Fulfilled
+                        </span>
+
+                        <strong>
+                            128
+                        </strong>
+
+                        <em class="up">
+                            ↑ +10%
+                        </em>
+
+                        <small>
+                            Hospital requests
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================= CHARTS ================= -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- DONATION CHART -->
+
+                <section class="card chart-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Blood Donations
+                        </h2>
+
+                        <span>
+                            Monthly
+                        </span>
+
+                    </div>
+
+
+                    <canvas id="donationChart"></canvas>
+
+                </section>
+
+
+
+                <!-- BLOOD GROUP CHART -->
+
+                <section class="card chart-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Blood Group Distribution
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        style="
+                        height:260px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        "
+                    >
+
+                        <canvas id="bloodGroupChart"></canvas>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- ================= REPORT SUMMARY ================= -->
+
+            <div class="dashboard-grid bottom">
+
+
+                <!-- COMPONENT REPORT -->
+
+                <section class="card table-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Component Summary
+                        </h2>
+
+                    </div>
+
+
+                    <div class="table-scroll">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Component
+                                    </th>
+
+                                    <th>
+                                        Available
+                                    </th>
+
+                                    <th>
+                                        Issued
+                                    </th>
+
+                                    <th>
+                                        Expired
+                                    </th>
+
+                                    <th>
+                                        Total
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        Whole Blood
+                                    </td>
+
+                                    <td>
+                                        540
+                                    </td>
+
+                                    <td>
+                                        320
+                                    </td>
+
+                                    <td>
+                                        12
+                                    </td>
+
+                                    <td>
+                                        872
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        RBC
+                                    </td>
+
+                                    <td>
+                                        280
+                                    </td>
+
+                                    <td>
+                                        210
+                                    </td>
+
+                                    <td>
+                                        6
+                                    </td>
+
+                                    <td>
+                                        496
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Plasma
+                                    </td>
+
+                                    <td>
+                                        190
+                                    </td>
+
+                                    <td>
+                                        140
+                                    </td>
+
+                                    <td>
+                                        5
+                                    </td>
+
+                                    <td>
+                                        335
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Platelets
+                                    </td>
+
+                                    <td>
+                                        110
+                                    </td>
+
+                                    <td>
+                                        85
+                                    </td>
+
+                                    <td>
+                                        2
+                                    </td>
+
+                                    <td>
+                                        197
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- REQUEST SUMMARY -->
+
+                <section class="card table-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Request Summary
+                        </h2>
+
+                    </div>
+
+
+                    <div class="table-scroll">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Requests
+                                    </th>
+
+                                    <th>
+                                        Units
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        <span class="badge available">
+                                            Completed
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        103
+                                    </td>
+
+                                    <td>
+                                        420
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="badge reserved">
+                                            Pending
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        24
+                                    </td>
+
+                                    <td>
+                                        86
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="badge expired">
+                                            Cancelled
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        7
+                                    </td>
+
+                                    <td>
+                                        21
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- ================= QUICK REPORT ACTIONS ================= -->
+
+            <div class="quick-actions">
+
+
+                <a
+                    href="transactions.html"
+                    class="action red-action">
+
+                    <span>
+                        ⇄
+                    </span>
+
+                    <div>
+
+                        <b>
+                            Transaction Report
+                        </b>
+
+                        <small>
+                            View transaction history
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </a>
+
+
+
+                <a
+                    href="inventory.html"
+                    class="action green-action">
+
+                    <span>
+                        🩸
+                    </span>
+
+                    <div>
+
+                        <b>
+                            Inventory Report
+                        </b>
+
+                        <small>
+                            Check blood stock
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </a>
+
+
+
+                <a
+                    href="donors.html"
+                    class="action blue-action">
+
+                    <span>
+                        ♟
+                    </span>
+
+                    <div>
+
+                        <b>
+                            Donor Report
+                        </b>
+
+                        <small>
+                            View donor information
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </a>
+
+
+
+                <a
+                    href="blood-requests.html"
+                    class="action purple-action">
+
+                    <span>
+                        ▤
+                    </span>
+
+                    <div>
+
+                        <b>
+                            Request Report
+                        </b>
+
+                        <small>
+                            View hospital requests
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="../js/dashboard.js"></script>
+
+
+<script>
+
+
+/* =========================================
+   DONATION CHART
+========================================= */
+
+const donationCanvas =
+    document.getElementById("donationChart");
+
+
+if (donationCanvas) {
+
+    new Chart(
+        donationCanvas,
+        {
+            type: "line",
+
+            data: {
+
+                labels: [
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep"
+                ],
+
+                datasets: [
+
+                    {
+                        label: "Donations",
+
+                        data: [
+                            82,
+                            105,
+                            96,
+                            128,
+                            141,
+                            156
+                        ],
+
+                        borderColor: "#df3a42",
+
+                        backgroundColor:
+                            "rgba(223,58,66,0.12)",
+
+                        fill: true,
+
+                        tension: 0.35,
+
+                        pointRadius: 4
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+                        beginAtZero: true
+                    },
+
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   BLOOD GROUP CHART
+========================================= */
+
+const bloodGroupCanvas =
+    document.getElementById("bloodGroupChart");
+
+
+if (bloodGroupCanvas) {
+
+    new Chart(
+        bloodGroupCanvas,
+        {
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "A+",
+                    "A-",
+                    "B+",
+                    "B-",
+                    "O+",
+                    "O-",
+                    "AB+",
+                    "AB-"
+                ],
+
+                datasets: [
+
+                    {
+
+                        data: [
+                            22,
+                            7,
+                            18,
+                            5,
+                            28,
+                            6,
+                            10,
+                            4
+                        ],
+
+                        backgroundColor: [
+
+                            "#df323a",
+                            "#3478dc",
+                            "#38a866",
+                            "#f3ae25",
+                            "#9b59b6",
+                            "#e67e22",
+                            "#16a085",
+                            "#34495e"
+
+                        ],
+
+                        borderWidth: 0
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "60%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   REPORT FILTER
+========================================= */
+
+function updateReport() {
+
+    const period =
+        document.getElementById("reportPeriod").value;
+
+    const type =
+        document.getElementById("reportType").value;
+
+
+    console.log(
+        "Report period:",
+        period,
+        "Report type:",
+        type
+    );
+
+
+    alert(
+        "Demo: Report updated for " +
+        period +
+        " - " +
+        type
+    );
+
+}
+
+
+
+/* =========================================
+   RESET REPORT FILTERS
+========================================= */
+
+function resetReportFilters() {
+
+    document.getElementById("reportPeriod").value =
+        "month";
+
+    document.getElementById("reportType").value =
+        "all";
+
+}
+
+
+
+/* =========================================
+   EXPORT REPORT
+========================================= */
+
+function exportReport() {
+
+    alert(
+        "Demo: Report will be exported successfully."
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
