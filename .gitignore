@@ -1,0 +1,10 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven build output
+backend/target/
+
+# Local environment files and secrets
+.env
+*.local.properties
