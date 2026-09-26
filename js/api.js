@@ -13,14 +13,19 @@
       }
     });
 
+    const payload = response.status === 204 ? null : await response.json().catch(() => null);
     if (!response.ok) {
-      throw new Error(`API request failed (${response.status})`);
+      throw new Error(payload?.message || payload?.error || `API request failed (${response.status})`);
     }
 
-    return response.json();
+    return payload;
   }
 
   window.BloodConnectApi = {
-    health: () => request("/health")
+    health: () => request("/health"),
+    get: path => request(path),
+    post: (path, value) => request(path, { method: "POST", body: JSON.stringify(value) }),
+    put: (path, value) => request(path, { method: "PUT", body: JSON.stringify(value) }),
+    delete: path => request(path, { method: "DELETE" })
   };
 })();

@@ -15,9 +15,21 @@ if (apiConnectionStatus && window.BloodConnectApi) {
     });
 }
 
+if (window.BloodConnectApi && !location.pathname.includes('/pages/')) {
+  window.BloodConnectApi.get('/dashboard').then(data => {
+    const stats = document.querySelectorAll('.stats .stat strong');
+    [data.totalUnits, data.availableUnits, data.reservedUnits, data.expiredUnits, data.lowStockUnits]
+      .forEach((value, i) => { if (stats[i]) stats[i].textContent = value ?? 0; });
+  }).catch(() => {});
+}
+
 const stockCanvas=document.getElementById('stockChart');
 if(stockCanvas){
   new Chart(stockCanvas,{type:'bar',data:{labels:['A+','A-','B+','B-','O+','O-','AB+','AB-'],datasets:[{label:'Units',data:[120,60,90,40,140,20,70,30],borderRadius:5,backgroundColor:'#df3a42'}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:200,ticks:{stepSize:50}},x:{grid:{display:false}}}}});
+  window.BloodConnectApi?.get('/reports/summary').then(report=>{
+    const chart=window.Chart?.getChart(stockCanvas);
+    if(chart){chart.data.labels=Object.keys(report.stockByBloodGroup);chart.data.datasets[0].data=Object.values(report.stockByBloodGroup);chart.update();}
+  }).catch(()=>{});
 }
 const componentCanvas=document.getElementById('componentChart');
 if(componentCanvas){

@@ -278,7 +278,7 @@
 
     .notification-menu {
         right: -120px;
-        width: 290px;
+        width: min(290px, calc(100vw - 24px));
     }
 
 }
