@@ -19,6 +19,8 @@
 
     <properties>
         <java.version>21</java.version>
+        <!-- Boot 3.0.0's repackager cannot read Java 21 class files. -->
+        <maven.compiler.release>19</maven.compiler.release>
     </properties>
 
     <dependencies>
@@ -47,6 +49,22 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/..</directory>
+                <targetPath>static</targetPath>
+                <includes>
+                    <include>index.html</include>
+                    <include>login.html</include>
+                    <include>css/**</include>
+                    <include>js/**</include>
+                    <include>pages/**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

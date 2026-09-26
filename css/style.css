@@ -282,3 +282,17 @@
     }
 
 }
+
+.api-connection {
+    margin-top: 10px !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.api-connection.connected {
+    color: #168045;
+}
+
+.api-connection.disconnected {
+    color: #c31d27;
+}
