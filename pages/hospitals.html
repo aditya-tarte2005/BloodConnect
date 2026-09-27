@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BloodConnect - Hospitals</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ♥
+            </div>
+
+            <div>
+                <h2>BloodConnect</h2>
+                <span>Save Lives Together</span>
+            </div>
+
+        </div>
+
+
+        <!-- ================= NAVIGATION ================= -->
+
+        <nav>
+
+            <a class="nav-item" href="../index.html">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a class="nav-item" href="inventory.html">
+                <span>🩸</span>
+                Blood Inventory
+            </a>
+
+            <a class="nav-item" href="donors.html">
+                <span>♟</span>
+                Donors
+            </a>
+
+            <a class="nav-item" href="blood-requests.html">
+                <span>▤</span>
+                Blood Requests
+            </a>
+
+            <a class="nav-item active" href="hospitals.html">
+                <span>▦</span>
+                Hospitals
+            </a>
+
+            <a class="nav-item" href="transactions.html">
+                <span>⇄</span>
+                Transactions
+            </a>
+
+            <a class="nav-item" href="reports.html">
+                <span>▥</span>
+                Reports
+            </a>
+
+            <a class="nav-item" href="settings.html">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-quote">
+            “A single unit of blood can save up to 3 lives.”
+        </div>
+
+
+        <a class="logout" href="../login.html">
+            <span>↪</span>
+            Logout
+        </a>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main">
+
+
+        <!-- ================= TOP BAR ================= -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                onclick="toggleSidebar()">
+                ☰
+            </button>
+
+
+            <div class="search">
+
+                ⌕
+
+                <input
+                    type="text"
+                    placeholder="Search donors, blood groups, hospitals..."
+                >
+
+            </div>
+
+
+            <div class="top-user">
+
+                <span class="notification">
+                    ♧
+                    <b>3</b>
+                </span>
+
+
+                <div class="avatar">
+                    A
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Admin
+                    </strong>
+
+                    <small>
+                        Blood Bank
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= PAGE CONTENT ================= -->
+
+        <section class="content">
+
+
+            <!-- PAGE HEADING -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Hospitals
+                    </h1>
+
+                    <p>
+                        Manage hospitals registered with the blood bank.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="openHospitalModal()">
+
+                    ＋ Register Hospital
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= SUMMARY CARDS ================= -->
+
+            <div class="stats">
+
+
+                <!-- TOTAL HOSPITALS -->
+
+                <div class="card stat">
+
+                    <div class="stat-icon red">
+                        ▦
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Hospitals
+                        </span>
+
+                        <strong>
+                            48
+                        </strong>
+
+                        <em class="up">
+                            ↑ +6%
+                        </em>
+
+                        <small>
+                            Registered hospitals
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ACTIVE HOSPITALS -->
+
+                <div class="card stat">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Active Hospitals
+                        </span>
+
+                        <strong>
+                            42
+                        </strong>
+
+                        <em class="up">
+                            ↑ +4%
+                        </em>
+
+                        <small>
+                            Currently active
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- REQUESTING HOSPITALS -->
+
+                <div class="card stat">
+
+                    <div class="stat-icon orange">
+                        ▤
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Requesting Hospitals
+                        </span>
+
+                        <strong>
+                            12
+                        </strong>
+
+                        <em class="orange-text">
+                            ↑ +8%
+                        </em>
+
+                        <small>
+                            This month
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- NEW HOSPITALS -->
+
+                <div class="card stat">
+
+                    <div class="stat-icon blue">
+                        ＋
+                    </div>
+
+                    <div>
+
+                        <span>
+                            New Hospitals
+                        </span>
+
+                        <strong>
+                            5
+                        </strong>
+
+                        <em class="up">
+                            ↑ +10%
+                        </em>
+
+                        <small>
+                            Registered this month
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= SEARCH / FILTER ================= -->
+
+            <div class="filter-bar card">
+
+                <input
+                    type="text"
+                    id="hospitalSearch"
+                    placeholder="Search by hospital name, ID or city..."
+                    onkeyup="filterHospitals()"
+                >
+
+
+                <select
+                    id="hospitalCityFilter"
+                    onchange="filterHospitals()">
+
+                    <option value="">
+                        All Cities
+                    </option>
+
+                    <option value="Pune">
+                        Pune
+                    </option>
+
+                    <option value="Mumbai">
+                        Mumbai
+                    </option>
+
+                    <option value="Nashik">
+                        Nashik
+                    </option>
+
+                    <option value="Ahmednagar">
+                        Ahmednagar
+                    </option>
+
+                </select>
+
+
+
+                <select
+                    id="hospitalStatusFilter"
+                    onchange="filterHospitals()">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="resetHospitalFilters()">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= HOSPITAL TABLE ================= -->
+
+            <section class="card table-card">
+
+                <div class="card-title">
+
+                    <h2>
+                        Registered Hospitals
+                    </h2>
+
+                    <span class="record-count">
+                        8 hospitals
+                    </span>
+
+                </div>
+
+
+
+                <div class="table-scroll">
+
+                    <table id="hospitalTable">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Hospital ID</th>
+                                <th>Hospital Name</th>
+                                <th>City</th>
+                                <th>Contact Person</th>
+                                <th>Phone</th>
+                                <th>Blood Requests</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            <!-- HOSPITAL 1 -->
+
+                            <tr>
+
+                                <td>H-1001</td>
+                                <td>City Care Hospital</td>
+                                <td>Pune</td>
+                                <td>Dr. Rahul Sharma</td>
+                                <td>9876543210</td>
+                                <td>24</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1001')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 2 -->
+
+                            <tr>
+
+                                <td>H-1002</td>
+                                <td>Ruby Hospital</td>
+                                <td>Pune</td>
+                                <td>Dr. Priya Patil</td>
+                                <td>9823456712</td>
+                                <td>18</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1002')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 3 -->
+
+                            <tr>
+
+                                <td>H-1003</td>
+                                <td>Sahyadri Hospital</td>
+                                <td>Pune</td>
+                                <td>Dr. Amit Kulkarni</td>
+                                <td>9765432180</td>
+                                <td>31</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1003')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 4 -->
+
+                            <tr>
+
+                                <td>H-1004</td>
+                                <td>Deenanath Mangeshkar Hospital</td>
+                                <td>Pune</td>
+                                <td>Dr. Sneha Joshi</td>
+                                <td>9988776655</td>
+                                <td>42</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1004')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 5 -->
+
+                            <tr>
+
+                                <td>H-1005</td>
+                                <td>Noble Hospital</td>
+                                <td>Mumbai</td>
+                                <td>Dr. Rohit Deshmukh</td>
+                                <td>9876123450</td>
+                                <td>16</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1005')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 6 -->
+
+                            <tr>
+
+                                <td>H-1006</td>
+                                <td>Jehangir Hospital</td>
+                                <td>Nashik</td>
+                                <td>Dr. Neha More</td>
+                                <td>9765123487</td>
+                                <td>11</td>
+
+                                <td>
+                                    <span class="badge reserved">
+                                        Inactive
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1006')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 7 -->
+
+                            <tr>
+
+                                <td>H-1007</td>
+                                <td>KEM Hospital</td>
+                                <td>Mumbai</td>
+                                <td>Dr. Sagar Pawar</td>
+                                <td>9898989898</td>
+                                <td>27</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1007')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+
+                            <!-- HOSPITAL 8 -->
+
+                            <tr>
+
+                                <td>H-1008</td>
+                                <td>Columbia Asia Hospital</td>
+                                <td>Ahmednagar</td>
+                                <td>Dr. Pooja Shinde</td>
+                                <td>9812345678</td>
+                                <td>9</td>
+
+                                <td>
+                                    <span class="badge reserved">
+                                        Inactive
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewHospital('H-1008')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- REGISTER HOSPITAL MODAL -->
+<!-- ===================================================== -->
+
+<div
+    id="hospitalModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-head">
+
+            <h2>
+                Register New Hospital
+            </h2>
+
+            <button onclick="closeHospitalModal()">
+                ×
+            </button>
+
+        </div>
+
+
+
+        <div class="form-grid">
+
+
+            <label>
+
+                Hospital Name
+
+                <input
+                    type="text"
+                    placeholder="Enter hospital name"
+                >
+
+            </label>
+
+
+
+            <label>
+
+                Registration Number
+
+                <input
+                    type="text"
+                    placeholder="Enter registration number"
+                >
+
+            </label>
+
+
+
+            <label>
+
+                City
+
+                <select>
+
+                    <option>Pune</option>
+                    <option>Mumbai</option>
+                    <option>Nashik</option>
+                    <option>Ahmednagar</option>
+                    <option>Other</option>
+
+                </select>
+
+            </label>
+
+
+
+            <label>
+
+                Contact Person
+
+                <input
+                    type="text"
+                    placeholder="Enter contact person"
+                >
+
+            </label>
+
+
+
+            <label>
+
+                Phone Number
+
+                <input
+                    type="tel"
+                    placeholder="Enter phone number"
+                >
+
+            </label>
+
+
+
+            <label>
+
+                Email
+
+                <input
+                    type="email"
+                    placeholder="Enter email address"
+                >
+
+            </label>
+
+
+
+            <label class="full">
+
+                Hospital Address
+
+                <input
+                    type="text"
+                    placeholder="Enter complete hospital address"
+                >
+
+            </label>
+
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="closeHospitalModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                class="primary-btn"
+                onclick="registerHospital()">
+
+                Register Hospital
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- VIEW HOSPITAL MODAL -->
+<!-- ===================================================== -->
+
+<div
+    id="viewHospitalModal"
+    class="modal"
+>
+
+    <div class="modal-box">
+
+
+        <div class="modal-head">
+
+            <h2>
+                Hospital Details
+            </h2>
+
+            <button onclick="closeViewHospital()">
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="hospitalDetails"
+            style="line-height: 2;"
+        >
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="closeViewHospital()">
+
+                Close
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+
+
+
+<script>
+
+
+/* =========================================
+   OPEN REGISTER HOSPITAL MODAL
+========================================= */
+
+function openHospitalModal() {
+
+    document
+        .getElementById("hospitalModal")
+        .classList
+        .add("show");
+
+}
+
+
+
+/* =========================================
+   CLOSE REGISTER HOSPITAL MODAL
+========================================= */
+
+function closeHospitalModal() {
+
+    document
+        .getElementById("hospitalModal")
+        .classList
+        .remove("show");
+
+}
+
+
+
+/* =========================================
+   REGISTER HOSPITAL
+========================================= */
+
+function registerHospital() {
+
+    alert(
+        "Demo: Hospital registered successfully!"
+    );
+
+    closeHospitalModal();
+
+}
+
+
+
+/* =========================================
+   SEARCH & FILTER
+========================================= */
+
+function filterHospitals() {
+
+    const search =
+        document
+        .getElementById("hospitalSearch")
+        .value
+        .toLowerCase();
+
+
+    const city =
+        document
+        .getElementById("hospitalCityFilter")
+        .value;
+
+
+    const status =
+        document
+        .getElementById("hospitalStatusFilter")
+        .value;
+
+
+    const rows =
+        document.querySelectorAll(
+            "#hospitalTable tbody tr"
+        );
+
+
+    rows.forEach(function(row) {
+
+        const text =
+            row.innerText.toLowerCase();
+
+
+        const rowCity =
+            row.cells[2]
+            ? row.cells[2].innerText.trim()
+            : "";
+
+
+        const rowStatus =
+            row.cells[6]
+            ? row.cells[6].innerText.trim()
+            : "";
+
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+
+        const matchesCity =
+            !city ||
+            rowCity === city;
+
+
+        const matchesStatus =
+            !status ||
+            rowStatus === status;
+
+
+        if (
+            matchesSearch &&
+            matchesCity &&
+            matchesStatus
+        ) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+
+/* =========================================
+   RESET FILTERS
+========================================= */
+
+function resetHospitalFilters() {
+
+    document
+        .getElementById("hospitalSearch")
+        .value = "";
+
+
+    document
+        .getElementById("hospitalCityFilter")
+        .value = "";
+
+
+    document
+        .getElementById("hospitalStatusFilter")
+        .value = "";
+
+
+    filterHospitals();
+
+}
+
+
+
+/* =========================================
+   VIEW HOSPITAL
+========================================= */
+
+function viewHospital(hospitalId) {
+
+    document
+        .getElementById("hospitalDetails")
+        .innerHTML = `
+
+            <p>
+                <strong>Hospital ID:</strong>
+                ${hospitalId}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                Active
+            </p>
+
+            <p>
+                <strong>Blood Requests:</strong>
+                Available in the hospital request history.
+            </p>
+
+            <p>
+                <strong>Action:</strong>
+                Full hospital details will be connected
+                to the Java backend later.
+            </p>
+
+        `;
+
+
+    document
+        .getElementById("viewHospitalModal")
+        .classList
+        .add("show");
+
+}
+
+
+
+/* =========================================
+   CLOSE VIEW HOSPITAL
+========================================= */
+
+function closeViewHospital() {
+
+    document
+        .getElementById("viewHospitalModal")
+        .classList
+        .remove("show");
+
+}
+
+
+</script>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/dashboard.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/common.js"></script>
+</body>
+
+</html>

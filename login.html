@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - BloodConnect</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fff5f5, #ffe7e7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 900px;
+            max-width: 92%;
+            min-height: 520px;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+        }
+
+
+        /* ================= LEFT SIDE ================= */
+
+        .login-left {
+            width: 48%;
+            background: #df3a42;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .blood-icon {
+            width: 90px;
+            height: 90px;
+            background: white;
+            color: #df3a42;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            margin-bottom: 25px;
+        }
+
+        .login-left h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .login-left p {
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 0.9;
+            max-width: 330px;
+        }
+
+        .tagline {
+            margin-top: 30px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+
+        /* ================= RIGHT SIDE ================= */
+
+        .login-right {
+            width: 52%;
+            padding: 55px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-right h2 {
+            font-size: 28px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+
+        /* ================= FORM ================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 13px 13px 42px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: #df3a42;
+            box-shadow: 0 0 0 3px rgba(223, 58, 66, 0.08);
+        }
+
+
+        /* ================= PASSWORD ================= */
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+
+        /* ================= OPTIONS ================= */
+
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #555;
+        }
+
+        .forgot-password {
+            color: #df3a42;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+
+        /* ================= LOGIN BUTTON ================= */
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #df3a42;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-btn:hover {
+            background: #c92f37;
+        }
+
+
+        /* ================= DEMO INFO ================= */
+
+        .demo-info {
+            margin-top: 20px;
+            padding: 12px;
+            background: #fff6f6;
+            border: 1px solid #f3d1d1;
+            border-radius: 7px;
+            color: #777;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 25px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .login-container {
+                flex-direction: column;
+                width: 95%;
+            }
+
+            .login-left,
+            .login-right {
+                width: 100%;
+            }
+
+            .login-left {
+                padding: 30px 20px;
+            }
+
+            .login-left h1 {
+                font-size: 26px;
+            }
+
+            .login-right {
+                padding: 35px 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="login-container">
+
+
+        <!-- ================= LEFT SECTION ================= -->
+
+        <div class="login-left">
+
+            <div class="blood-icon">
+                🩸
+            </div>
+
+            <h1>
+                BloodConnect
+            </h1>
+
+            <p>
+                Blood Bank Management System for managing
+                donors, blood inventory, requests, hospitals
+                and transactions efficiently.
+            </p>
+
+            <div class="tagline">
+                Connecting Blood. Saving Lives.
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT SECTION ================= -->
+
+        <div class="login-right">
+
+            <h2>
+                Welcome Back!
+            </h2>
+
+            <p class="login-subtitle">
+                Sign in to access your BloodConnect dashboard.
+            </p>
+
+
+            <!-- ================= LOGIN FORM ================= -->
+
+            <form id="loginForm">
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉️
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper password-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="togglePassword()"
+                        >
+                            👁️
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <div class="login-options">
+
+                    <label class="remember-me">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                        >
+
+                        Remember me
+
+                    </label>
+
+
+                    <a
+                        href="javascript:void(0)"
+                        class="forgot-password"
+                        onclick="forgotPassword()"
+                    >
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <!-- ================= DEMO INFORMATION ================= -->
+
+            <div class="demo-info">
+
+                Demo login functionality — Java backend authentication
+                will be connected later.
+
+            </div>
+
+
+            <div class="footer-text">
+
+                © 2026 BloodConnect • Blood Bank Management System
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        // ================= SHOW / HIDE PASSWORD =================
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+
+        }
+
+
+        // ================= FORGOT PASSWORD =================
+
+        function forgotPassword() {
+
+            alert(
+                "Forgot Password\n\n" +
+                "Password reset functionality will be connected " +
+                "with the Java backend later.\n\n" +
+                "Please contact the Blood Bank Administrator."
+            );
+
+        }
+
+
+        // ================= DEMO LOGIN =================
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                // Demo credentials
+
+                const demoEmail =
+                    "admin@bloodconnect.com";
+
+                const demoPassword =
+                    "admin123";
+
+
+                // ================= EMPTY FIELD CHECK =================
+
+                if (!email || !password) {
+
+                    alert(
+                        "Please enter email and password."
+                    );
+
+                    return;
+
+                }
+
+
+                // ================= LOGIN VALIDATION =================
+
+                if (
+                    email === demoEmail &&
+                    password === demoPassword
+                ) {
+// Save email when Remember Me is checked
+
+if (rememberMe.checked) {
+
+    localStorage.setItem(
+        "bloodConnectEmail",
+        email
+    );
+
+} else {
+
+    localStorage.removeItem(
+        "bloodConnectEmail"
+    );
+
+}
+                    alert(
+                        "Login successful!\n\n" +
+                        "Welcome to BloodConnect Dashboard."
+                    );
+
+
+                    window.location.href =
+                        "index.html";
+
+                }
+
+
+                // ================= INVALID LOGIN =================
+
+                else {
+
+                    alert(
+                        "Invalid email or password.\n\n" +
+                        "Demo Email: admin@bloodconnect.com\n" +
+                        "Demo Password: admin123"
+                    );
+
+                }
+
+            });
+// ================= REMEMBER ME =================
+
+const rememberMe =
+    document.getElementById("rememberMe");
+
+const savedEmail =
+    localStorage.getItem("bloodConnectEmail");
+
+if (savedEmail) {
+
+    document.getElementById("email").value =
+        savedEmail;
+
+    rememberMe.checked = true;
+
+}
+    </script>
+
+</body>
+
+</html>

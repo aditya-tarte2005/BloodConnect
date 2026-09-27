@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BloodConnect - Donors</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        ♥
+      </div>
+
+      <div>
+        <h2>BloodConnect</h2>
+        <span>Save Lives Together</span>
+      </div>
+
+    </div>
+
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav>
+
+      <a class="nav-item" href="../index.html">
+        <span>⌂</span>
+        Dashboard
+      </a>
+
+      <a class="nav-item" href="inventory.html">
+        <span>🩸</span>
+        Blood Inventory
+      </a>
+
+      <a class="nav-item active" href="donors.html">
+        <span>♟</span>
+        Donors
+      </a>
+
+      <a class="nav-item" href="blood-requests.html">
+        <span>▤</span>
+        Blood Requests
+      </a>
+
+      <a class="nav-item" href="hospitals.html">
+        <span>▦</span>
+        Hospitals
+      </a>
+
+      <a class="nav-item" href="transactions.html">
+        <span>⇄</span>
+        Transactions
+      </a>
+
+      <a class="nav-item" href="reports.html">
+        <span>▥</span>
+        Reports
+      </a>
+
+      <a class="nav-item" href="settings.html">
+        <span>⚙</span>
+        Settings
+      </a>
+
+    </nav>
+
+
+    <div class="sidebar-quote">
+      “A single unit of blood can save up to 3 lives.”
+    </div>
+
+
+    <a class="logout" href="../login.html">
+      <span>↪</span>
+      Logout
+    </a>
+
+  </aside>
+
+
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+
+    <!-- ================= TOP BAR ================= -->
+    <header class="topbar">
+
+      <button
+        class="menu-btn"
+        onclick="toggleSidebar()">
+        ☰
+      </button>
+
+
+      <div class="search">
+
+        ⌕
+
+        <input
+          type="text"
+          placeholder="Search donors, blood groups, hospitals..."
+        >
+
+      </div>
+
+
+      <div class="top-user">
+
+        <span class="notification">
+          ♧
+          <b>3</b>
+        </span>
+
+        <div class="avatar">
+          A
+        </div>
+
+        <div>
+          <strong>Admin</strong>
+          <small>Blood Bank</small>
+        </div>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- ================= CONTENT ================= -->
+    <section class="content">
+
+
+      <!-- Page Heading -->
+      <div class="page-heading">
+
+        <div>
+
+          <h1>
+            Blood Donors
+          </h1>
+
+          <p>
+            Manage donor information and track blood donations.
+          </p>
+
+        </div>
+
+
+        <button
+          class="primary-btn"
+          onclick="openDonorModal()">
+
+          ＋ Register Donor
+
+        </button>
+
+      </div>
+
+
+
+      <!-- ================= STAT CARDS ================= -->
+      <div class="stats">
+
+
+        <div class="card stat">
+
+          <div class="stat-icon red">
+            ♟
+          </div>
+
+          <div>
+
+            <span>Total Donors</span>
+
+            <strong>1,248</strong>
+
+            <em class="up">
+              ↑ +12%
+            </em>
+
+            <small>
+              Registered donors
+            </small>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="card stat">
+
+          <div class="stat-icon green">
+            ✓
+          </div>
+
+          <div>
+
+            <span>Active Donors</span>
+
+            <strong>982</strong>
+
+            <em class="up">
+              ↑ +8%
+            </em>
+
+            <small>
+              Eligible to donate
+            </small>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="card stat">
+
+          <div class="stat-icon orange">
+            🩸
+          </div>
+
+          <div>
+
+            <span>Donations This Month</span>
+
+            <strong>156</strong>
+
+            <em class="orange-text">
+              ↑ +5%
+            </em>
+
+            <small>
+              September 2026
+            </small>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="card stat">
+
+          <div class="stat-icon blue">
+            ♡
+          </div>
+
+          <div>
+
+            <span>New Donors</span>
+
+            <strong>42</strong>
+
+            <em class="up">
+              ↑ +10%
+            </em>
+
+            <small>
+              Registered this month
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ================= FILTER BAR ================= -->
+      <div class="filter-bar card">
+
+
+        <input
+          id="donorSearch"
+          type="text"
+          placeholder="Search by name, donor ID or phone..."
+          onkeyup="filterDonors()"
+        >
+
+
+        <select
+          id="donorGroupFilter"
+          onchange="filterDonors()">
+
+          <option value="">
+            All Blood Groups
+          </option>
+
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+
+        </select>
+
+
+        <select
+          id="donorStatusFilter"
+          onchange="filterDonors()">
+
+          <option value="">
+            All Status
+          </option>
+
+          <option value="Active">
+            Active
+          </option>
+
+          <option value="Inactive">
+            Inactive
+          </option>
+
+        </select>
+
+
+        <button
+          class="secondary-btn"
+          onclick="resetDonorFilters()">
+
+          Reset
+
+        </button>
+
+      </div>
+
+
+
+      <!-- ================= DONOR TABLE ================= -->
+      <section class="card table-card">
+
+
+        <div class="card-title">
+
+          <h2>
+            Registered Donors
+          </h2>
+
+          <span class="record-count">
+            8 donors
+          </span>
+
+        </div>
+
+
+
+        <div class="table-scroll">
+
+          <table id="donorTable">
+
+            <thead>
+
+              <tr>
+
+                <th>Donor ID</th>
+                <th>Donor Name</th>
+                <th>Blood Group</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Last Donation</th>
+                <th>Status</th>
+                <th>Action</th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+              <tr>
+
+                <td>D-501</td>
+                <td>Rahul Sharma</td>
+                <td>A+</td>
+                <td>26</td>
+                <td>Male</td>
+                <td>9876543210</td>
+                <td>15 Sep 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-501')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-502</td>
+                <td>Priya Patil</td>
+                <td>O+</td>
+                <td>24</td>
+                <td>Female</td>
+                <td>9823456712</td>
+                <td>10 Sep 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-502')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-503</td>
+                <td>Amit Kulkarni</td>
+                <td>B+</td>
+                <td>29</td>
+                <td>Male</td>
+                <td>9765432180</td>
+                <td>05 Sep 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-503')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-504</td>
+                <td>Sneha Joshi</td>
+                <td>AB+</td>
+                <td>27</td>
+                <td>Female</td>
+                <td>9988776655</td>
+                <td>02 Sep 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-504')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-505</td>
+                <td>Rohit Deshmukh</td>
+                <td>O-</td>
+                <td>31</td>
+                <td>Male</td>
+                <td>9876123450</td>
+                <td>28 Aug 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-505')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-506</td>
+                <td>Neha More</td>
+                <td>A-</td>
+                <td>25</td>
+                <td>Female</td>
+                <td>9812345678</td>
+                <td>25 Aug 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-506')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-507</td>
+                <td>Vikas Pawar</td>
+                <td>B-</td>
+                <td>34</td>
+                <td>Male</td>
+                <td>9898989898</td>
+                <td>20 Aug 2026</td>
+
+                <td>
+                  <span class="badge issued">
+                    Inactive
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-507')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+              <tr>
+
+                <td>D-508</td>
+                <td>Pooja Shinde</td>
+                <td>AB-</td>
+                <td>28</td>
+                <td>Female</td>
+                <td>9765432109</td>
+                <td>18 Aug 2026</td>
+
+                <td>
+                  <span class="badge available">
+                    Active
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    class="icon-btn"
+                    onclick="viewDonor('D-508')">
+                    ⋮
+                  </button>
+                </td>
+
+              </tr>
+
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+
+<!-- ================= REGISTER DONOR MODAL ================= -->
+<div
+  id="donorModal"
+  class="modal">
+
+
+  <div class="modal-box">
+
+
+    <div class="modal-head">
+
+      <h2>
+        Register Donor
+      </h2>
+
+      <button onclick="closeDonorModal()">
+        ×
+      </button>
+
+    </div>
+
+
+
+    <div class="form-grid">
+
+
+      <label>
+
+        Donor Name
+
+        <input
+          id="newDonorName"
+          type="text"
+          placeholder="Enter donor name"
+        >
+
+      </label>
+
+
+      <label>
+
+        Blood Group
+
+        <select id="newDonorGroup">
+
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Age
+
+        <input
+          type="number"
+          min="18"
+          max="65"
+          placeholder="Enter age"
+        >
+
+      </label>
+
+
+      <label>
+
+        Gender
+
+        <select>
+
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Phone
+
+        <input
+          type="tel"
+          placeholder="Enter phone number"
+        >
+
+      </label>
+
+
+      <label>
+
+        Last Donation Date
+
+        <input type="date">
+
+      </label>
+
+
+      <label class="full">
+
+        Address
+
+        <input
+          type="text"
+          placeholder="Enter donor address"
+        >
+
+      </label>
+
+
+    </div>
+
+
+
+    <div class="modal-actions">
+
+
+      <button
+        class="secondary-btn"
+        onclick="closeDonorModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="registerDonor()">
+
+        Register Donor
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- ================= VIEW DONOR MODAL ================= -->
+<div
+  id="viewDonorModal"
+  class="modal">
+
+
+  <div class="modal-box">
+
+
+    <div class="modal-head">
+
+      <h2>
+        Donor Details
+      </h2>
+
+      <button onclick="closeViewDonor()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div id="donorDetails">
+
+      <p>
+        Select a donor to view details.
+      </p>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeViewDonor()">
+
+        Close
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+
+
+
+<script>
+
+  /* ================= REGISTER DONOR MODAL ================= */
+
+  function openDonorModal() {
+
+    document
+      .getElementById("donorModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeDonorModal() {
+
+    document
+      .getElementById("donorModal")
+      .classList.remove("show");
+
+  }
+
+
+  function registerDonor() {
+
+    closeDonorModal();
+
+    alert("Demo: Donor registered successfully!");
+
+  }
+
+
+
+  /* ================= FILTER DONORS ================= */
+
+  function filterDonors() {
+
+    const search =
+      document
+        .getElementById("donorSearch")
+        .value
+        .toLowerCase();
+
+    const group =
+      document
+        .getElementById("donorGroupFilter")
+        .value;
+
+    const status =
+      document
+        .getElementById("donorStatusFilter")
+        .value;
+
+
+    const rows =
+      document.querySelectorAll(
+        "#donorTable tbody tr"
+      );
+
+
+    rows.forEach(function(row) {
+
+      const text =
+        row.innerText.toLowerCase();
+
+      const rowGroup =
+        row.cells[2]
+          ? row.cells[2].innerText.trim()
+          : "";
+
+      const rowStatus =
+        row.cells[7]
+          ? row.cells[7].innerText.trim()
+          : "";
+
+
+      const matchesSearch =
+        !search ||
+        text.includes(search);
+
+
+      const matchesGroup =
+        !group ||
+        rowGroup === group;
+
+
+      const matchesStatus =
+        !status ||
+        rowStatus === status;
+
+
+      if (
+        matchesSearch &&
+        matchesGroup &&
+        matchesStatus
+      ) {
+
+        row.style.display = "";
+
+      } else {
+
+        row.style.display = "none";
+
+      }
+
+    });
+
+  }
+
+
+
+  /* ================= RESET FILTERS ================= */
+
+  function resetDonorFilters() {
+
+    document
+      .getElementById("donorSearch")
+      .value = "";
+
+    document
+      .getElementById("donorGroupFilter")
+      .value = "";
+
+    document
+      .getElementById("donorStatusFilter")
+      .value = "";
+
+    filterDonors();
+
+  }
+
+
+
+  /* ================= VIEW DONOR ================= */
+
+  function viewDonor(id) {
+
+    const details =
+      document.getElementById("donorDetails");
+
+
+    details.innerHTML = `
+
+      <div style="padding: 10px 0;">
+
+        <p>
+          <strong>Donor ID:</strong> ${id}
+        </p>
+
+        <p>
+          <strong>Status:</strong> Active
+        </p>
+
+        <p>
+          <strong>Blood Donation Record:</strong>
+          Available
+        </p>
+
+        <p>
+          <strong>Note:</strong>
+          This is demo data. Backend integration
+          will be added later.
+        </p>
+
+      </div>
+
+    `;
+
+
+    document
+      .getElementById("viewDonorModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeViewDonor() {
+
+    document
+      .getElementById("viewDonorModal")
+      .classList.remove("show");
+
+  }
+
+</script>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/dashboard.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/common.js"></script>
+</body>
+</html>

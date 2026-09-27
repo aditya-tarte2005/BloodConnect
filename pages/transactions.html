@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BloodConnect - Transactions</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ♥
+            </div>
+
+            <div>
+                <h2>BloodConnect</h2>
+
+                <span>
+                    Save Lives Together
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- ================= NAVIGATION ================= -->
+
+        <nav>
+
+            <a class="nav-item" href="../index.html">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+
+            <a class="nav-item" href="inventory.html">
+                <span>🩸</span>
+                Blood Inventory
+            </a>
+
+
+            <a class="nav-item" href="donors.html">
+                <span>♟</span>
+                Donors
+            </a>
+
+
+            <a class="nav-item" href="blood-requests.html">
+                <span>▤</span>
+                Blood Requests
+            </a>
+
+
+            <a class="nav-item" href="hospitals.html">
+                <span>▦</span>
+                Hospitals
+            </a>
+
+
+            <a class="nav-item active" href="transactions.html">
+                <span>⇄</span>
+                Transactions
+            </a>
+
+
+            <a class="nav-item" href="reports.html">
+                <span>▥</span>
+                Reports
+            </a>
+
+
+            <a class="nav-item" href="settings.html">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-quote">
+            “A single unit of blood can save up to 3 lives.”
+        </div>
+
+
+        <a class="logout" href="../login.html">
+            <span>↪</span>
+            Logout
+        </a>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main">
+
+
+        <!-- ================= TOP BAR ================= -->
+
+        <header class="topbar">
+
+            <button
+                class="menu-btn"
+                onclick="toggleSidebar()">
+
+                ☰
+
+            </button>
+
+
+            <div class="search">
+
+                ⌕
+
+                <input
+                    type="text"
+                    placeholder="Search transaction, donor, hospital..."
+                >
+
+            </div>
+
+
+            <div class="top-user">
+
+                <span class="notification">
+
+                    ♧
+
+                    <b>3</b>
+
+                </span>
+
+
+                <div class="avatar">
+                    A
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Admin
+                    </strong>
+
+                    <small>
+                        Blood Bank
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= PAGE CONTENT ================= -->
+
+        <section class="content">
+
+
+            <!-- PAGE HEADING -->
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Transactions
+                    </h1>
+
+                    <p>
+                        Track and manage all blood inventory transactions.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    onclick="exportTransactions()">
+
+                    ↓ Export Report
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= SUMMARY CARDS ================= -->
+
+            <div class="stats">
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon red">
+                        ⇄
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Transactions
+                        </span>
+
+                        <strong>
+                            2,486
+                        </strong>
+
+                        <em class="up">
+                            ↑ +14%
+                        </em>
+
+                        <small>
+                            All recorded transactions
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon green">
+                        🩸
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Donations
+                        </span>
+
+                        <strong>
+                            1,420
+                        </strong>
+
+                        <em class="up">
+                            ↑ +10%
+                        </em>
+
+                        <small>
+                            Blood units received
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon orange">
+                        ↑
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Blood Issued
+                        </span>
+
+                        <strong>
+                            892
+                        </strong>
+
+                        <em class="orange-text">
+                            ↑ +7%
+                        </em>
+
+                        <small>
+                            Units issued to hospitals
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="card stat">
+
+                    <div class="stat-icon blue">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Other Transactions
+                        </span>
+
+                        <strong>
+                            174
+                        </strong>
+
+                        <em class="up">
+                            ↑ +4%
+                        </em>
+
+                        <small>
+                            Reservations, expiry & returns
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ================= FILTER SECTION ================= -->
+
+            <div class="filter-bar card">
+
+
+                <input
+                    type="text"
+                    id="transactionSearch"
+                    placeholder="Search by transaction ID, donor or hospital..."
+                    onkeyup="filterTransactions()"
+                >
+
+
+                <select
+                    id="transactionTypeFilter"
+                    onchange="filterTransactions()">
+
+                    <option value="">
+                        All Transaction Types
+                    </option>
+
+                    <option value="Donation">
+                        Donation
+                    </option>
+
+                    <option value="Issue">
+                        Issue
+                    </option>
+
+                    <option value="Reservation">
+                        Reservation
+                    </option>
+
+                    <option value="Return">
+                        Return
+                    </option>
+
+                    <option value="Expiry">
+                        Expiry
+                    </option>
+
+                    <option value="Discard">
+                        Discard
+                    </option>
+
+                </select>
+
+
+
+                <select
+                    id="transactionStatusFilter"
+                    onchange="filterTransactions()">
+
+                    <option value="">
+                        All Status
+                    </option>
+
+                    <option value="Completed">
+                        Completed
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+
+
+                <button
+                    class="secondary-btn"
+                    onclick="resetTransactionFilters()">
+
+                    Reset
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ================= TRANSACTION TABLE ================= -->
+
+            <section class="card table-card">
+
+
+                <div class="card-title">
+
+                    <h2>
+                        Transaction History
+                    </h2>
+
+                    <span class="record-count">
+                        10 transactions
+                    </span>
+
+                </div>
+
+
+
+                <div class="table-scroll">
+
+                    <table id="transactionTable">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Blood Group</th>
+                                <th>Component</th>
+                                <th>Quantity</th>
+                                <th>Reference</th>
+                                <th>Status</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            <tr>
+
+                                <td>TXN-5001</td>
+                                <td>20 Sep 2026</td>
+                                <td>Donation</td>
+                                <td>O+</td>
+                                <td>Whole Blood</td>
+                                <td>5</td>
+                                <td>Donor D-501</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5001')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5002</td>
+                                <td>19 Sep 2026</td>
+                                <td>Issue</td>
+                                <td>A+</td>
+                                <td>RBC</td>
+                                <td>3</td>
+                                <td>City Care Hospital</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5002')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5003</td>
+                                <td>19 Sep 2026</td>
+                                <td>Reservation</td>
+                                <td>B+</td>
+                                <td>Plasma</td>
+                                <td>4</td>
+                                <td>Ruby Hospital</td>
+
+                                <td>
+                                    <span class="badge reserved">
+                                        Pending
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5003')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5004</td>
+                                <td>18 Sep 2026</td>
+                                <td>Donation</td>
+                                <td>AB+</td>
+                                <td>Platelets</td>
+                                <td>2</td>
+                                <td>Donor D-504</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5004')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5005</td>
+                                <td>17 Sep 2026</td>
+                                <td>Issue</td>
+                                <td>O+</td>
+                                <td>Whole Blood</td>
+                                <td>5</td>
+                                <td>Sahyadri Hospital</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5005')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5006</td>
+                                <td>16 Sep 2026</td>
+                                <td>Return</td>
+                                <td>O-</td>
+                                <td>Whole Blood</td>
+                                <td>1</td>
+                                <td>Noble Hospital</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5006')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5007</td>
+                                <td>15 Sep 2026</td>
+                                <td>Expiry</td>
+                                <td>B+</td>
+                                <td>Plasma</td>
+                                <td>2</td>
+                                <td>Unit BU-1003</td>
+
+                                <td>
+                                    <span class="badge expired">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5007')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5008</td>
+                                <td>14 Sep 2026</td>
+                                <td>Donation</td>
+                                <td>A-</td>
+                                <td>Platelets</td>
+                                <td>3</td>
+                                <td>Donor D-506</td>
+
+                                <td>
+                                    <span class="badge available">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5008')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5009</td>
+                                <td>13 Sep 2026</td>
+                                <td>Reservation</td>
+                                <td>B-</td>
+                                <td>RBC</td>
+                                <td>2</td>
+                                <td>KEM Hospital</td>
+
+                                <td>
+                                    <span class="badge reserved">
+                                        Pending
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5009')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>TXN-5010</td>
+                                <td>12 Sep 2026</td>
+                                <td>Discard</td>
+                                <td>AB-</td>
+                                <td>Plasma</td>
+                                <td>1</td>
+                                <td>Unit BU-1008</td>
+
+                                <td>
+                                    <span class="badge expired">
+                                        Completed
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button
+                                        class="icon-btn"
+                                        onclick="viewTransaction('TXN-5010')">
+                                        👁
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<!-- ================= VIEW TRANSACTION MODAL ================= -->
+
+<div
+    id="transactionModal"
+    class="modal">
+
+    <div class="modal-box">
+
+
+        <div class="modal-head">
+
+            <h2>
+                Transaction Details
+            </h2>
+
+            <button
+                onclick="closeTransactionModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+
+        <div
+            id="transactionDetails"
+            style="line-height: 2;">
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                onclick="closeTransactionModal()">
+
+                Close
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+
+
+
+<script>
+
+
+/* =========================================
+   FILTER TRANSACTIONS
+========================================= */
+
+function filterTransactions() {
+
+    const search =
+        document
+        .getElementById("transactionSearch")
+        .value
+        .toLowerCase();
+
+    const type =
+        document
+        .getElementById("transactionTypeFilter")
+        .value;
+
+    const status =
+        document
+        .getElementById("transactionStatusFilter")
+        .value;
+
+
+    const rows =
+        document.querySelectorAll(
+            "#transactionTable tbody tr"
+        );
+
+
+    rows.forEach(function(row) {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        const rowType =
+            row.cells[2]
+            ? row.cells[2].innerText.trim()
+            : "";
+
+        const rowStatus =
+            row.cells[7]
+            ? row.cells[7].innerText.trim()
+            : "";
+
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+        const matchesType =
+            !type ||
+            rowType === type;
+
+        const matchesStatus =
+            !status ||
+            rowStatus === status;
+
+
+        if (
+            matchesSearch &&
+            matchesType &&
+            matchesStatus
+        ) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+
+/* =========================================
+   RESET FILTERS
+========================================= */
+
+function resetTransactionFilters() {
+
+    document
+        .getElementById("transactionSearch")
+        .value = "";
+
+    document
+        .getElementById("transactionTypeFilter")
+        .value = "";
+
+    document
+        .getElementById("transactionStatusFilter")
+        .value = "";
+
+    filterTransactions();
+
+}
+
+
+
+/* =========================================
+   VIEW TRANSACTION
+========================================= */
+
+function viewTransaction(transactionId) {
+
+    document
+        .getElementById("transactionDetails")
+        .innerHTML = `
+
+            <p>
+                <strong>Transaction ID:</strong>
+                ${transactionId}
+            </p>
+
+            <p>
+                <strong>Transaction Type:</strong>
+                Inventory Transaction
+            </p>
+
+            <p>
+                <strong>Blood Bank:</strong>
+                BloodConnect
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                Completed
+            </p>
+
+            <p>
+                <strong>Information:</strong>
+                Complete transaction details will
+                be retrieved from the Java backend.
+            </p>
+
+        `;
+
+
+    document
+        .getElementById("transactionModal")
+        .classList
+        .add("show");
+
+}
+
+
+
+/* =========================================
+   CLOSE TRANSACTION MODAL
+========================================= */
+
+function closeTransactionModal() {
+
+    document
+        .getElementById("transactionModal")
+        .classList
+        .remove("show");
+
+}
+
+
+
+/* =========================================
+   EXPORT REPORT
+========================================= */
+
+function exportTransactions() {
+
+    alert(
+        "Demo: Transaction report will be exported."
+    );
+
+}
+
+
+</script>
+
+
+<script src="../js/api.js"></script>
+<script src="../js/dashboard.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/common.js"></script>
+</body>
+
+</html>
