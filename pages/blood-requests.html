@@ -8,26 +8,277 @@
   <title>BloodConnect - Blood Requests</title>
 
   <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+
+    /* =====================================================
+       BLOOD REQUEST ACTION MENU
+       ===================================================== */
+
+    .request-action-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .request-action-menu {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      width: 180px;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 9px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      padding: 6px 0;
+      display: none;
+    }
+
+    .request-action-menu.show {
+      display: block;
+    }
+
+    .request-action-menu button {
+      width: 100%;
+      display: block;
+      border: none;
+      background: #ffffff;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .request-action-menu button:hover {
+      background: #f7f7f7;
+    }
+
+    .request-action-menu .danger-action {
+      color: #c62828;
+    }
+
+    .request-action-menu .danger-action:hover {
+      background: #fff1f1;
+    }
+
+    .request-action-menu hr {
+      border: 0;
+      border-top: 1px solid #eeeeee;
+      margin: 5px 2px;
+    }
+
+
+    /* =====================================================
+       REQUEST DETAILS
+       ===================================================== */
+
+    .request-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 15px;
+    }
+
+    .request-detail-item {
+      padding: 13px 14px;
+      background: #f8f8f8;
+      border-radius: 8px;
+    }
+
+    .request-detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .request-detail-item span {
+      display: block;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 5px;
+    }
+
+    .request-detail-item strong {
+      display: block;
+      font-size: 14px;
+      color: #222;
+    }
+
+
+    /* =====================================================
+       EDIT REQUEST
+       ===================================================== */
+
+    .edit-request-content {
+      margin-top: 18px;
+    }
+
+
+    /* =====================================================
+       STATUS MODAL
+       ===================================================== */
+
+    .request-status-content {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .request-status-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: #f8f8f8;
+      border-radius: 8px;
+    }
+
+    .request-status-info span {
+      color: #777;
+      font-size: 14px;
+    }
+
+    .request-status-info strong {
+      color: #222;
+      font-size: 16px;
+    }
+
+    .request-status-content label {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .request-status-content select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .request-status-content select:focus {
+      border-color: #b91c1c;
+      box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
+    }
+
+
+    /* =====================================================
+       PRIORITY BADGES
+       ===================================================== */
+
+    .priority-badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .priority-low {
+      background: #eaf7ed;
+      color: #2e7d32;
+    }
+
+    .priority-medium {
+      background: #fff7df;
+      color: #9a6b00;
+    }
+
+    .priority-high {
+      background: #fff0e0;
+      color: #d35400;
+    }
+
+    .priority-critical {
+      background: #ffe5e5;
+      color: #c62828;
+    }
+
+
+    /* =====================================================
+       EMPTY STATE
+       ===================================================== */
+
+    .request-empty-state {
+      text-align: center;
+      padding: 35px 20px;
+      color: #777;
+    }
+
+    .request-empty-state strong {
+      display: block;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 650px) {
+
+      .request-action-menu {
+        min-width: 175px;
+      }
+
+      .request-action-menu button {
+        min-width: 163px;
+        font-size: 13px;
+      }
+
+      .request-detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .request-detail-item.full {
+        grid-column: auto;
+      }
+
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
 <div class="app">
 
-  <!-- ================= SIDEBAR ================= -->
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+
   <aside class="sidebar">
 
     <div class="brand">
-      <div class="brand-icon">♥</div>
+
+      <div class="brand-icon">
+        ♥
+      </div>
 
       <div>
         <h2>BloodConnect</h2>
-        <span>Save Lives Together</span>
+
+        <span>
+          Save Lives Together
+        </span>
       </div>
+
     </div>
 
 
-    <!-- ================= NAVIGATION ================= -->
+    <!-- NAVIGATION -->
+
     <nav>
 
       <a class="nav-item" href="../index.html">
@@ -79,51 +330,79 @@
 
 
     <a class="logout" href="../login.html">
+
       <span>↪</span>
       Logout
+
     </a>
 
   </aside>
 
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
+
   <main class="main">
 
 
-    <!-- ================= TOP BAR ================= -->
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
     <header class="topbar">
 
       <button
         class="menu-btn"
         onclick="toggleSidebar()">
+
         ☰
+
       </button>
 
 
       <div class="search">
+
         ⌕
+
         <input
+          id="requestTopSearch"
           type="text"
           placeholder="Search requests, hospitals, blood groups..."
-        >
+          onkeyup="syncTopRequestSearch()">
+
       </div>
 
 
       <div class="top-user">
 
         <span class="notification">
+
           ♧
-          <b>3</b>
+
+          <b>
+            3
+          </b>
+
         </span>
+
 
         <div class="avatar">
           A
         </div>
 
+
         <div>
-          <strong>Admin</strong>
-          <small>Blood Bank</small>
+
+          <strong>
+            Admin
+          </strong>
+
+          <small>
+            Blood Bank
+          </small>
+
         </div>
 
       </div>
@@ -132,11 +411,15 @@
 
 
 
-    <!-- ================= CONTENT ================= -->
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
+
     <section class="content">
 
 
-      <!-- Page Heading -->
+      <!-- PAGE HEADING -->
+
       <div class="page-heading">
 
         <div>
@@ -164,7 +447,10 @@
 
 
 
-      <!-- ================= STAT CARDS ================= -->
+      <!-- =====================================================
+           STAT CARDS
+           ===================================================== -->
+
       <div class="stats">
 
 
@@ -176,13 +462,13 @@
 
           <div>
 
-            <span>Total Requests</span>
+            <span>
+              Total Requests
+            </span>
 
-            <strong>186</strong>
-
-            <em class="up">
-              ↑ +14%
-            </em>
+            <strong id="totalRequests">
+              0
+            </strong>
 
             <small>
               All requests
@@ -202,13 +488,13 @@
 
           <div>
 
-            <span>Pending Requests</span>
+            <span>
+              Pending Requests
+            </span>
 
-            <strong>24</strong>
-
-            <em class="orange-text">
-              ↑ +6%
-            </em>
+            <strong id="pendingRequests">
+              0
+            </strong>
 
             <small>
               Awaiting approval
@@ -228,13 +514,13 @@
 
           <div>
 
-            <span>Approved Requests</span>
+            <span>
+              Approved Requests
+            </span>
 
-            <strong>128</strong>
-
-            <em class="up">
-              ↑ +9%
-            </em>
+            <strong id="approvedRequests">
+              0
+            </strong>
 
             <small>
               Approved requests
@@ -254,13 +540,13 @@
 
           <div>
 
-            <span>Completed</span>
+            <span>
+              Completed
+            </span>
 
-            <strong>103</strong>
-
-            <em class="up">
-              ↑ +12%
-            </em>
+            <strong id="completedRequests">
+              0
+            </strong>
 
             <small>
               Successfully fulfilled
@@ -274,7 +560,10 @@
 
 
 
-      <!-- ================= FILTER BAR ================= -->
+      <!-- =====================================================
+           FILTER BAR
+           ===================================================== -->
+
       <div class="filter-bar card">
 
 
@@ -345,7 +634,10 @@
 
 
 
-      <!-- ================= REQUEST TABLE ================= -->
+      <!-- =====================================================
+           REQUEST TABLE
+           ===================================================== -->
+
       <section class="card table-card">
 
 
@@ -355,8 +647,12 @@
             Blood Request History
           </h2>
 
-          <span class="record-count">
+          <span
+            class="record-count"
+            id="requestRecordCount">
+
             8 requests
+
           </span>
 
         </div>
@@ -389,15 +685,41 @@
             <tbody>
 
 
-              <tr>
+              <!-- REQ-1001 -->
 
-                <td>REQ-1001</td>
-                <td>City Care Hospital</td>
-                <td>O+</td>
-                <td>Whole Blood</td>
-                <td>5</td>
-                <td>22 Sep 2026</td>
-                <td>High</td>
+              <tr
+                data-notes="Emergency requirement for surgery."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1001
+                </td>
+
+                <td>
+                  City Care Hospital
+                </td>
+
+                <td>
+                  O+
+                </td>
+
+                <td>
+                  Whole Blood
+                </td>
+
+                <td>
+                  5
+                </td>
+
+                <td>
+                  22 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-high">
+                    High
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge available">
@@ -406,25 +728,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1001')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1002</td>
-                <td>Ruby Hospital</td>
-                <td>A+</td>
-                <td>RBC</td>
-                <td>3</td>
-                <td>23 Sep 2026</td>
-                <td>Medium</td>
+              <!-- REQ-1002 -->
+
+              <tr
+                data-notes="Regular blood requirement."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1002
+                </td>
+
+                <td>
+                  Ruby Hospital
+                </td>
+
+                <td>
+                  A+
+                </td>
+
+                <td>
+                  RBC
+                </td>
+
+                <td>
+                  3
+                </td>
+
+                <td>
+                  23 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-medium">
+                    Medium
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge reserved">
@@ -433,25 +816,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1002')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1003</td>
-                <td>Sahyadri Hospital</td>
-                <td>B+</td>
-                <td>Plasma</td>
-                <td>4</td>
-                <td>24 Sep 2026</td>
-                <td>High</td>
+              <!-- REQ-1003 -->
+
+              <tr
+                data-notes="Required for patient treatment."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1003
+                </td>
+
+                <td>
+                  Sahyadri Hospital
+                </td>
+
+                <td>
+                  B+
+                </td>
+
+                <td>
+                  Plasma
+                </td>
+
+                <td>
+                  4
+                </td>
+
+                <td>
+                  24 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-high">
+                    High
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge available">
@@ -460,25 +904,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1003')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1004</td>
-                <td>Deenanath Mangeshkar</td>
-                <td>AB+</td>
-                <td>Platelets</td>
-                <td>6</td>
-                <td>25 Sep 2026</td>
-                <td>High</td>
+              <!-- REQ-1004 -->
+
+              <tr
+                data-notes="Platelet requirement for treatment."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1004
+                </td>
+
+                <td>
+                  Deenanath Mangeshkar
+                </td>
+
+                <td>
+                  AB+
+                </td>
+
+                <td>
+                  Platelets
+                </td>
+
+                <td>
+                  6
+                </td>
+
+                <td>
+                  25 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-high">
+                    High
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge issued">
@@ -487,25 +992,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1004')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1005</td>
-                <td>Jehangir Hospital</td>
-                <td>O-</td>
-                <td>Whole Blood</td>
-                <td>2</td>
-                <td>25 Sep 2026</td>
-                <td>Critical</td>
+              <!-- REQ-1005 -->
+
+              <tr
+                data-notes="Critical emergency requirement."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1005
+                </td>
+
+                <td>
+                  Jehangir Hospital
+                </td>
+
+                <td>
+                  O-
+                </td>
+
+                <td>
+                  Whole Blood
+                </td>
+
+                <td>
+                  2
+                </td>
+
+                <td>
+                  25 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-critical">
+                    Critical
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge expired">
@@ -514,25 +1080,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1005')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1006</td>
-                <td>Poona Hospital</td>
-                <td>A-</td>
-                <td>Platelets</td>
-                <td>3</td>
-                <td>26 Sep 2026</td>
-                <td>Medium</td>
+              <!-- REQ-1006 -->
+
+              <tr
+                data-notes="Routine platelet requirement."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1006
+                </td>
+
+                <td>
+                  Poona Hospital
+                </td>
+
+                <td>
+                  A-
+                </td>
+
+                <td>
+                  Platelets
+                </td>
+
+                <td>
+                  3
+                </td>
+
+                <td>
+                  26 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-medium">
+                    Medium
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge available">
@@ -541,25 +1168,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1006')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1007</td>
-                <td>Inlaks Hospital</td>
-                <td>B-</td>
-                <td>RBC</td>
-                <td>2</td>
-                <td>27 Sep 2026</td>
-                <td>Low</td>
+              <!-- REQ-1007 -->
+
+              <tr
+                data-notes="Low priority blood requirement."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1007
+                </td>
+
+                <td>
+                  Inlaks Hospital
+                </td>
+
+                <td>
+                  B-
+                </td>
+
+                <td>
+                  RBC
+                </td>
+
+                <td>
+                  2
+                </td>
+
+                <td>
+                  27 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-low">
+                    Low
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge reserved">
@@ -568,25 +1256,86 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1007')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
 
-                <td>REQ-1008</td>
-                <td>Noble Hospital</td>
-                <td>AB-</td>
-                <td>Plasma</td>
-                <td>1</td>
-                <td>28 Sep 2026</td>
-                <td>Medium</td>
+              <!-- REQ-1008 -->
+
+              <tr
+                data-notes="Plasma requirement."
+                data-created="20 Sep 2026">
+
+                <td>
+                  REQ-1008
+                </td>
+
+                <td>
+                  Noble Hospital
+                </td>
+
+                <td>
+                  AB-
+                </td>
+
+                <td>
+                  Plasma
+                </td>
+
+                <td>
+                  1
+                </td>
+
+                <td>
+                  28 Sep 2026
+                </td>
+
+                <td>
+                  <span class="priority-badge priority-medium">
+                    Medium
+                  </span>
+                </td>
 
                 <td>
                   <span class="badge issued">
@@ -595,11 +1344,45 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewRequest('REQ-1008')">
-                    ⋮
-                  </button>
+
+                  <div class="request-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleRequestActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="request-action-menu">
+
+                      <button onclick="viewRequest(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editRequest(this)">
+                        ✏ Edit Request
+                      </button>
+
+                      <button onclick="changeRequestStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeRequest(this)">
+
+                        🗑 Remove Request
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
@@ -613,6 +1396,7 @@
 
       </section>
 
+
     </section>
 
   </main>
@@ -621,7 +1405,10 @@
 
 
 
-<!-- ================= NEW REQUEST MODAL ================= -->
+<!-- =====================================================
+     NEW REQUEST MODAL
+     ===================================================== -->
+
 <div
   id="requestModal"
   class="modal">
@@ -632,9 +1419,18 @@
 
     <div class="modal-head">
 
-      <h2>
-        New Blood Request
-      </h2>
+      <div>
+
+        <h2>
+          New Blood Request
+        </h2>
+
+        <p class="modal-subtitle">
+          Create a new hospital blood request
+        </p>
+
+      </div>
+
 
       <button onclick="closeRequestModal()">
         ×
@@ -654,8 +1450,7 @@
         <input
           id="hospitalName"
           type="text"
-          placeholder="Enter hospital name"
-        >
+          placeholder="Enter hospital name">
 
       </label>
 
@@ -666,14 +1461,14 @@
 
         <select id="requestBloodGroup">
 
-          <option>A+</option>
-          <option>A-</option>
-          <option>B+</option>
-          <option>B-</option>
-          <option>AB+</option>
-          <option>AB-</option>
-          <option>O+</option>
-          <option>O-</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
 
         </select>
 
@@ -684,12 +1479,23 @@
 
         Component Type
 
-        <select>
+        <select id="requestComponent">
 
-          <option>Whole Blood</option>
-          <option>RBC</option>
-          <option>Plasma</option>
-          <option>Platelets</option>
+          <option value="Whole Blood">
+            Whole Blood
+          </option>
+
+          <option value="RBC">
+            RBC
+          </option>
+
+          <option value="Plasma">
+            Plasma
+          </option>
+
+          <option value="Platelets">
+            Platelets
+          </option>
 
         </select>
 
@@ -701,10 +1507,10 @@
         Quantity
 
         <input
+          id="requestQuantity"
           type="number"
           min="1"
-          placeholder="Units"
-        >
+          placeholder="Units">
 
       </label>
 
@@ -713,7 +1519,9 @@
 
         Required Date
 
-        <input type="date">
+        <input
+          id="requestRequiredDate"
+          type="date">
 
       </label>
 
@@ -722,12 +1530,23 @@
 
         Priority
 
-        <select>
+        <select id="requestPriority">
 
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-          <option>Critical</option>
+          <option value="Low">
+            Low
+          </option>
+
+          <option value="Medium" selected>
+            Medium
+          </option>
+
+          <option value="High">
+            High
+          </option>
+
+          <option value="Critical">
+            Critical
+          </option>
 
         </select>
 
@@ -739,9 +1558,9 @@
         Request Notes
 
         <input
+          id="requestNotes"
           type="text"
-          placeholder="Enter additional information..."
-        >
+          placeholder="Enter additional information...">
 
       </label>
 
@@ -751,7 +1570,6 @@
 
 
     <div class="modal-actions">
-
 
       <button
         class="secondary-btn"
@@ -779,7 +1597,10 @@
 
 
 
-<!-- ================= VIEW REQUEST MODAL ================= -->
+<!-- =====================================================
+     VIEW REQUEST MODAL
+     ===================================================== -->
+
 <div
   id="viewRequestModal"
   class="modal">
@@ -790,9 +1611,18 @@
 
     <div class="modal-head">
 
-      <h2>
-        Request Details
-      </h2>
+      <div>
+
+        <h2>
+          Request Details
+        </h2>
+
+        <p class="modal-subtitle">
+          Complete information about this request
+        </p>
+
+      </div>
+
 
       <button onclick="closeViewModal()">
         ×
@@ -802,10 +1632,6 @@
 
 
     <div id="requestDetails">
-
-      <p>
-        Request details will appear here.
-      </p>
 
     </div>
 
@@ -829,13 +1655,463 @@
 
 
 
-<!-- ================= JAVASCRIPT ================= -->
+<!-- =====================================================
+     EDIT REQUEST MODAL
+     ===================================================== -->
+
+<div
+  id="editRequestModal"
+  class="modal">
 
 
+  <div class="modal-box">
+
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Edit Blood Request
+        </h2>
+
+        <p class="modal-subtitle">
+          Update request information
+        </p>
+
+      </div>
+
+
+      <button onclick="closeEditRequestModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="form-grid edit-request-content">
+
+
+      <label>
+
+        Request ID
+
+        <input
+          id="editRequestId"
+          type="text"
+          readonly>
+
+      </label>
+
+
+      <label>
+
+        Hospital Name
+
+        <input
+          id="editHospitalName"
+          type="text">
+
+      </label>
+
+
+      <label>
+
+        Blood Group
+
+        <select id="editRequestGroup">
+
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Component Type
+
+        <select id="editRequestComponent">
+
+          <option value="Whole Blood">
+            Whole Blood
+          </option>
+
+          <option value="RBC">
+            RBC
+          </option>
+
+          <option value="Plasma">
+            Plasma
+          </option>
+
+          <option value="Platelets">
+            Platelets
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Quantity
+
+        <input
+          id="editRequestQuantity"
+          type="number"
+          min="1">
+
+      </label>
+
+
+      <label>
+
+        Required Date
+
+        <input
+          id="editRequestDate"
+          type="date">
+
+      </label>
+
+
+      <label>
+
+        Priority
+
+        <select id="editRequestPriority">
+
+          <option value="Low">
+            Low
+          </option>
+
+          <option value="Medium">
+            Medium
+          </option>
+
+          <option value="High">
+            High
+          </option>
+
+          <option value="Critical">
+            Critical
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Status
+
+        <select id="editRequestStatus">
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Approved">
+            Approved
+          </option>
+
+          <option value="Completed">
+            Completed
+          </option>
+
+          <option value="Rejected">
+            Rejected
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label class="full">
+
+        Request Notes
+
+        <input
+          id="editRequestNotes"
+          type="text"
+          placeholder="Enter request notes">
+
+      </label>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeEditRequestModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveEditedRequest()">
+
+        Save Changes
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CHANGE STATUS MODAL
+     ===================================================== -->
+
+<div
+  id="requestStatusModal"
+  class="modal">
+
+
+  <div class="modal-box">
+
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Change Request Status
+        </h2>
+
+        <p class="modal-subtitle">
+          Update the current request status
+        </p>
+
+      </div>
+
+
+      <button onclick="closeRequestStatusModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="request-status-content">
+
+
+      <div class="request-status-info">
+
+        <span>
+          Request ID
+        </span>
+
+        <strong id="requestStatusId">
+          -
+        </strong>
+
+      </div>
+
+
+      <label>
+
+        New Status
+
+        <select id="newRequestStatus">
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Approved">
+            Approved
+          </option>
+
+          <option value="Completed">
+            Completed
+          </option>
+
+          <option value="Rejected">
+            Rejected
+          </option>
+
+        </select>
+
+      </label>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeRequestStatusModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveRequestStatus()">
+
+        Save Status
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script>
 
-  /* ================= NEW REQUEST MODAL ================= */
+
+  /* =====================================================
+     GLOBAL VARIABLES
+     ===================================================== */
+
+  let selectedRequestRow = null;
+
+  let requestIdCounter = 1008;
+
+
+
+  /* =====================================================
+     HTML ESCAPE
+     ===================================================== */
+
+  function escapeRequestHTML(value) {
+
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+
+  /* =====================================================
+     DATE CONVERSION
+     ===================================================== */
+
+  function formatRequestDate(dateValue) {
+
+    if (!dateValue) {
+      return "";
+    }
+
+    const date = new Date(dateValue + "T00:00:00");
+
+    if (isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    const day = String(date.getDate()).padStart(2, "0");
+
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+
+    const month = months[date.getMonth()];
+
+    const year = date.getFullYear();
+
+    return day + " " + month + " " + year;
+
+  }
+
+
+  function requestDateToInput(dateText) {
+
+    if (!dateText) {
+      return "";
+    }
+
+    const parts = dateText.trim().split(" ");
+
+    if (parts.length !== 3) {
+      return "";
+    }
+
+    const day = parts[0];
+
+    const monthNames = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12"
+    };
+
+    const month = monthNames[parts[1]];
+
+    const year = parts[2];
+
+    if (!month) {
+      return "";
+    }
+
+    return year + "-" + month + "-" + day;
+
+  }
+
+
+
+  /* =====================================================
+     NEW REQUEST MODAL
+     ===================================================== */
 
   function openRequestModal() {
 
@@ -855,17 +2131,266 @@
   }
 
 
+
+  /* =====================================================
+     SUBMIT NEW REQUEST
+     ===================================================== */
+
   function submitRequest() {
+
+    const hospital =
+      document
+        .getElementById("hospitalName")
+        .value
+        .trim();
+
+    const group =
+      document
+        .getElementById("requestBloodGroup")
+        .value;
+
+    const component =
+      document
+        .getElementById("requestComponent")
+        .value;
+
+    const quantity =
+      document
+        .getElementById("requestQuantity")
+        .value;
+
+    const requiredDate =
+      document
+        .getElementById("requestRequiredDate")
+        .value;
+
+    const priority =
+      document
+        .getElementById("requestPriority")
+        .value;
+
+    const notes =
+      document
+        .getElementById("requestNotes")
+        .value
+        .trim();
+
+
+    if (!hospital) {
+
+      alert("Please enter hospital name.");
+
+      return;
+
+    }
+
+
+    if (!quantity || Number(quantity) < 1) {
+
+      alert("Please enter a valid quantity.");
+
+      return;
+
+    }
+
+
+    if (!requiredDate) {
+
+      alert("Please select required date.");
+
+      return;
+
+    }
+
+
+    requestIdCounter++;
+
+    const requestId =
+      "REQ-" + requestIdCounter;
+
+
+    const tbody =
+      document.querySelector(
+        "#requestTable tbody"
+      );
+
+
+    const row =
+      document.createElement("tr");
+
+
+    row.dataset.notes =
+      notes || "No additional notes provided.";
+
+    row.dataset.created =
+      formatRequestDate(
+        new Date().toISOString().split("T")[0]
+      );
+
+
+    row.innerHTML = `
+
+      <td>
+        ${escapeRequestHTML(requestId)}
+      </td>
+
+      <td>
+        ${escapeRequestHTML(hospital)}
+      </td>
+
+      <td>
+        ${escapeRequestHTML(group)}
+      </td>
+
+      <td>
+        ${escapeRequestHTML(component)}
+      </td>
+
+      <td>
+        ${escapeRequestHTML(quantity)}
+      </td>
+
+      <td>
+        ${escapeRequestHTML(
+          formatRequestDate(requiredDate)
+        )}
+      </td>
+
+      <td>
+        ${getPriorityBadge(priority)}
+      </td>
+
+      <td>
+        <span class="badge reserved">
+          Pending
+        </span>
+      </td>
+
+      <td>
+
+        <div class="request-action-wrapper">
+
+          <button
+            class="icon-btn"
+            onclick="toggleRequestActionMenu(this, event)">
+
+            ⋮
+
+          </button>
+
+          <div class="request-action-menu">
+
+            <button onclick="viewRequest(this)">
+              👁 View Details
+            </button>
+
+            <button onclick="editRequest(this)">
+              ✏ Edit Request
+            </button>
+
+            <button onclick="changeRequestStatus(this)">
+              🔄 Change Status
+            </button>
+
+            <hr>
+
+            <button
+              class="danger-action"
+              onclick="removeRequest(this)">
+
+              🗑 Remove Request
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </td>
+
+    `;
+
+
+    tbody.appendChild(row);
+
+
+    clearRequestForm();
 
     closeRequestModal();
 
-    alert("Demo: Blood request submitted successfully!");
+    updateRequestStats();
+
+    filterRequests();
+
+
+    alert(
+      "Blood request " +
+      requestId +
+      " submitted successfully!"
+    );
 
   }
 
 
 
-  /* ================= FILTER REQUESTS ================= */
+  /* =====================================================
+     PRIORITY BADGE
+     ===================================================== */
+
+  function getPriorityBadge(priority) {
+
+    const safePriority =
+      escapeRequestHTML(priority);
+
+    const className =
+      priority.toLowerCase() === "critical"
+        ? "priority-critical"
+        : priority.toLowerCase() === "high"
+        ? "priority-high"
+        : priority.toLowerCase() === "medium"
+        ? "priority-medium"
+        : "priority-low";
+
+
+    return `
+      <span class="priority-badge ${className}">
+        ${safePriority}
+      </span>
+    `;
+
+  }
+
+
+
+  /* =====================================================
+     CLEAR REQUEST FORM
+     ===================================================== */
+
+  function clearRequestForm() {
+
+    document.getElementById("hospitalName").value = "";
+
+    document.getElementById("requestBloodGroup").value = "A+";
+
+    document.getElementById("requestComponent").value =
+      "Whole Blood";
+
+    document.getElementById("requestQuantity").value = "";
+
+    document.getElementById("requestRequiredDate").value = "";
+
+    document.getElementById("requestPriority").value =
+      "Medium";
+
+    document.getElementById("requestNotes").value = "";
+
+  }
+
+
+
+  /* =====================================================
+     FILTER REQUESTS
+     ===================================================== */
 
   function filterRequests() {
 
@@ -873,7 +2398,8 @@
       document
         .getElementById("requestSearch")
         .value
-        .toLowerCase();
+        .toLowerCase()
+        .trim();
 
     const group =
       document
@@ -890,6 +2416,9 @@
       document.querySelectorAll(
         "#requestTable tbody tr"
       );
+
+
+    let visibleCount = 0;
 
 
     rows.forEach(function(row) {
@@ -933,6 +2462,8 @@
 
         row.style.display = "";
 
+        visibleCount++;
+
       } else {
 
         row.style.display = "none";
@@ -941,11 +2472,45 @@
 
     });
 
+
+    document.getElementById(
+      "requestRecordCount"
+    ).textContent =
+      visibleCount +
+      (visibleCount === 1
+        ? " request"
+        : " requests");
+
   }
 
 
 
-  /* ================= RESET FILTERS ================= */
+  /* =====================================================
+     TOP SEARCH
+     ===================================================== */
+
+  function syncTopRequestSearch() {
+
+    const value =
+      document
+        .getElementById("requestTopSearch")
+        .value;
+
+
+    document
+      .getElementById("requestSearch")
+      .value = value;
+
+
+    filterRequests();
+
+  }
+
+
+
+  /* =====================================================
+     RESET FILTERS
+     ===================================================== */
 
   function resetRequestFilters() {
 
@@ -961,42 +2526,253 @@
       .getElementById("requestStatusFilter")
       .value = "";
 
+    document
+      .getElementById("requestTopSearch")
+      .value = "";
+
+
     filterRequests();
 
   }
 
 
 
-  /* ================= VIEW REQUEST ================= */
+  /* =====================================================
+     ACTION MENU
+     ===================================================== */
 
-  function viewRequest(id) {
+  function toggleRequestActionMenu(button, event) {
 
-    const details =
-      document.getElementById("requestDetails");
+    event.stopPropagation();
+
+    const menu =
+      button
+        .closest(".request-action-wrapper")
+        .querySelector(".request-action-menu");
 
 
-    details.innerHTML = `
+    const alreadyOpen =
+      menu.classList.contains("show");
 
-      <div style="padding: 10px 0;">
 
-        <p>
-          <strong>Request ID:</strong> ${id}
-        </p>
+    closeRequestActionMenus();
 
-        <p>
-          <strong>Status:</strong> Under Review
-        </p>
 
-        <p>
-          <strong>Request Type:</strong>
-          Blood Component Request
-        </p>
+    if (!alreadyOpen) {
 
-        <p>
-          <strong>Note:</strong>
-          This is demo data. Backend integration
-          will be added later.
-        </p>
+      menu.classList.add("show");
+
+    }
+
+  }
+
+
+
+  function closeRequestActionMenus() {
+
+    document
+      .querySelectorAll(".request-action-menu.show")
+      .forEach(function(menu) {
+
+        menu.classList.remove("show");
+
+      });
+
+  }
+
+
+
+  document.addEventListener(
+    "click",
+    function() {
+
+      closeRequestActionMenus();
+
+    }
+  );
+
+
+
+  /* =====================================================
+     VIEW REQUEST
+     ===================================================== */
+
+  function viewRequest(button) {
+
+    const row =
+      button.closest("tr");
+
+
+    const requestId =
+      row.cells[0].innerText.trim();
+
+    const hospital =
+      row.cells[1].innerText.trim();
+
+    const group =
+      row.cells[2].innerText.trim();
+
+    const component =
+      row.cells[3].innerText.trim();
+
+    const quantity =
+      row.cells[4].innerText.trim();
+
+    const requiredDate =
+      row.cells[5].innerText.trim();
+
+    const priority =
+      row.cells[6].innerText.trim();
+
+    const status =
+      row.cells[7].innerText.trim();
+
+    const notes =
+      row.dataset.notes ||
+      "No additional notes provided.";
+
+    const created =
+      row.dataset.created ||
+      "Not available";
+
+
+    closeRequestActionMenus();
+
+
+    document.getElementById(
+      "requestDetails"
+    ).innerHTML = `
+
+      <div class="request-detail-grid">
+
+        <div class="request-detail-item">
+
+          <span>
+            Request ID
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(requestId)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Hospital
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(hospital)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Blood Group
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(group)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Component
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(component)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Quantity
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(quantity)} Units
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Required Date
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(requiredDate)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Priority
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(priority)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Status
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(status)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item">
+
+          <span>
+            Created Date
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(created)}
+          </strong>
+
+        </div>
+
+
+        <div class="request-detail-item full">
+
+          <span>
+            Request Notes
+          </span>
+
+          <strong>
+            ${escapeRequestHTML(notes)}
+          </strong>
+
+        </div>
 
       </div>
 
@@ -1010,6 +2786,7 @@
   }
 
 
+
   function closeViewModal() {
 
     document
@@ -1018,6 +2795,586 @@
 
   }
 
+
+
+  /* =====================================================
+     EDIT REQUEST
+     ===================================================== */
+
+  function editRequest(button) {
+
+    const row =
+      button.closest("tr");
+
+
+    selectedRequestRow = row;
+
+
+    document.getElementById(
+      "editRequestId"
+    ).value =
+      row.cells[0].innerText.trim();
+
+
+    document.getElementById(
+      "editHospitalName"
+    ).value =
+      row.cells[1].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestGroup"
+    ).value =
+      row.cells[2].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestComponent"
+    ).value =
+      row.cells[3].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestQuantity"
+    ).value =
+      row.cells[4].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestDate"
+    ).value =
+      requestDateToInput(
+        row.cells[5].innerText.trim()
+      );
+
+
+    document.getElementById(
+      "editRequestPriority"
+    ).value =
+      row.cells[6].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestStatus"
+    ).value =
+      row.cells[7].innerText.trim();
+
+
+    document.getElementById(
+      "editRequestNotes"
+    ).value =
+      row.dataset.notes || "";
+
+
+    closeRequestActionMenus();
+
+
+    document
+      .getElementById("editRequestModal")
+      .classList.add("show");
+
+  }
+
+
+
+  function closeEditRequestModal() {
+
+    document
+      .getElementById("editRequestModal")
+      .classList.remove("show");
+
+    selectedRequestRow = null;
+
+  }
+
+
+
+  /* =====================================================
+     SAVE EDITED REQUEST
+     ===================================================== */
+
+  function saveEditedRequest() {
+
+    const row =
+      selectedRequestRow;
+
+
+    if (!row) {
+
+      alert(
+        "Request could not be found."
+      );
+
+      return;
+
+    }
+
+
+    const hospital =
+      document
+        .getElementById("editHospitalName")
+        .value
+        .trim();
+
+
+    const quantity =
+      document
+        .getElementById("editRequestQuantity")
+        .value;
+
+
+    const requiredDate =
+      document
+        .getElementById("editRequestDate")
+        .value;
+
+
+    if (!hospital) {
+
+      alert(
+        "Please enter hospital name."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !quantity ||
+      Number(quantity) < 1
+    ) {
+
+      alert(
+        "Please enter a valid quantity."
+      );
+
+      return;
+
+    }
+
+
+    if (!requiredDate) {
+
+      alert(
+        "Please select required date."
+      );
+
+      return;
+
+    }
+
+
+    const group =
+      document
+        .getElementById("editRequestGroup")
+        .value;
+
+
+    const component =
+      document
+        .getElementById("editRequestComponent")
+        .value;
+
+
+    const priority =
+      document
+        .getElementById("editRequestPriority")
+        .value;
+
+
+    const status =
+      document
+        .getElementById("editRequestStatus")
+        .value;
+
+
+    const notes =
+      document
+        .getElementById("editRequestNotes")
+        .value
+        .trim();
+
+
+    row.cells[1].innerText =
+      hospital;
+
+    row.cells[2].innerText =
+      group;
+
+    row.cells[3].innerText =
+      component;
+
+    row.cells[4].innerText =
+      quantity;
+
+    row.cells[5].innerText =
+      formatRequestDate(requiredDate);
+
+
+    row.cells[6].innerHTML =
+      getPriorityBadge(priority);
+
+
+    row.cells[7].innerHTML =
+      getStatusBadge(status);
+
+
+    row.dataset.notes =
+      notes ||
+      "No additional notes provided.";
+
+
+    updateRequestStats();
+
+    closeEditRequestModal();
+
+    filterRequests();
+
+
+    alert(
+      "Request " +
+      row.cells[0].innerText.trim() +
+      " updated successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     STATUS BADGE
+     ===================================================== */
+
+  function getStatusBadge(status) {
+
+    let badgeClass =
+      "reserved";
+
+
+    if (status === "Approved") {
+
+      badgeClass =
+        "available";
+
+    } else if (status === "Completed") {
+
+      badgeClass =
+        "issued";
+
+    } else if (status === "Rejected") {
+
+      badgeClass =
+        "expired";
+
+    }
+
+
+    return `
+
+      <span class="badge ${badgeClass}">
+        ${escapeRequestHTML(status)}
+      </span>
+
+    `;
+
+  }
+
+
+
+  /* =====================================================
+     CHANGE STATUS
+     ===================================================== */
+
+  function changeRequestStatus(button) {
+
+    const row =
+      button.closest("tr");
+
+
+    selectedRequestRow =
+      row;
+
+
+    const requestId =
+      row.cells[0].innerText.trim();
+
+
+    const currentStatus =
+      row.cells[7].innerText.trim();
+
+
+    document.getElementById(
+      "requestStatusId"
+    ).textContent =
+      requestId;
+
+
+    document.getElementById(
+      "newRequestStatus"
+    ).value =
+      currentStatus;
+
+
+    closeRequestActionMenus();
+
+
+    document
+      .getElementById("requestStatusModal")
+      .classList.add("show");
+
+  }
+
+
+
+  function closeRequestStatusModal() {
+
+    document
+      .getElementById("requestStatusModal")
+      .classList.remove("show");
+
+    selectedRequestRow = null;
+
+  }
+
+
+
+  /* =====================================================
+     SAVE STATUS
+     ===================================================== */
+
+  function saveRequestStatus() {
+
+    const row =
+      selectedRequestRow;
+
+
+    if (!row) {
+
+      alert(
+        "Request could not be found."
+      );
+
+      return;
+
+    }
+
+
+    const newStatus =
+      document
+        .getElementById("newRequestStatus")
+        .value;
+
+
+    const requestId =
+      row.cells[0].innerText.trim();
+
+
+    row.cells[7].innerHTML =
+      getStatusBadge(newStatus);
+
+
+    updateRequestStats();
+
+    closeRequestStatusModal();
+
+    filterRequests();
+
+
+    alert(
+      "Status of " +
+      requestId +
+      " changed to " +
+      newStatus +
+      " successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     REMOVE REQUEST
+     ===================================================== */
+
+  function removeRequest(button) {
+
+    const row =
+      button.closest("tr");
+
+
+    const requestId =
+      row.cells[0].innerText.trim();
+
+
+    const hospital =
+      row.cells[1].innerText.trim();
+
+
+    closeRequestActionMenus();
+
+
+    const confirmed =
+      confirm(
+        "Are you sure you want to remove request " +
+        requestId +
+        " from " +
+        hospital +
+        "?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    row.remove();
+
+
+    updateRequestStats();
+
+    filterRequests();
+
+
+    alert(
+      "Request " +
+      requestId +
+      " removed successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     UPDATE REQUEST STATISTICS
+     ===================================================== */
+
+  function updateRequestStats() {
+
+    const rows =
+      document.querySelectorAll(
+        "#requestTable tbody tr"
+      );
+
+
+    let total = 0;
+
+    let pending = 0;
+
+    let approved = 0;
+
+    let completed = 0;
+
+
+    rows.forEach(function(row) {
+
+      total++;
+
+
+      const status =
+        row.cells[7]
+          ? row.cells[7].innerText.trim()
+          : "";
+
+
+      if (status === "Pending") {
+
+        pending++;
+
+      }
+
+
+      if (status === "Approved") {
+
+        approved++;
+
+      }
+
+
+      if (status === "Completed") {
+
+        completed++;
+
+      }
+
+    });
+
+
+    document.getElementById(
+      "totalRequests"
+    ).textContent =
+      total;
+
+
+    document.getElementById(
+      "pendingRequests"
+    ).textContent =
+      pending;
+
+
+    document.getElementById(
+      "approvedRequests"
+    ).textContent =
+      approved;
+
+
+    document.getElementById(
+      "completedRequests"
+    ).textContent =
+      completed;
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE MODALS WHEN CLICKING OUTSIDE
+     ===================================================== */
+
+  document.addEventListener(
+    "click",
+    function(event) {
+
+      const modals =
+        document.querySelectorAll(".modal");
+
+
+      modals.forEach(function(modal) {
+
+        if (
+          event.target === modal
+        ) {
+
+          modal.classList.remove("show");
+
+          selectedRequestRow = null;
+
+        }
+
+      });
+
+    }
+  );
+
+
+
+  /* =====================================================
+     INITIALIZE
+     ===================================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      updateRequestStats();
+
+      filterRequests();
+
+    }
+  );
+
 </script>
 
 
@@ -1025,5 +3382,7 @@
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>
+
 </body>
+
 </html>

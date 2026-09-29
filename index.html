@@ -9,480 +9,1393 @@
 
   <link rel="stylesheet" href="css/style.css">
 
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet Map -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
+
+  <style>
+
+    /* =========================================================
+       NEARBY DONOR MAP
+       ========================================================= */
+
+    .nearby-donor-section {
+      margin-top: 22px;
+    }
+
+    .nearby-map-card {
+      background: #fff;
+      border: 1px solid #ececf1;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(17, 16, 0, 0.04);
+    }
+
+    .nearby-map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 18px 20px;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .nearby-map-title h2 {
+      margin: 0;
+      font-size: 19px;
+      color: #182033;
+    }
+
+    .nearby-map-title p {
+      margin: 5px 0 0;
+      color: #858b98;
+      font-size: 12px;
+    }
+
+    .map-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .map-select {
+      height: 38px;
+      padding: 0 11px;
+      border: 1px solid #dedfe5;
+      border-radius: 8px;
+      background: #fff;
+      color: #343a46;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .map-select:focus {
+      border-color: #d92a35;
+      box-shadow: 0 0 0 3px rgba(217, 31, 42, 0.08);
+    }
+
+    .map-location-btn {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid #dedfe5;
+      border-radius: 8px;
+      background: #fff;
+      color: #343a46;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .map-location-btn:hover {
+      background: #f7f7f9;
+      transform: translateY(-1px);
+    }
+
+    .map-wrapper {
+      position: relative;
+      height: 390px;
+      background: #eef1f4;
+    }
+
+    #donorMap {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Map overlay */
+
+    .map-distance-panel {
+      position: absolute;
+      z-index: 500;
+      left: 18px;
+      bottom: 18px;
+      width: 315px;
+      padding: 15px 17px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid #e6e7eb;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(20, 20, 40, 0.13);
+      backdrop-filter: blur(8px);
+    }
+
+    .distance-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+
+    .distance-header strong {
+      font-size: 13px;
+      color: #252b38;
+    }
+
+    .distance-header span {
+      color: #d91f2a;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .distance-panel-subtitle {
+      color: #858b98;
+      font-size: 10px;
+      margin-bottom: 10px;
+    }
+
+    #distanceSlider {
+      width: 100%;
+      accent-color: #df2d38;
+      cursor: pointer;
+    }
+
+    .distance-range {
+      display: flex;
+      justify-content: space-between;
+      color: #858b98;
+      font-size: 9px;
+      margin-top: 4px;
+    }
+
+    /* Send request */
+
+    .send-request-btn {
+      position: absolute;
+      z-index: 500;
+      right: 18px;
+      bottom: 18px;
+      border: none;
+      background: linear-gradient(135deg, #e12b36, #bf151f);
+      color: #fff;
+      padding: 13px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(190, 20, 32, 0.25);
+      transition: 0.2s ease;
+    }
+
+    .send-request-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 11px 25px rgba(190, 20, 32, 0.32);
+    }
+
+    /* Map footer */
+
+    .map-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      border-top: 1px solid #eeeeee;
+      background: #fff;
+    }
+
+    .map-result-info {
+      font-size: 11px;
+      color: #777d89;
+    }
+
+    .map-result-info strong {
+      color: #252b38;
+    }
+
+    .map-legend {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 10px;
+      color: #666d7a;
+    }
+
+    .map-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-marker {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .legend-marker.available-marker {
+      background: #20a65b;
+    }
+
+    .legend-marker.urgent-marker {
+      background: #df2d38;
+    }
+
+    /* Custom donor marker */
+
+    .donor-marker {
+      width: 34px;
+      height: 34px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.20);
+      border: 3px solid #fff;
+    }
+
+    .donor-marker span {
+      transform: rotate(45deg);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .donor-marker.available {
+      background: #20a65b;
+    }
+
+    .donor-marker.urgent {
+      background: #df2d38;
+    }
+
+    /* Leaflet popup */
+
+    .donor-popup {
+      min-width: 205px;
+    }
+
+    .donor-popup h3 {
+      margin: 0 0 7px;
+      font-size: 15px;
+      color: #202633;
+    }
+
+    .donor-popup .popup-group {
+      display: inline-block;
+      background: #fff0f1;
+      color: #d51e29;
+      padding: 4px 8px;
+      border-radius: 15px;
+      font-size: 10px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .donor-popup p {
+      margin: 4px 0;
+      color: #666d7a;
+      font-size: 11px;
+    }
+
+    .donor-popup strong {
+      color: #333944;
+    }
+
+    .popup-status {
+      margin-top: 8px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: #e3f7e9;
+      color: #168045;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .popup-request-btn {
+      width: 100%;
+      margin-top: 9px;
+      border: 0;
+      border-radius: 7px;
+      padding: 8px;
+      background: #df2d38;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Map responsive */
+
+    @media (max-width: 800px) {
+
+      .nearby-map-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .map-controls {
+        width: 100%;
+      }
+
+      .map-select,
+      .map-location-btn {
+        flex: 1;
+      }
+
+      .map-wrapper {
+        height: 430px;
+      }
+
+      .map-distance-panel {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+      }
+
+      .send-request-btn {
+        top: 12px;
+        right: 12px;
+        bottom: auto;
+      }
+
+      .map-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 9px;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .nearby-map-title h2 {
+        font-size: 17px;
+      }
+
+      .map-controls {
+        flex-direction: column;
+      }
+
+      .map-select,
+      .map-location-btn {
+        width: 100%;
+      }
+
+      .map-wrapper {
+        height: 450px;
+      }
+
+      .map-distance-panel {
+        padding: 12px;
+      }
+
+      .map-legend {
+        flex-wrap: wrap;
+      }
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <!-- ================= SIDEBAR ================= -->
-    <aside class="sidebar">
+  <!-- ================= SIDEBAR ================= -->
 
-      <div class="brand">
+  <aside class="sidebar">
 
-        <div class="brand-icon">♥</div>
+    <div class="brand">
 
-        <div>
-          <h2>BloodConnect</h2>
-          <span>Save Lives Together</span>
-        </div>
-
+      <div class="brand-icon">
+        ♥
       </div>
 
-
-      <!-- Navigation -->
-      <nav>
-
-        <a class="nav-item active" href="index.html">
-          <span>⌂</span>
-          Dashboard
-        </a>
-
-        <a class="nav-item" href="pages/inventory.html">
-          <span>🩸</span>
-          Blood Inventory
-        </a>
-
-        <a class="nav-item" href="pages/donors.html">
-          <span>♟</span>
-          Donors
-        </a>
-
-        <a class="nav-item" href="pages/blood-requests.html">
-          <span>▤</span>
-          Blood Requests
-        </a>
-
-        <a class="nav-item" href="pages/hospitals.html">
-          <span>▦</span>
-          Hospitals
-        </a>
-
-        <a class="nav-item" href="pages/transactions.html">
-          <span>⇄</span>
-          Transactions
-        </a>
-
-        <a class="nav-item" href="pages/reports.html">
-          <span>▥</span>
-          Reports
-        </a>
-
-        <a class="nav-item" href="pages/settings.html">
-          <span>⚙</span>
-          Settings
-        </a>
-
-      </nav>
-
-
-      <div class="sidebar-quote">
-        “A single unit of blood can save up to 3 lives.”
+      <div>
+        <h2>BloodConnect</h2>
+        <span>Save Lives Together</span>
       </div>
-
-
-      <a class="logout" href="login.html">
-        <span>↪</span>
-        Logout
-      </a>
-
-    </aside>
-
-
-    <!-- ================= MAIN CONTENT ================= -->
-    <main class="main">
-
-
-      <!-- ================= TOP BAR ================= -->
-      <header class="topbar">
-
-        <button class="menu-btn" onclick="toggleSidebar()">
-          ☰
-        </button>
-
-
-        <div class="search">
-          ⌕
-          <input
-    type="text"
-    id="dashboardSearch"
-    placeholder="Search donors, blood groups, hospitals..."
-    onkeyup="searchDashboard()"
->
-        </div>
-
-
-        <div class="top-user">
-
-          <!-- Notification -->
-        <div class="notification-area">
-
-    <span
-        class="notification"
-    >
-        ♧
-        <b>3</b>
-    </span>
-
-    <div
-        class="notification-menu"
-        id="notificationMenu"
-    >
-
-        <div class="notification-header">
-            <strong>Notifications</strong>
-            <span>3 New</span>
-        </div>
-
-        <hr>
-
-        <div class="notification-item">
-            <strong>⚠ Low Stock Alert</strong>
-            <small>O- blood has only 3 units remaining.</small>
-            <span>Today, 10:30 AM</span>
-        </div>
-
-        <div class="notification-item">
-            <strong>⚠ Expiry Alert</strong>
-            <small>5 units of B+ Plasma will expire within 3 days.</small>
-            <span>Today, 09:15 AM</span>
-        </div>
-
-        <div class="notification-item">
-            <strong>ⓘ New Donation</strong>
-            <small>New blood units added (A+).</small>
-            <span>Yesterday, 04:20 PM</span>
-        </div>
 
     </div>
 
-</div>
+    <nav>
+
+      <a class="nav-item active" href="index.html">
+        <span>⌂</span>
+        Dashboard
+      </a>
+
+      <a class="nav-item" href="pages/inventory.html">
+        <span>🩸</span>
+        Blood Inventory
+      </a>
+
+      <a class="nav-item" href="pages/donors.html">
+        <span>♟</span>
+        Donors
+      </a>
+
+      <a class="nav-item" href="pages/blood-requests.html">
+        <span>▤</span>
+        Blood Requests
+      </a>
+
+      <a class="nav-item" href="pages/hospitals.html">
+        <span>▦</span>
+        Hospitals
+      </a>
+
+      <a class="nav-item" href="pages/transactions.html">
+        <span>⇄</span>
+        Transactions
+      </a>
+
+      <a class="nav-item" href="pages/reports.html">
+        <span>▥</span>
+        Reports
+      </a>
+
+      <a class="nav-item" href="pages/settings.html">
+        <span>⚙</span>
+        Settings
+      </a>
+
+    </nav>
+
+    <div class="sidebar-quote">
+      “A single unit of blood can save up to 3 lives.”
+    </div>
+
+    <a class="logout" href="login.html">
+      <span>↪</span>
+      Logout
+    </a>
+
+  </aside>
 
 
-          <!-- Admin Profile -->
-          <div class="admin-area">
+  <!-- ================= MAIN CONTENT ================= -->
 
-            <div
-              class="admin-profile"
-              onclick="toggleProfileMenu()"
-            >
+  <main class="main">
 
-              <div class="avatar">
-                A
-              </div>
+    <!-- ================= TOP BAR ================= -->
 
-              <div class="admin-info">
+    <header class="topbar">
 
-                <strong>Admin</strong>
+      <button
+        class="menu-btn"
+        onclick="toggleSidebar()"
+        aria-label="Toggle menu"
+      >
+        ☰
+      </button>
 
-                <small>
-                  Blood Bank
-                </small>
+      <div class="search">
 
-              </div>
+        ⌕
 
-              <span class="profile-arrow">
-                ⌄
+        <input
+          type="text"
+          id="dashboardSearch"
+          placeholder="Search donors, blood groups, hospitals..."
+          onkeyup="searchDashboard()"
+        >
+
+      </div>
+
+      <div class="top-user">
+
+        <!-- NOTIFICATIONS -->
+
+        <div class="notification-area">
+
+          <span
+            class="notification"
+            onclick="toggleNotificationMenu()"
+            title="Notifications"
+          >
+            ♧
+            <b>3</b>
+          </span>
+
+          <div
+            class="notification-menu"
+            id="notificationMenu"
+          >
+
+            <div class="notification-header">
+              <strong>Notifications</strong>
+              <span>3 New</span>
+            </div>
+
+            <hr>
+
+            <div class="notification-item">
+
+              <strong>
+                ⚠ Low Stock Alert
+              </strong>
+
+              <small>
+                O- blood has only 3 units remaining.
+              </small>
+
+              <span>
+                Today, 10:30 AM
               </span>
 
             </div>
 
+            <div class="notification-item">
 
-            <!-- Profile Dropdown -->
-            <div
-              class="profile-menu"
-              id="profileMenu"
-            >
+              <strong>
+                ⚠ Expiry Alert
+              </strong>
 
-              <div class="profile-menu-header">
+              <small>
+                5 units of B+ Plasma will expire within 3 days.
+              </small>
 
-                <div class="profile-menu-avatar">
-                  A
-                </div>
+              <span>
+                Today, 09:15 AM
+              </span>
 
-                <div>
+            </div>
 
-                  <strong>
-                    Admin
-                  </strong>
+            <div class="notification-item">
 
-                  <small>
-                    Blood Bank Administrator
-                  </small>
+              <strong>
+                ⓘ New Donation
+              </strong>
 
-                </div>
+              <small>
+                New blood units added (A+).
+              </small>
+
+              <span>
+                Yesterday, 04:20 PM
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ADMIN PROFILE -->
+
+        <div class="admin-area">
+
+          <div
+            class="admin-profile"
+            onclick="toggleProfileMenu()"
+          >
+
+            <div class="avatar">
+              A
+            </div>
+
+            <div class="admin-info">
+
+              <strong>
+                Admin
+              </strong>
+
+              <small>
+                Blood Bank
+              </small>
+
+            </div>
+
+            <span class="profile-arrow">
+              ⌄
+            </span>
+
+          </div>
+
+
+          <div
+            class="profile-menu"
+            id="profileMenu"
+          >
+
+            <div class="profile-menu-header">
+
+              <div class="profile-menu-avatar">
+                A
+              </div>
+
+              <div>
+
+                <strong>
+                  Admin
+                </strong>
+
+                <small>
+                  Blood Bank Administrator
+                </small>
 
               </div>
 
-
-              <hr>
-
-
-              <a href="pages/settings.html">
-                ⚙️ Account Settings
-              </a>
-
-
-              <a href="pages/settings.html">
-                🔐 Security
-              </a>
-
-
-              <hr>
-
-
-              <a
-                href="login.html"
-                class="logout-profile"
-              >
-                ↪ Logout
-              </a>
-
             </div>
+
+            <hr>
+
+            <a href="pages/settings.html">
+              ⚙️ Account Settings
+            </a>
+
+            <a href="pages/settings.html">
+              🔐 Security
+            </a>
+
+            <hr>
+
+            <a
+              href="login.html"
+              class="logout-profile"
+            >
+              ↪ Logout
+            </a>
 
           </div>
 
         </div>
 
-      </header>
+      </div>
+
+    </header>
 
 
-      <!-- ================= DASHBOARD CONTENT ================= -->
-      <section class="content">
+    <!-- ================= DASHBOARD CONTENT ================= -->
+
+    <section class="content">
 
 
-        <!-- Welcome Section -->
-        <div class="welcome">
+      <!-- ================= WELCOME ================= -->
+
+      <div class="welcome">
+
+        <div>
+
+          <h1>
+            Welcome, Admin 👋
+          </h1>
+
+          <p>
+            Manage blood inventory, track donations and help save lives.
+          </p>
+
+          <p
+            id="apiConnectionStatus"
+            class="api-connection"
+            role="status"
+            aria-live="polite"
+          >
+            Connecting to BloodConnect API…
+          </p>
+
+        </div>
+
+        <div class="save-message">
+
+          ♥
+
+          <strong>
+            Donate Blood<br>
+            Give Hope<br>
+            Save Lives
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= STAT CARDS ================= -->
+
+      <div class="stats">
+
+        <div class="card stat">
+
+          <div class="stat-icon red">
+            🩸
+          </div>
 
           <div>
 
-            <h1>
-              Welcome, Admin 👋
-            </h1>
-
-            <p>
-              Manage blood inventory, track donations and help save lives.
-            </p>
-
-            <p id="apiConnectionStatus" class="api-connection" role="status" aria-live="polite">
-              Connecting to BloodConnect API…
-            </p>
-
-          </div>
-
-
-          <div class="save-message">
-
-            ♥
+            <span>
+              Total Blood Units
+            </span>
 
             <strong>
-              Donate Blood<br>
-              Give Hope<br>
-              Save Lives
+              1,250
             </strong>
 
-          </div>
+            <em class="up">
+              ↑ +12%
+            </em>
 
-        </div>
-
-
-        <!-- ================= STAT CARDS ================= -->
-        <div class="stats">
-
-
-          <div class="card stat">
-
-            <div class="stat-icon red">
-              🩸
-            </div>
-
-            <div>
-
-              <span>Total Blood Units</span>
-
-              <strong>1,250</strong>
-
-              <em class="up">
-                ↑ +12%
-              </em>
-
-              <small>
-                Across all blood groups
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <div class="card stat">
-
-            <div class="stat-icon green">
-              🩸
-            </div>
-
-            <div>
-
-              <span>Available Units</span>
-
-              <strong>1,120</strong>
-
-              <em class="up">
-                ↑ +8%
-              </em>
-
-              <small>
-                Ready for use
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <div class="card stat">
-
-            <div class="stat-icon orange">
-              🩸
-            </div>
-
-            <div>
-
-              <span>Reserved Units</span>
-
-              <strong>80</strong>
-
-              <em class="orange-text">
-                ↑ +5%
-              </em>
-
-              <small>
-                Allocated to hospitals
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <div class="card stat">
-
-            <div class="stat-icon red">
-              🩸
-            </div>
-
-            <div>
-
-              <span>Expired Units</span>
-
-              <strong>25</strong>
-
-              <em class="down">
-                ↑ +20%
-              </em>
-
-              <small>
-                Needs disposal
-              </small>
-
-            </div>
-
-          </div>
-
-
-          <div class="card stat">
-
-            <div class="stat-icon blue">
-              ▥
-            </div>
-
-            <div>
-
-              <span>Low Stock Items</span>
-
-              <strong>3</strong>
-
-              <small>
-                Requires attention
-              </small>
-
-            </div>
+            <small>
+              Across all blood groups
+            </small>
 
           </div>
 
         </div>
 
 
-        <!-- ================= CHARTS ================= -->
-        <div class="dashboard-grid">
+        <div class="card stat">
+
+          <div class="stat-icon green">
+            🩸
+          </div>
+
+          <div>
+
+            <span>
+              Available Units
+            </span>
+
+            <strong>
+              1,120
+            </strong>
+
+            <em class="up">
+              ↑ +8%
+            </em>
+
+            <small>
+              Ready for use
+            </small>
+
+          </div>
+
+        </div>
 
 
-          <!-- Blood Group Chart -->
-          <section class="card chart-card">
+        <div class="card stat">
 
-            <div class="card-title">
+          <div class="stat-icon orange">
+            🩸
+          </div>
+
+          <div>
+
+            <span>
+              Reserved Units
+            </span>
+
+            <strong>
+              80
+            </strong>
+
+            <em class="orange-text">
+              ↑ +5%
+            </em>
+
+            <small>
+              Allocated to hospitals
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+          <div class="stat-icon red">
+            🩸
+          </div>
+
+          <div>
+
+            <span>
+              Expired Units
+            </span>
+
+            <strong>
+              25
+            </strong>
+
+            <em class="down">
+              ↑ +20%
+            </em>
+
+            <small>
+              Needs disposal
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <div class="card stat">
+
+          <div class="stat-icon blue">
+            ▥
+          </div>
+
+          <div>
+
+            <span>
+              Low Stock Items
+            </span>
+
+            <strong>
+              3
+            </strong>
+
+            <small>
+              Requires attention
+            </small>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           BLOOD STOCK OVERVIEW
+           ===================================================== -->
+
+      <section class="blood-stock-section">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h2>
+              Blood Stock Overview
+            </h2>
+
+            <p>
+              Current availability across all blood groups
+            </p>
+
+          </div>
+
+          <a
+            href="pages/inventory.html"
+            class="stock-view-all"
+          >
+            View Inventory →
+          </a>
+
+        </div>
+
+
+        <div class="blood-stock-grid">
+
+          <!-- A+ -->
+
+          <div class="blood-stock-card healthy">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                A+
+              </div>
+
+              <span class="stock-status">
+                Healthy
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              120
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:82%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Good Stock
+              </span>
+
+              <b>
+                82%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- A- -->
+
+          <div class="blood-stock-card healthy">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                A−
+              </div>
+
+              <span class="stock-status">
+                Healthy
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              42
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:68%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Good Stock
+              </span>
+
+              <b>
+                68%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- B+ -->
+
+          <div class="blood-stock-card healthy">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                B+
+              </div>
+
+              <span class="stock-status">
+                Healthy
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              98
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:75%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Good Stock
+              </span>
+
+              <b>
+                75%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- B- -->
+
+          <div class="blood-stock-card low">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                B−
+              </div>
+
+              <span class="stock-status">
+                Low
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              28
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:42%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Needs Attention
+              </span>
+
+              <b>
+                42%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- AB+ -->
+
+          <div class="blood-stock-card healthy">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                AB+
+              </div>
+
+              <span class="stock-status">
+                Healthy
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              65
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:71%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Good Stock
+              </span>
+
+              <b>
+                71%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- AB- -->
+
+          <div class="blood-stock-card critical">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                AB−
+              </div>
+
+              <span class="stock-status">
+                Critical
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              12
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:22%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Urgent Need
+              </span>
+
+              <b>
+                22%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- O+ -->
+
+          <div class="blood-stock-card healthy">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                O+
+              </div>
+
+              <span class="stock-status">
+                Healthy
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              140
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:90%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Excellent Stock
+              </span>
+
+              <b>
+                90%
+              </b>
+
+            </div>
+
+          </div>
+
+
+          <!-- O- -->
+
+          <div class="blood-stock-card critical">
+
+            <div class="blood-card-top">
+
+              <div class="blood-group">
+                O−
+              </div>
+
+              <span class="stock-status">
+                Critical
+              </span>
+
+            </div>
+
+            <strong class="blood-units">
+              3
+            </strong>
+
+            <span class="units-label">
+              Available Units
+            </span>
+
+            <div class="stock-progress">
+              <span style="width:8%"></span>
+            </div>
+
+            <div class="stock-footer">
+
+              <span>
+                Urgent Need
+              </span>
+
+              <b>
+                8%
+              </b>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           NEARBY DONORS MAP
+           ===================================================== -->
+
+      <section class="nearby-donor-section">
+
+        <div class="nearby-map-card">
+
+          <!-- MAP HEADER -->
+
+          <div class="nearby-map-header">
+
+            <div class="nearby-map-title">
 
               <h2>
-                Blood Group Stock Overview
+                📍 Track Nearby Donors
               </h2>
 
-              <select>
+              <p>
+                Find available blood donors near the selected location
+              </p>
 
-                <option>
-                  All Components
+            </div>
+
+            <div class="map-controls">
+
+              <select
+                id="mapLocation"
+                class="map-select"
+                onchange="changeMapLocation()"
+              >
+
+                <option value="pune">
+                  Pune
                 </option>
 
-                <option>
-                  Whole Blood
+                <option value="ahmednagar">
+                  Ahmednagar
                 </option>
 
-                <option>
-                  RBC
+                <option value="mumbai">
+                  Mumbai
                 </option>
 
-                <option>
-                  Plasma
-                </option>
-
-                <option>
-                  Platelets
+                <option value="nashik">
+                  Nashik
                 </option>
 
               </select>
 
+
+              <select
+                id="mapBloodGroup"
+                class="map-select"
+                onchange="filterMapDonors()"
+              >
+
+                <option value="all">
+                  All Blood Groups
+                </option>
+
+                <option value="A+">
+                  A+
+                </option>
+
+                <option value="A-">
+                  A-
+                </option>
+
+                <option value="B+">
+                  B+
+                </option>
+
+                <option value="B-">
+                  B-
+                </option>
+
+                <option value="AB+">
+                  AB+
+                </option>
+
+                <option value="AB-">
+                  AB-
+                </option>
+
+                <option value="O+">
+                  O+
+                </option>
+
+                <option value="O-">
+                  O-
+                </option>
+
+              </select>
+
+
+              <button
+                class="map-location-btn"
+                onclick="useMyLocation()"
+              >
+                📍 My Location
+              </button>
+
             </div>
 
-
-            <canvas id="stockChart"></canvas>
-
-          </section>
+          </div>
 
 
-          <!-- Component Distribution -->
-          <section class="card chart-card">
+          <!-- MAP -->
 
-            <div class="card-title">
+          <div class="map-wrapper">
 
-              <h2>
-                Component-wise Distribution
-              </h2>
-
-            </div>
+            <div id="donorMap"></div>
 
 
-            <div class="donut-wrap">
+            <!-- DISTANCE PANEL -->
 
-              <canvas id="componentChart"></canvas>
+            <div class="map-distance-panel">
 
-              <div class="donut-center">
+              <div class="distance-header">
 
                 <strong>
-                  1,250
+                  Set Distance
                 </strong>
 
+                <span id="distanceValue">
+                  10 km
+                </span>
+
+              </div>
+
+              <div class="distance-panel-subtitle">
+                Maximum donor search distance
+              </div>
+
+              <input
+                type="range"
+                id="distanceSlider"
+                min="1"
+                max="50"
+                value="10"
+                oninput="updateDonorDistance()"
+              >
+
+              <div class="distance-range">
+
                 <span>
-                  Units
+                  1 km
+                </span>
+
+                <span>
+                  50 km
                 </span>
 
               </div>
@@ -490,494 +1403,1519 @@
             </div>
 
 
-            <div class="legend">
+            <!-- SEND REQUEST -->
 
-              <div>
-                <i class="dot whole"></i>
-                Whole Blood
-                <b>45%</b>
+            <button
+              class="send-request-btn"
+              onclick="sendDonorRequest()"
+            >
+              🩸 Send Request
+            </button>
+
+          </div>
+
+
+          <!-- MAP FOOTER -->
+
+          <div class="map-footer">
+
+            <div
+              class="map-result-info"
+              id="mapResultInfo"
+            >
+              Showing <strong>6</strong> nearby donors
+            </div>
+
+            <div class="map-legend">
+
+              <div class="map-legend-item">
+
+                <span class="legend-marker available-marker"></span>
+
+                Available
+
               </div>
 
-              <div>
-                <i class="dot rbc"></i>
-                RBC
-                <b>25%</b>
-              </div>
+              <div class="map-legend-item">
 
-              <div>
-                <i class="dot plasma"></i>
-                Plasma
-                <b>20%</b>
-              </div>
+                <span class="legend-marker urgent-marker"></span>
 
-              <div>
-                <i class="dot platelets"></i>
-                Platelets
-                <b>10%</b>
+                Urgent Match
+
               </div>
 
             </div>
 
-          </section>
+          </div>
 
         </div>
-
-
-        <!-- ================= TABLE + ALERTS ================= -->
-        <div class="dashboard-grid bottom">
-
-
-          <!-- Recent Transactions -->
-          <section class="card table-card">
-
-            <div class="card-title">
-
-              <h2>
-                Recent Inventory Transactions
-              </h2>
-
-              <a href="pages/transactions.html">
-                View All
-              </a>
-
-            </div>
-
-
-            <div class="table-scroll">
-
-              <table>
-
-                <thead>
-
-                  <tr>
-                    <th>Date</th>
-                    <th>Blood Group</th>
-                    <th>Component</th>
-                    <th>Type</th>
-                    <th>Qty</th>
-                    <th>Status</th>
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  <tr>
-
-                    <td>
-                      20 Sep 2026
-                    </td>
-
-                    <td>
-                      O+
-                    </td>
-
-                    <td>
-                      Whole Blood
-                    </td>
-
-                    <td>
-                      Donation
-                    </td>
-
-                    <td>
-                      5
-                    </td>
-
-                    <td>
-                      <span class="badge available">
-                        Available
-                      </span>
-                    </td>
-
-                  </tr>
-
-
-                  <tr>
-
-                    <td>
-                      19 Sep 2026
-                    </td>
-
-                    <td>
-                      A-
-                    </td>
-
-                    <td>
-                      Platelets
-                    </td>
-
-                    <td>
-                      Issue
-                    </td>
-
-                    <td>
-                      2
-                    </td>
-
-                    <td>
-                      <span class="badge issued">
-                        Issued
-                      </span>
-                    </td>
-
-                  </tr>
-
-
-                  <tr>
-
-                    <td>
-                      19 Sep 2026
-                    </td>
-
-                    <td>
-                      B+
-                    </td>
-
-                    <td>
-                      Plasma
-                    </td>
-
-                    <td>
-                      Donation
-                    </td>
-
-                    <td>
-                      3
-                    </td>
-
-                    <td>
-                      <span class="badge available">
-                        Available
-                      </span>
-                    </td>
-
-                  </tr>
-
-
-                  <tr>
-
-                    <td>
-                      18 Sep 2026
-                    </td>
-
-                    <td>
-                      AB+
-                    </td>
-
-                    <td>
-                      RBC
-                    </td>
-
-                    <td>
-                      Reservation
-                    </td>
-
-                    <td>
-                      4
-                    </td>
-
-                    <td>
-                      <span class="badge reserved">
-                        Reserved
-                      </span>
-                    </td>
-
-                  </tr>
-
-
-                  <tr>
-
-                    <td>
-                      18 Sep 2026
-                    </td>
-
-                    <td>
-                      O-
-                    </td>
-
-                    <td>
-                      Whole Blood
-                    </td>
-
-                    <td>
-                      Expiry
-                    </td>
-
-                    <td>
-                      1
-                    </td>
-
-                    <td>
-                      <span class="badge expired">
-                        Expired
-                      </span>
-                    </td>
-
-                  </tr>
-
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </section>
-
-
-          <!-- Alerts -->
-          <section class="card alerts" id="alertsSection">
-
-            <div class="card-title">
-
-              <h2>
-                Alerts & Notifications
-              </h2>
-
-              <a href="#alertsSection">
-                View All
-              </a>
-
-            </div>
-
-
-            <div class="alert low">
-
-              <b>
-                ⚠ Low Stock Alert
-              </b>
-
-              <span>
-                O- blood has only 3 units remaining.
-              </span>
-
-              <small>
-                Today, 10:30 AM
-              </small>
-
-            </div>
-
-
-            <div class="alert expiry">
-
-              <b>
-                ⚠ Expiry Alert
-              </b>
-
-              <span>
-                5 units of B+ Plasma will expire within 3 days.
-              </span>
-
-              <small>
-                Today, 09:15 AM
-              </small>
-
-            </div>
-
-
-            <div class="alert info">
-
-              <b>
-                ⓘ New Donation
-              </b>
-
-              <span>
-                New blood units added (A+).
-              </span>
-
-              <small>
-                Yesterday, 04:20 PM
-              </small>
-
-            </div>
-
-
-            <div class="alert success">
-
-              <b>
-                ✓ Issue Completed
-              </b>
-
-              <span>
-                3 units of O+ issued to City Care Hospital.
-              </span>
-
-              <small>
-                Yesterday, 02:10 PM
-              </small>
-
-            </div>
-
-          </section>
-
-        </div>
-
-
-        <!-- ================= QUICK ACTIONS ================= -->
-        <div class="quick-actions">
-
-
-          <!-- Add Blood -->
-          <a
-            href="pages/inventory.html"
-            class="action red-action"
-          >
-
-            <span>🩸</span>
-
-            <div>
-
-              <b>
-                Add Blood Unit
-              </b>
-
-              <small>
-                Register new blood unit
-              </small>
-
-            </div>
-
-            <strong>
-              →
-            </strong>
-
-          </a>
-
-
-          <!-- Issue Blood -->
-          <a
-            href="pages/blood-requests.html"
-            class="action green-action"
-          >
-
-            <span>⇄</span>
-
-            <div>
-
-              <b>
-                Issue Blood
-              </b>
-
-              <small>
-                Allocate to hospital
-              </small>
-
-            </div>
-
-            <strong>
-              →
-            </strong>
-
-          </a>
-
-
-          <!-- Register Donor -->
-          <a
-            href="pages/donors.html"
-            class="action blue-action"
-          >
-
-            <span>♟</span>
-
-            <div>
-
-              <b>
-                Register Donor
-              </b>
-
-              <small>
-                Add new donor
-              </small>
-
-            </div>
-
-            <strong>
-              →
-            </strong>
-
-          </a>
-
-
-          <!-- Reports -->
-          <a
-            href="pages/reports.html"
-            class="action purple-action"
-          >
-
-            <span>▥</span>
-
-            <div>
-
-              <b>
-                View Reports
-              </b>
-
-              <small>
-                Generate reports
-              </small>
-
-            </div>
-
-            <strong>
-              →
-            </strong>
-
-          </a>
-
-        </div>
-
 
       </section>
 
-    </main>
 
-  </div>
+      <!-- =====================================================
+           URGENT REQUESTS + EXPIRING BLOOD
+           ===================================================== -->
+
+      <div class="dashboard-grid special-alert-grid">
+
+        <section class="card urgent-card">
+
+          <div class="card-title">
+
+            <div>
+
+              <h2>
+                🚨 Urgent Blood Requests
+              </h2>
+
+              <p>
+                Requests requiring immediate attention
+              </p>
+
+            </div>
+
+            <a href="pages/blood-requests.html">
+              View All
+            </a>
+
+          </div>
 
 
-  <!-- Dashboard JavaScript -->
-  <script src="js/api.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/common.js"></script>
+          <div class="urgent-request">
+
+            <div class="request-blood">
+              O−
+            </div>
+
+            <div class="request-details">
+
+              <strong>
+                City Care Hospital
+              </strong>
+
+              <span>
+                Required: 4 Units
+              </span>
+
+              <small>
+                Requested 18 minutes ago
+              </small>
+
+            </div>
+
+            <span class="urgent-badge">
+              Urgent
+            </span>
+
+          </div>
 
 
-  <!-- Profile Dropdown JavaScript -->
-  <script>
+          <div class="urgent-request">
 
-    function toggleProfileMenu() {
+            <div class="request-blood">
+              AB−
+            </div>
 
-      const menu = document.getElementById("profileMenu");
+            <div class="request-details">
 
-      if (menu) {
-        menu.classList.toggle("show");
-      }
+              <strong>
+                Ruby Medical Center
+              </strong>
+
+              <span>
+                Required: 2 Units
+              </span>
+
+              <small>
+                Requested 42 minutes ago
+              </small>
+
+            </div>
+
+            <span class="urgent-badge">
+              Urgent
+            </span>
+
+          </div>
+
+
+          <div class="urgent-request">
+
+            <div class="request-blood">
+              B+
+            </div>
+
+            <div class="request-details">
+
+              <strong>
+                City Hospital
+              </strong>
+
+              <span>
+                Required: 3 Units
+              </span>
+
+              <small>
+                Requested 1 hour ago
+              </small>
+
+            </div>
+
+            <span class="request-badge">
+              Pending
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <section class="card expiry-card">
+
+          <div class="card-title">
+
+            <div>
+
+              <h2>
+                ⚠ Expiring Soon
+              </h2>
+
+              <p>
+                Blood units nearing expiry
+              </p>
+
+            </div>
+
+            <a href="pages/inventory.html">
+              View
+            </a>
+
+          </div>
+
+
+          <div class="expiry-item">
+
+            <div class="expiry-icon">
+              B+
+            </div>
+
+            <div>
+
+              <strong>
+                B+ Plasma
+              </strong>
+
+              <span>
+                5 Units
+              </span>
+
+            </div>
+
+            <div class="expiry-time">
+              3 Days
+            </div>
+
+          </div>
+
+
+          <div class="expiry-item">
+
+            <div class="expiry-icon">
+              O+
+            </div>
+
+            <div>
+
+              <strong>
+                O+ RBC
+              </strong>
+
+              <span>
+                3 Units
+              </span>
+
+            </div>
+
+            <div class="expiry-time">
+              4 Days
+            </div>
+
+          </div>
+
+
+          <div class="expiry-item">
+
+            <div class="expiry-icon">
+              A+
+            </div>
+
+            <div>
+
+              <strong>
+                A+ Platelets
+              </strong>
+
+              <span>
+                2 Units
+              </span>
+
+            </div>
+
+            <div class="expiry-time">
+              5 Days
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================================
+           CHARTS
+           ===================================================== -->
+
+      <div class="dashboard-grid">
+
+        <section class="card chart-card">
+
+          <div class="card-title">
+
+            <h2>
+              Blood Group Stock Overview
+            </h2>
+
+            <select id="componentFilter">
+
+              <option>
+                All Components
+              </option>
+
+              <option>
+                Whole Blood
+              </option>
+
+              <option>
+                RBC
+              </option>
+
+              <option>
+                Plasma
+              </option>
+
+              <option>
+                Platelets
+              </option>
+
+            </select>
+
+          </div>
+
+          <canvas id="stockChart"></canvas>
+
+        </section>
+
+
+        <section class="card chart-card">
+
+          <div class="card-title">
+
+            <h2>
+              Component-wise Distribution
+            </h2>
+
+          </div>
+
+          <div class="donut-wrap">
+
+            <canvas id="componentChart"></canvas>
+
+            <div class="donut-center">
+
+              <strong>
+                1,250
+              </strong>
+
+              <span>
+                Units
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="legend">
+
+            <div>
+
+              <i class="dot whole"></i>
+
+              Whole Blood
+
+              <b>
+                45%
+              </b>
+
+            </div>
+
+            <div>
+
+              <i class="dot rbc"></i>
+
+              RBC
+
+              <b>
+                25%
+              </b>
+
+            </div>
+
+            <div>
+
+              <i class="dot plasma"></i>
+
+              Plasma
+
+              <b>
+                20%
+              </b>
+
+            </div>
+
+            <div>
+
+              <i class="dot platelets"></i>
+
+              Platelets
+
+              <b>
+                10%
+              </b>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================================
+           RECENT TRANSACTIONS + ALERTS
+           ===================================================== -->
+
+      <div class="dashboard-grid bottom">
+
+        <section class="card table-card">
+
+          <div class="card-title">
+
+            <h2>
+              Recent Inventory Transactions
+            </h2>
+
+            <a href="pages/transactions.html">
+              View All
+            </a>
+
+          </div>
+
+          <div class="table-scroll">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>
+                    Date
+                  </th>
+
+                  <th>
+                    Blood Group
+                  </th>
+
+                  <th>
+                    Component
+                  </th>
+
+                  <th>
+                    Type
+                  </th>
+
+                  <th>
+                    Qty
+                  </th>
+
+                  <th>
+                    Status
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr>
+
+                  <td>
+                    20 Sep 2026
+                  </td>
+
+                  <td>
+                    O+
+                  </td>
+
+                  <td>
+                    Whole Blood
+                  </td>
+
+                  <td>
+                    Donation
+                  </td>
+
+                  <td>
+                    5
+                  </td>
+
+                  <td>
+
+                    <span class="badge available">
+                      Available
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>
+                    19 Sep 2026
+                  </td>
+
+                  <td>
+                    A−
+                  </td>
+
+                  <td>
+                    Platelets
+                  </td>
+
+                  <td>
+                    Issue
+                  </td>
+
+                  <td>
+                    2
+                  </td>
+
+                  <td>
+
+                    <span class="badge issued">
+                      Issued
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>
+                    19 Sep 2026
+                  </td>
+
+                  <td>
+                    B+
+                  </td>
+
+                  <td>
+                    Plasma
+                  </td>
+
+                  <td>
+                    Donation
+                  </td>
+
+                  <td>
+                    3
+                  </td>
+
+                  <td>
+
+                    <span class="badge available">
+                      Available
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>
+                    18 Sep 2026
+                  </td>
+
+                  <td>
+                    AB+
+                  </td>
+
+                  <td>
+                    RBC
+                  </td>
+
+                  <td>
+                    Reservation
+                  </td>
+
+                  <td>
+                    4
+                  </td>
+
+                  <td>
+
+                    <span class="badge reserved">
+                      Reserved
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <tr>
+
+                  <td>
+                    18 Sep 2026
+                  </td>
+
+                  <td>
+                    O−
+                  </td>
+
+                  <td>
+                    Whole Blood
+                  </td>
+
+                  <td>
+                    Expiry
+                  </td>
+
+                  <td>
+                    1
+                  </td>
+
+                  <td>
+
+                    <span class="badge expired">
+                      Expired
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <section
+          class="card alerts"
+          id="alertsSection"
+        >
+
+          <div class="card-title">
+
+            <h2>
+              Alerts & Notifications
+            </h2>
+
+            <a href="#alertsSection">
+              View All
+            </a>
+
+          </div>
+
+
+          <div class="alert low">
+
+            <b>
+              ⚠ Low Stock Alert
+            </b>
+
+            <span>
+              O− blood has only 3 units remaining.
+            </span>
+
+            <small>
+              Today, 10:30 AM
+            </small>
+
+          </div>
+
+
+          <div class="alert expiry">
+
+            <b>
+              ⚠ Expiry Alert
+            </b>
+
+            <span>
+              5 units of B+ Plasma will expire within 3 days.
+            </span>
+
+            <small>
+              Today, 09:15 AM
+            </small>
+
+          </div>
+
+
+          <div class="alert info">
+
+            <b>
+              ⓘ New Donation
+            </b>
+
+            <span>
+              New blood units added (A+).
+            </span>
+
+            <small>
+              Yesterday, 04:20 PM
+            </small>
+
+          </div>
+
+
+          <div class="alert success">
+
+            <b>
+              ✓ Issue Completed
+            </b>
+
+            <span>
+              3 units of O+ issued to City Care Hospital.
+            </span>
+
+            <small>
+              Yesterday, 02:10 PM
+            </small>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================================
+           QUICK ACTIONS
+           ===================================================== -->
+
+      <div class="quick-actions">
+
+        <a
+          href="pages/inventory.html"
+          class="action red-action"
+        >
+
+          <span>
+            🩸
+          </span>
+
+          <div>
+
+            <b>
+              Add Blood Unit
+            </b>
+
+            <small>
+              Register new blood unit
+            </small>
+
+          </div>
+
+          <strong>
+            →
+          </strong>
+
+        </a>
+
+
+        <a
+          href="pages/blood-requests.html"
+          class="action green-action"
+        >
+
+          <span>
+            ⇄
+          </span>
+
+          <div>
+
+            <b>
+              Issue Blood
+            </b>
+
+            <small>
+              Allocate to hospital
+            </small>
+
+          </div>
+
+          <strong>
+            →
+          </strong>
+
+        </a>
+
+
+        <a
+          href="pages/donors.html"
+          class="action blue-action"
+        >
+
+          <span>
+            ♟
+          </span>
+
+          <div>
+
+            <b>
+              Register Donor
+            </b>
+
+            <small>
+              Add new donor
+            </small>
+
+          </div>
+
+          <strong>
+            →
+          </strong>
+
+        </a>
+
+
+        <a
+          href="pages/reports.html"
+          class="action purple-action"
+        >
+
+          <span>
+            ▥
+          </span>
+
+          <div>
+
+            <b>
+              View Reports
+            </b>
+
+            <small>
+              Generate reports
+            </small>
+
+          </div>
+
+          <strong>
+            →
+          </strong>
+
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/common.js"></script>
+
+
+<script>
+
+  /* =========================================================
+     PROFILE MENU
+     ========================================================= */
+
+  function toggleProfileMenu() {
+
+    const menu = document.getElementById("profileMenu");
+
+    if (menu) {
+      menu.classList.toggle("show");
+    }
+
+  }
+
+
+  /* =========================================================
+     NOTIFICATION MENU
+     ========================================================= */
+
+  function toggleNotificationMenu() {
+
+    const menu = document.getElementById("notificationMenu");
+
+    if (menu) {
+      menu.classList.toggle("show");
+    }
+
+  }
+
+
+  /* =========================================================
+     CLOSE DROPDOWNS
+     ========================================================= */
+
+  document.addEventListener("click", function(event) {
+
+    const adminArea =
+      document.querySelector(".admin-area");
+
+    const profileMenu =
+      document.getElementById("profileMenu");
+
+    const notificationArea =
+      document.querySelector(".notification-area");
+
+    const notificationMenu =
+      document.getElementById("notificationMenu");
+
+
+    if (
+      profileMenu &&
+      adminArea &&
+      !adminArea.contains(event.target)
+    ) {
+
+      profileMenu.classList.remove("show");
 
     }
 
 
-    // Close profile menu when clicking outside
+    if (
+      notificationMenu &&
+      notificationArea &&
+      !notificationArea.contains(event.target)
+    ) {
 
-    document.addEventListener("click", function(event) {
+      notificationMenu.classList.remove("show");
 
-      const adminArea =
-        document.querySelector(".admin-area");
+    }
 
-      const menu =
-        document.getElementById("profileMenu");
+  });
 
-      if (
-        menu &&
-        adminArea &&
-        !adminArea.contains(event.target)
-      ) {
 
-        menu.classList.remove("show");
+  /* =========================================================
+     NEARBY DONOR MAP
+     ========================================================= */
 
+  let donorMap;
+
+  let donorMarkers = [];
+
+  let selectedDonor = null;
+
+  let currentMapCenter = [18.5204, 73.8567];
+
+
+  /* =========================================================
+     DEMO DONOR DATA
+
+     Later this will come from Spring Boot backend.
+     ========================================================= */
+
+  const nearbyDonors = [
+
+    {
+      id: "D-501",
+      name: "Rahul Patil",
+      group: "O+",
+      distance: 2.4,
+      city: "Pune",
+      lat: 18.5236,
+      lng: 73.8478,
+      phone: "9876543210",
+      status: "Available"
+    },
+
+    {
+      id: "D-502",
+      name: "Sneha Kulkarni",
+      group: "A+",
+      distance: 4.1,
+      city: "Pune",
+      lat: 18.5074,
+      lng: 73.8077,
+      phone: "9823456712",
+      status: "Available"
+    },
+
+    {
+      id: "D-503",
+      name: "Amit Sharma",
+      group: "B+",
+      distance: 6.2,
+      city: "Pune",
+      lat: 18.5590,
+      lng: 73.7868,
+      phone: "9765432180",
+      status: "Available"
+    },
+
+    {
+      id: "D-504",
+      name: "Priya More",
+      group: "O-",
+      distance: 8.5,
+      city: "Pune",
+      lat: 18.4875,
+      lng: 73.8258,
+      phone: "9988776655",
+      status: "Urgent Match"
+    },
+
+    {
+      id: "D-505",
+      name: "Rohit Deshmukh",
+      group: "AB+",
+      distance: 11.2,
+      city: "Pune",
+      lat: 18.5793,
+      lng: 73.8143,
+      phone: "9876123450",
+      status: "Available"
+    },
+
+    {
+      id: "D-506",
+      name: "Neha Joshi",
+      group: "A-",
+      distance: 14.8,
+      city: "Pune",
+      lat: 18.4910,
+      lng: 73.8636,
+      phone: "9765123487",
+      status: "Available"
+    },
+
+    {
+      id: "D-507",
+      name: "Sagar Pawar",
+      group: "B-",
+      distance: 17.5,
+      city: "Pune",
+      lat: 18.5860,
+      lng: 73.9120,
+      phone: "9898989898",
+      status: "Available"
+    },
+
+    {
+      id: "D-508",
+      name: "Pooja Shinde",
+      group: "AB-",
+      distance: 21.3,
+      city: "Pune",
+      lat: 18.4655,
+      lng: 73.9150,
+      phone: "9812345678",
+      status: "Urgent Match"
+    }
+
+  ];
+
+
+  /* =========================================================
+     MAP LOCATIONS
+     ========================================================= */
+
+  const mapLocations = {
+
+    pune: {
+      name: "Pune",
+      center: [18.5204, 73.8567],
+      zoom: 12
+    },
+
+    ahmednagar: {
+      name: "Ahmednagar",
+      center: [19.0948, 74.7480],
+      zoom: 12
+    },
+
+    mumbai: {
+      name: "Mumbai",
+      center: [19.0760, 72.8777],
+      zoom: 11
+    },
+
+    nashik: {
+      name: "Nashik",
+      center: [19.9975, 73.7898],
+      zoom: 12
+    }
+
+  };
+
+
+  /* =========================================================
+     INITIALIZE MAP
+     ========================================================= */
+
+  function initializeDonorMap() {
+
+    const mapElement =
+      document.getElementById("donorMap");
+
+    if (!mapElement || typeof L === "undefined") {
+      return;
+    }
+
+
+    donorMap = L.map("donorMap", {
+      zoomControl: true,
+      scrollWheelZoom: true
+    }).setView(
+      currentMapCenter,
+      12
+    );
+
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+          '&copy; OpenStreetMap contributors',
+        maxZoom: 19
       }
+    ).addTo(donorMap);
+
+
+    renderDonorMarkers();
+
+
+    setTimeout(function() {
+
+      donorMap.invalidateSize();
+
+    }, 300);
+
+  }
+
+
+  /* =========================================================
+     CREATE DONOR MARKER
+     ========================================================= */
+
+  function createDonorIcon(status) {
+
+    const markerClass =
+      status === "Urgent Match"
+        ? "urgent"
+        : "available";
+
+
+    return L.divIcon({
+
+      className: "",
+
+      html:
+        `<div class="donor-marker ${markerClass}">
+          <span>♥</span>
+        </div>`,
+
+      iconSize: [34, 34],
+
+      iconAnchor: [17, 34],
+
+      popupAnchor: [0, -30]
 
     });
 
-  </script>
+  }
+
+
+  /* =========================================================
+     RENDER DONOR MARKERS
+     ========================================================= */
+
+  function renderDonorMarkers() {
+
+    if (!donorMap) {
+      return;
+    }
+
+
+    donorMarkers.forEach(function(marker) {
+
+      donorMap.removeLayer(marker);
+
+    });
+
+
+    donorMarkers = [];
+
+
+    const group =
+      document.getElementById("mapBloodGroup").value;
+
+
+    const maxDistance =
+      Number(
+        document.getElementById("distanceSlider").value
+      );
+
+
+    const filteredDonors =
+      nearbyDonors.filter(function(donor) {
+
+        const groupMatches =
+          group === "all" ||
+          donor.group === group;
+
+
+        const distanceMatches =
+          donor.distance <= maxDistance;
+
+
+        return groupMatches && distanceMatches;
+
+      });
+
+
+    filteredDonors.forEach(function(donor) {
+
+      const marker =
+        L.marker(
+          [donor.lat, donor.lng],
+          {
+            icon: createDonorIcon(donor.status)
+          }
+        ).addTo(donorMap);
+
+
+      marker.bindPopup(`
+
+        <div class="donor-popup">
+
+          <h3>
+            ${donor.name}
+          </h3>
+
+          <span class="popup-group">
+            ${donor.group}
+          </span>
+
+          <p>
+            <strong>Donor ID:</strong>
+            ${donor.id}
+          </p>
+
+          <p>
+            <strong>Distance:</strong>
+            ${donor.distance} km
+          </p>
+
+          <p>
+            <strong>Location:</strong>
+            ${donor.city}
+          </p>
+
+          <p>
+            <strong>Contact:</strong>
+            ${donor.phone}
+          </p>
+
+          <div class="popup-status">
+            ${donor.status}
+          </div>
+
+          <button
+            class="popup-request-btn"
+            onclick="selectDonor('${donor.id}')"
+          >
+            Send Blood Request
+          </button>
+
+        </div>
+
+      `);
+
+
+      marker.on("click", function() {
+
+        selectedDonor = donor;
+
+      });
+
+
+      donorMarkers.push(marker);
+
+    });
+
+
+    document.getElementById(
+      "mapResultInfo"
+    ).innerHTML =
+      `Showing <strong>${filteredDonors.length}</strong> nearby donor${filteredDonors.length === 1 ? "" : "s"}`;
+
+  }
+
+
+  /* =========================================================
+     BLOOD GROUP FILTER
+     ========================================================= */
+
+  function filterMapDonors() {
+
+    selectedDonor = null;
+
+    renderDonorMarkers();
+
+  }
+
+
+  /* =========================================================
+     DISTANCE SLIDER
+     ========================================================= */
+
+  function updateDonorDistance() {
+
+    const slider =
+      document.getElementById("distanceSlider");
+
+    const value =
+      document.getElementById("distanceValue");
+
+
+    value.textContent =
+      slider.value + " km";
+
+
+    renderDonorMarkers();
+
+  }
+
+
+  /* =========================================================
+     CHANGE MAP LOCATION
+     ========================================================= */
+
+  function changeMapLocation() {
+
+    const selected =
+      document.getElementById("mapLocation").value;
+
+
+    const location =
+      mapLocations[selected];
+
+
+    if (!location || !donorMap) {
+      return;
+    }
+
+
+    currentMapCenter =
+      location.center;
+
+
+    donorMap.flyTo(
+      location.center,
+      location.zoom,
+      {
+        duration: 1
+      }
+    );
+
+
+    /*
+      Demo donor markers are currently Pune-based.
+      Later backend integration will load donors
+      according to the selected city.
+    */
+
+    if (selected !== "pune") {
+
+      document.getElementById(
+        "mapResultInfo"
+      ).innerHTML =
+        `<strong>0</strong> nearby donors in ${location.name} — backend location data will be connected later.`;
+
+    } else {
+
+      renderDonorMarkers();
+
+    }
+
+  }
+
+
+  /* =========================================================
+     SELECT DONOR
+     ========================================================= */
+
+  function selectDonor(donorId) {
+
+    selectedDonor =
+      nearbyDonors.find(
+        function(donor) {
+          return donor.id === donorId;
+        }
+      );
+
+
+    if (!selectedDonor) {
+      return;
+    }
+
+
+    alert(
+      "Donor Selected\n\n" +
+      "Name: " + selectedDonor.name + "\n" +
+      "Blood Group: " + selectedDonor.group + "\n" +
+      "Distance: " + selectedDonor.distance + " km\n\n" +
+      "Blood request functionality will be connected to the backend later."
+    );
+
+  }
+
+
+  /* =========================================================
+     SEND REQUEST
+     ========================================================= */
+
+  function sendDonorRequest() {
+
+    if (!selectedDonor) {
+
+      alert(
+        "Please select a donor from the map first."
+      );
+
+      return;
+
+    }
+
+
+    alert(
+      "Blood Request\n\n" +
+      "Donor: " + selectedDonor.name + "\n" +
+      "Blood Group: " + selectedDonor.group + "\n\n" +
+      "Request functionality will be connected to the backend later."
+    );
+
+  }
+
+
+  /* =========================================================
+     USE MY LOCATION
+     ========================================================= */
+
+  function useMyLocation() {
+
+    if (!navigator.geolocation) {
+
+      alert(
+        "Geolocation is not supported by this browser."
+      );
+
+      return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+      function(position) {
+
+        const lat =
+          position.coords.latitude;
+
+        const lng =
+          position.coords.longitude;
+
+
+        if (donorMap) {
+
+          donorMap.flyTo(
+            [lat, lng],
+            13,
+            {
+              duration: 1
+            }
+          );
+
+
+          L.marker(
+            [lat, lng]
+          )
+          .addTo(donorMap)
+          .bindPopup(
+            "<strong>Your Current Location</strong>"
+          )
+          .openPopup();
+
+        }
+
+      },
+
+      function() {
+
+        alert(
+          "Unable to access your location. Please allow location permission in your browser."
+        );
+
+      }
+
+    );
+
+  }
+
+
+  /* =========================================================
+     START MAP
+     ========================================================= */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      initializeDonorMap();
+
+    }
+  );
+
+</script>
 
 </body>
 

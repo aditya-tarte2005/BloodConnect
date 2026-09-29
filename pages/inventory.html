@@ -2,19 +2,122 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
   <title>BloodConnect - Inventory</title>
 
-  <link rel="stylesheet" href="../css/style.css">
+  <link
+    rel="stylesheet"
+    href="../css/style.css">
+
+
+  <style>
+    /* =====================================================
+       INVENTORY ACTION MENU - FINAL FIX
+       ===================================================== */
+    .action-menu-wrapper {
+      position: relative;
+      overflow: visible !important;
+    }
+
+    .inventory-action-menu {
+      position: fixed !important;
+      display: none;
+      min-width: 190px;
+      max-height: calc(100vh - 16px);
+      box-sizing: border-box;
+      width: max-content;
+      max-width: 240px;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+      padding: 6px;
+      z-index: 99999 !important;
+      overflow: hidden;
+    }
+
+    .inventory-action-menu.show {
+      display: block !important;
+    }
+
+    .inventory-action-menu button {
+      display: flex !important;
+      align-items: center;
+      gap: 8px;
+      width: 100% !important;
+      min-width: 178px;
+      padding: 10px 12px !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-radius: 7px;
+      background: transparent !important;
+      color: #333 !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      text-align: left !important;
+      white-space: nowrap;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .inventory-action-menu button:hover {
+      background: #f7f7f7 !important;
+    }
+
+    .inventory-action-menu .danger-action {
+      color: #c62828 !important;
+    }
+
+    .inventory-action-menu .danger-action:hover {
+      background: #fff1f1 !important;
+    }
+
+    .inventory-action-menu hr {
+      border: 0;
+      border-top: 1px solid #eeeeee;
+      margin: 5px 2px;
+    }
+
+    .table-scroll,
+    .table-card,
+    .inventory-table {
+      overflow: visible;
+    }
+
+    .table-scroll {
+      overflow-x: auto !important;
+    }
+
+    @media (max-width: 650px) {
+      .inventory-action-menu {
+        min-width: 175px;
+      }
+
+      .inventory-action-menu button {
+        min-width: 163px;
+        font-size: 13px !important;
+      }
+    }
+  </style>
+
 </head>
+
 
 <body>
 
 <div class="app">
 
-  <!-- ================= SIDEBAR ================= -->
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+
   <aside class="sidebar">
 
     <div class="brand">
@@ -24,86 +127,143 @@
       </div>
 
       <div>
+
         <h2>BloodConnect</h2>
-        <span>Save Lives Together</span>
+
+        <span>
+          Save Lives Together
+        </span>
+
       </div>
 
     </div>
 
 
-    <!-- ================= NAVIGATION ================= -->
     <nav>
 
-      <a class="nav-item" href="../index.html">
+      <a
+        class="nav-item"
+        href="../index.html">
+
         <span>⌂</span>
         Dashboard
+
       </a>
 
-      <a class="nav-item active" href="inventory.html">
+
+      <a
+        class="nav-item active"
+        href="inventory.html">
+
         <span>🩸</span>
         Blood Inventory
+
       </a>
 
-      <a class="nav-item" href="donors.html">
+
+      <a
+        class="nav-item"
+        href="donors.html">
+
         <span>♟</span>
         Donors
+
       </a>
 
-      <a class="nav-item" href="blood-requests.html">
+
+      <a
+        class="nav-item"
+        href="blood-requests.html">
+
         <span>▤</span>
         Blood Requests
+
       </a>
 
-      <a class="nav-item" href="hospitals.html">
+
+      <a
+        class="nav-item"
+        href="hospitals.html">
+
         <span>▦</span>
         Hospitals
+
       </a>
 
-      <a class="nav-item" href="transactions.html">
+
+      <a
+        class="nav-item"
+        href="transactions.html">
+
         <span>⇄</span>
         Transactions
+
       </a>
 
-      <a class="nav-item" href="reports.html">
+
+      <a
+        class="nav-item"
+        href="reports.html">
+
         <span>▥</span>
         Reports
+
       </a>
 
-      <a class="nav-item" href="settings.html">
+
+      <a
+        class="nav-item"
+        href="settings.html">
+
         <span>⚙</span>
         Settings
+
       </a>
 
     </nav>
 
 
-    <!-- Quote -->
     <div class="sidebar-quote">
+
       “A single unit of blood can save up to 3 lives.”
+
     </div>
 
 
-    <!-- Logout -->
-    <a class="logout" href="../login.html">
+    <a
+      class="logout"
+      href="../login.html">
+
       <span>↪</span>
       Logout
+
     </a>
 
   </aside>
 
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
+
   <main class="main">
 
 
-    <!-- ================= TOP BAR ================= -->
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
     <header class="topbar">
+
 
       <button
         class="menu-btn"
-        onclick="toggleSidebar()">
+        onclick="toggleSidebar()"
+        aria-label="Toggle navigation">
+
         ☰
+
       </button>
 
 
@@ -114,25 +274,195 @@
         <input
           type="text"
           placeholder="Search blood units..."
-        >
+          id="inventoryTopSearch"
+          onkeyup="syncTopSearch()">
 
       </div>
 
 
       <div class="top-user">
 
-        <span class="notification">
-          ♧
-          <b>3</b>
-        </span>
 
-        <div class="avatar">
-          A
+        <!-- NOTIFICATIONS -->
+
+        <div class="notification-area">
+
+          <span
+            class="notification"
+            onclick="toggleNotificationMenu()"
+            title="Notifications">
+
+            ♧
+
+            <b>
+              3
+            </b>
+
+          </span>
+
+
+          <div
+            class="notification-menu"
+            id="notificationMenu">
+
+            <div class="notification-header">
+
+              <strong>
+                Notifications
+              </strong>
+
+              <span>
+                3 New
+              </span>
+
+            </div>
+
+
+            <hr>
+
+
+            <div class="notification-item">
+
+              <strong>
+                ⚠ Low Stock Alert
+              </strong>
+
+              <small>
+                O- blood has only 3 units remaining.
+              </small>
+
+              <span>
+                Today, 10:30 AM
+              </span>
+
+            </div>
+
+
+            <div class="notification-item">
+
+              <strong>
+                ⚠ Expiry Alert
+              </strong>
+
+              <small>
+                5 units of B+ Plasma will expire within 3 days.
+              </small>
+
+              <span>
+                Today, 09:15 AM
+              </span>
+
+            </div>
+
+
+            <div class="notification-item">
+
+              <strong>
+                ⓘ New Donation
+              </strong>
+
+              <small>
+                New blood units added.
+              </small>
+
+              <span>
+                Yesterday, 04:20 PM
+              </span>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div>
-          <strong>Admin</strong>
-          <small>Blood Bank</small>
+
+
+        <!-- ADMIN PROFILE -->
+
+        <div class="admin-area">
+
+          <div
+            class="admin-profile"
+            onclick="toggleProfileMenu()">
+
+            <div class="avatar">
+              A
+            </div>
+
+
+            <div class="admin-info">
+
+              <strong>
+                Admin
+              </strong>
+
+              <small>
+                Blood Bank
+              </small>
+
+            </div>
+
+
+            <span class="profile-arrow">
+              ⌄
+            </span>
+
+          </div>
+
+
+          <div
+            class="profile-menu"
+            id="profileMenu">
+
+
+            <div class="profile-menu-header">
+
+              <div class="profile-menu-avatar">
+                A
+              </div>
+
+
+              <div>
+
+                <strong>
+                  Admin
+                </strong>
+
+                <small>
+                  Blood Bank Administrator
+                </small>
+
+              </div>
+
+            </div>
+
+
+            <hr>
+
+
+            <a href="settings.html">
+              ⚙️ Account Settings
+            </a>
+
+
+            <a href="settings.html">
+              🔐 Security
+            </a>
+
+
+            <hr>
+
+
+            <a
+              href="../login.html"
+              class="logout-profile">
+
+              ↪ Logout
+
+            </a>
+
+          </div>
+
         </div>
 
       </div>
@@ -141,11 +471,13 @@
 
 
 
-    <!-- ================= CONTENT ================= -->
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
+
     <section class="content">
 
 
-      <!-- Page Heading -->
       <div class="page-heading">
 
         <div>
@@ -173,7 +505,107 @@
 
 
 
-      <!-- ================= FILTER BAR ================= -->
+      <!-- =====================================================
+           INVENTORY SUMMARY
+           ===================================================== -->
+
+      <div class="inventory-summary">
+
+
+        <div class="inventory-mini-card">
+
+          <div class="inventory-mini-icon available-icon">
+            ✓
+          </div>
+
+          <div>
+
+            <span>
+              Available
+            </span>
+
+            <strong id="availableCount">
+              5
+            </strong>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="inventory-mini-card">
+
+          <div class="inventory-mini-icon reserved-icon">
+            ◷
+          </div>
+
+          <div>
+
+            <span>
+              Reserved
+            </span>
+
+            <strong id="reservedCount">
+              1
+            </strong>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="inventory-mini-card">
+
+          <div class="inventory-mini-icon issued-icon">
+            ⇄
+          </div>
+
+          <div>
+
+            <span>
+              Issued
+            </span>
+
+            <strong id="issuedCount">
+              1
+            </strong>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="inventory-mini-card">
+
+          <div class="inventory-mini-icon expired-icon">
+            !
+          </div>
+
+          <div>
+
+            <span>
+              Expired
+            </span>
+
+            <strong id="expiredCount">
+              2
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =====================================================
+           FILTER BAR
+           ===================================================== -->
+
       <div class="filter-bar card">
 
 
@@ -181,8 +613,7 @@
           id="searchInput"
           type="text"
           placeholder="Search by blood group, component or donor ID..."
-          onkeyup="filterTable()"
-        >
+          onkeyup="filterTable()">
 
 
         <select
@@ -244,27 +675,44 @@
 
 
 
-      <!-- ================= BLOOD STOCK TABLE ================= -->
+      <!-- =====================================================
+           BLOOD STOCK TABLE
+           ===================================================== -->
+
       <section class="card table-card inventory-table">
 
 
         <div class="card-title">
 
-          <h2>
-            Blood Stock
-          </h2>
+          <div>
 
-          <span class="record-count">
+            <h2>
+              Blood Stock
+            </h2>
+
+            <p class="table-subtitle">
+              Current blood units available in the bank
+            </p>
+
+          </div>
+
+
+          <span
+            class="record-count"
+            id="recordCount">
+
             8 records
+
           </span>
 
         </div>
 
 
-
         <div class="table-scroll">
 
+
           <table id="inventoryTable">
+
 
             <thead>
 
@@ -285,212 +733,685 @@
             </thead>
 
 
+
             <tbody>
 
 
-              <!-- Row 1 -->
+              <!-- ROW 1 -->
+
               <tr>
 
                 <td>BU-1001</td>
-                <td>A+</td>
-                <td>Whole Blood</td>
-                <td>D-501</td>
-                <td>20 Sep 2026</td>
-                <td>18 Oct 2026</td>
-                <td>2</td>
 
                 <td>
-                  <span class="badge available">
-                    Available
-                  </span>
+                  <strong>A+</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  Whole Blood
+                </td>
+
+                <td>
+                  D-501
+                </td>
+
+                <td>
+                  20 Sep 2026
+                </td>
+
+                <td>
+                  18 Oct 2026
+                </td>
+
+                <td>
+                  2
+                </td>
+
+                <td>
+
+                  <span class="badge available">
+                    Available
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)"
+                      aria-label="Actions">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 2 -->
+
+              <!-- ROW 2 -->
+
               <tr>
 
                 <td>BU-1002</td>
-                <td>O-</td>
-                <td>RBC</td>
-                <td>D-502</td>
-                <td>19 Sep 2026</td>
-                <td>17 Oct 2026</td>
-                <td>1</td>
 
                 <td>
-                  <span class="badge available">
-                    Available
-                  </span>
+                  <strong>O-</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  RBC
+                </td>
+
+                <td>
+                  D-502
+                </td>
+
+                <td>
+                  19 Sep 2026
+                </td>
+
+                <td>
+                  17 Oct 2026
+                </td>
+
+                <td>
+                  1
+                </td>
+
+                <td>
+
+                  <span class="badge available">
+                    Available
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 3 -->
+
+              <!-- ROW 3 -->
+
               <tr>
 
                 <td>BU-1003</td>
-                <td>B+</td>
-                <td>Plasma</td>
-                <td>D-503</td>
-                <td>18 Sep 2026</td>
-                <td>25 Sep 2026</td>
-                <td>3</td>
 
                 <td>
+                  <strong>B+</strong>
+                </td>
+
+                <td>
+                  Plasma
+                </td>
+
+                <td>
+                  D-503
+                </td>
+
+                <td>
+                  18 Sep 2026
+                </td>
+
+                <td>
+                  25 Sep 2026
+                </td>
+
+                <td>
+                  3
+                </td>
+
+                <td>
+
                   <span class="badge reserved">
                     Reserved
                   </span>
+
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 4 -->
+
+              <!-- ROW 4 -->
+
               <tr>
 
                 <td>BU-1004</td>
-                <td>AB+</td>
-                <td>Platelets</td>
-                <td>D-504</td>
-                <td>17 Sep 2026</td>
-                <td>24 Sep 2026</td>
-                <td>4</td>
 
                 <td>
+                  <strong>AB+</strong>
+                </td>
+
+                <td>
+                  Platelets
+                </td>
+
+                <td>
+                  D-504
+                </td>
+
+                <td>
+                  17 Sep 2026
+                </td>
+
+                <td>
+                  24 Sep 2026
+                </td>
+
+                <td>
+                  4
+                </td>
+
+                <td>
+
                   <span class="badge issued">
                     Issued
                   </span>
+
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 5 -->
+
+              <!-- ROW 5 -->
+
               <tr>
 
                 <td>BU-1005</td>
-                <td>O-</td>
-                <td>Whole Blood</td>
-                <td>D-505</td>
-                <td>10 Sep 2026</td>
-                <td>22 Sep 2026</td>
-                <td>1</td>
 
                 <td>
-                  <span class="badge expired">
-                    Expired
-                  </span>
+                  <strong>O-</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  Whole Blood
+                </td>
+
+                <td>
+                  D-505
+                </td>
+
+                <td>
+                  10 Sep 2026
+                </td>
+
+                <td>
+                  22 Sep 2026
+                </td>
+
+                <td>
+                  1
+                </td>
+
+                <td>
+
+                  <span class="badge expired">
+                    Expired
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 6 -->
+
+              <!-- ROW 6 -->
+
               <tr>
 
                 <td>BU-1006</td>
-                <td>A-</td>
-                <td>Platelets</td>
-                <td>D-506</td>
-                <td>16 Sep 2026</td>
-                <td>23 Sep 2026</td>
-                <td>2</td>
 
                 <td>
-                  <span class="badge available">
-                    Available
-                  </span>
+                  <strong>A-</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  Platelets
+                </td>
+
+                <td>
+                  D-506
+                </td>
+
+                <td>
+                  16 Sep 2026
+                </td>
+
+                <td>
+                  23 Sep 2026
+                </td>
+
+                <td>
+                  2
+                </td>
+
+                <td>
+
+                  <span class="badge available">
+                    Available
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 7 -->
+
+              <!-- ROW 7 -->
+
               <tr>
 
                 <td>BU-1007</td>
-                <td>B-</td>
-                <td>RBC</td>
-                <td>D-507</td>
-                <td>15 Sep 2026</td>
-                <td>13 Oct 2026</td>
-                <td>2</td>
 
                 <td>
-                  <span class="badge available">
-                    Available
-                  </span>
+                  <strong>B-</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  RBC
+                </td>
+
+                <td>
+                  D-507
+                </td>
+
+                <td>
+                  15 Sep 2026
+                </td>
+
+                <td>
+                  13 Oct 2026
+                </td>
+
+                <td>
+                  2
+                </td>
+
+                <td>
+
+                  <span class="badge available">
+                    Available
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <!-- Row 8 -->
+
+              <!-- ROW 8 -->
+
               <tr>
 
                 <td>BU-1008</td>
-                <td>AB-</td>
-                <td>Plasma</td>
-                <td>D-508</td>
-                <td>14 Sep 2026</td>
-                <td>21 Sep 2026</td>
-                <td>1</td>
 
                 <td>
-                  <span class="badge expired">
-                    Expired
-                  </span>
+                  <strong>AB-</strong>
                 </td>
 
                 <td>
-                  <button class="icon-btn">
-                    ⋮
-                  </button>
+                  Plasma
+                </td>
+
+                <td>
+                  D-508
+                </td>
+
+                <td>
+                  14 Sep 2026
+                </td>
+
+                <td>
+                  21 Sep 2026
+                </td>
+
+                <td>
+                  1
+                </td>
+
+                <td>
+
+                  <span class="badge expired">
+                    Expired
+                  </span>
+
+                </td>
+
+                <td>
+
+                  <div class="action-menu-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+
+                    <div class="inventory-action-menu">
+
+                      <button onclick="viewUnit(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editUnit(this)">
+                        ✏ Edit Unit
+                      </button>
+
+                      <button onclick="changeStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeUnit(this)">
+
+                        🗑 Remove Unit
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
@@ -512,11 +1433,13 @@
 
 
 
-<!-- ================= ADD BLOOD UNIT MODAL ================= -->
+<!-- =====================================================
+     ADD BLOOD UNIT MODAL
+     ===================================================== -->
+
 <div
   id="modal"
   class="modal">
-
 
   <div class="modal-box">
 
@@ -534,7 +1457,6 @@
     </div>
 
 
-
     <div class="form-grid">
 
 
@@ -543,9 +1465,9 @@
         Donor ID
 
         <input
+          id="donorIdInput"
           type="text"
-          placeholder="e.g. D-509"
-        >
+          placeholder="e.g. D-509">
 
       </label>
 
@@ -554,7 +1476,7 @@
 
         Blood Group
 
-        <select>
+        <select id="bloodGroupInput">
 
           <option>A+</option>
           <option>A-</option>
@@ -574,23 +1496,12 @@
 
         Component Type
 
-        <select>
+        <select id="componentInput">
 
-          <option>
-            Whole Blood
-          </option>
-
-          <option>
-            RBC
-          </option>
-
-          <option>
-            Plasma
-          </option>
-
-          <option>
-            Platelets
-          </option>
+          <option>Whole Blood</option>
+          <option>RBC</option>
+          <option>Plasma</option>
+          <option>Platelets</option>
 
         </select>
 
@@ -602,10 +1513,10 @@
         Quantity
 
         <input
+          id="quantityInput"
           type="number"
           min="1"
-          placeholder="Units"
-        >
+          placeholder="Units">
 
       </label>
 
@@ -614,7 +1525,9 @@
 
         Collection Date
 
-        <input type="date">
+        <input
+          id="collectionDateInput"
+          type="date">
 
       </label>
 
@@ -623,7 +1536,9 @@
 
         Expiry Date
 
-        <input type="date">
+        <input
+          id="expiryDateInput"
+          type="date">
 
       </label>
 
@@ -633,19 +1548,16 @@
         Storage Location
 
         <input
+          id="storageLocationInput"
           type="text"
-          placeholder="e.g. Refrigerator A - Shelf 02"
-        >
+          placeholder="e.g. Refrigerator A - Shelf 02">
 
       </label>
-
 
     </div>
 
 
-
     <div class="modal-actions">
-
 
       <button
         class="secondary-btn"
@@ -664,9 +1576,7 @@
 
       </button>
 
-
     </div>
-
 
   </div>
 
@@ -674,13 +1584,485 @@
 
 
 
-<!-- ================= JAVASCRIPT ================= -->
+<!-- =====================================================
+     VIEW DETAILS MODAL
+     ===================================================== -->
+
+<div
+  id="detailsModal"
+  class="modal">
+
+  <div class="modal-box details-modal-box">
 
 
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Blood Unit Details
+        </h2>
+
+        <p class="modal-subtitle">
+          Complete information about this blood unit
+        </p>
+
+      </div>
+
+
+      <button onclick="closeDetailsModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="unit-details-grid">
+
+
+      <div class="detail-item">
+
+        <span>
+          Unit ID
+        </span>
+
+        <strong id="detailUnitId">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Blood Group
+        </span>
+
+        <strong id="detailBloodGroup">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Component
+        </span>
+
+        <strong id="detailComponent">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Donor ID
+        </span>
+
+        <strong id="detailDonorId">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Collection Date
+        </span>
+
+        <strong id="detailCollectionDate">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Expiry Date
+        </span>
+
+        <strong id="detailExpiryDate">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Quantity
+        </span>
+
+        <strong id="detailQuantity">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Status
+        </span>
+
+        <strong id="detailStatus">
+          -
+        </strong>
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <span>
+          Storage Location
+        </span>
+
+        <strong id="detailStorageLocation">
+          -
+        </strong>
+
+      </div>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeDetailsModal()">
+
+        Close
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     EDIT BLOOD UNIT MODAL
+     ===================================================== -->
+
+<div
+  id="editModal"
+  class="modal">
+
+  <div class="modal-box edit-modal-box">
+
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Edit Blood Unit
+        </h2>
+
+        <p class="modal-subtitle">
+          Update blood unit information
+        </p>
+
+      </div>
+
+
+      <button onclick="closeEditModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="edit-form-grid">
+
+
+      <label>
+
+        Unit ID
+
+        <input
+          id="editUnitId"
+          type="text"
+          disabled>
+
+      </label>
+
+
+      <label>
+
+        Donor ID
+
+        <input
+          id="editDonorId"
+          type="text"
+          placeholder="e.g. D-501">
+
+      </label>
+
+
+      <label>
+
+        Blood Group
+
+        <select id="editBloodGroup">
+
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Component Type
+
+        <select id="editComponent">
+
+          <option>Whole Blood</option>
+          <option>RBC</option>
+          <option>Plasma</option>
+          <option>Platelets</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Quantity
+
+        <input
+          id="editQuantity"
+          type="number"
+          min="1"
+          placeholder="Units">
+
+      </label>
+
+
+      <label>
+
+        Status
+
+        <select id="editStatus">
+
+          <option>Available</option>
+          <option>Reserved</option>
+          <option>Issued</option>
+          <option>Expired</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Collection Date
+
+        <input
+          id="editCollectionDate"
+          type="date">
+
+      </label>
+
+
+      <label>
+
+        Expiry Date
+
+        <input
+          id="editExpiryDate"
+          type="date">
+
+      </label>
+
+
+      <label class="full">
+
+        Storage Location
+
+        <input
+          id="editStorageLocation"
+          type="text"
+          placeholder="e.g. Refrigerator A - Shelf 02">
+
+      </label>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeEditModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveEditedUnit()">
+
+        Save Changes
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CHANGE STATUS MODAL
+     ===================================================== -->
+
+<div
+  id="statusModal"
+  class="modal">
+
+  <div class="modal-box status-modal-box">
+
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Change Blood Unit Status
+        </h2>
+
+        <p class="modal-subtitle">
+          Update the current status of this blood unit
+        </p>
+
+      </div>
+
+
+      <button onclick="closeStatusModal()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="status-change-content">
+
+
+      <div class="status-unit-info">
+
+        <span>
+          Unit ID
+        </span>
+
+        <strong id="statusUnitId">
+          -
+        </strong>
+
+      </div>
+
+
+      <label>
+
+        New Status
+
+        <select id="newStatus">
+
+          <option value="Available">
+            Available
+          </option>
+
+          <option value="Reserved">
+            Reserved
+          </option>
+
+          <option value="Issued">
+            Issued
+          </option>
+
+          <option value="Expired">
+            Expired
+          </option>
+
+        </select>
+
+      </label>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeStatusModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveStatusChange()">
+
+        Save Status
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script>
 
-  /* ================= RESET FILTERS ================= */
+
+  /* =====================================================
+     RESET FILTERS
+     ===================================================== */
 
   function resetFilters() {
 
@@ -690,27 +2072,1493 @@
 
     document.getElementById("statusFilter").value = "";
 
+    document.getElementById("inventoryTopSearch").value = "";
+
     filterTable();
 
   }
 
 
-  /* ================= ADD BLOOD UNIT ================= */
+
+  /* =====================================================
+     SEARCH AND FILTER
+     ===================================================== */
+
+  function filterTable() {
+
+    const searchInput =
+      document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const groupFilter =
+      document
+        .getElementById("groupFilter")
+        .value
+        .toLowerCase();
+
+
+    const statusFilter =
+      document
+        .getElementById("statusFilter")
+        .value
+        .toLowerCase();
+
+
+    const rows =
+      document.querySelectorAll(
+        "#inventoryTable tbody tr"
+      );
+
+
+    let visibleCount = 0;
+
+
+    rows.forEach(function(row) {
+
+      const rowText =
+        row.textContent
+          .toLowerCase();
+
+
+      const bloodGroup =
+        row.cells[1]
+          .textContent
+          .trim()
+          .toLowerCase();
+
+
+      const status =
+        row.cells[7]
+          .textContent
+          .trim()
+          .toLowerCase();
+
+
+      const matchesSearch =
+        rowText.includes(searchInput);
+
+
+      const matchesGroup =
+        !groupFilter ||
+        bloodGroup === groupFilter;
+
+
+      const matchesStatus =
+        !statusFilter ||
+        status === statusFilter;
+
+
+      if (
+        matchesSearch &&
+        matchesGroup &&
+        matchesStatus
+      ) {
+
+        row.style.display = "";
+
+        visibleCount++;
+
+      } else {
+
+        row.style.display = "none";
+
+      }
+
+    });
+
+
+    document
+      .getElementById("recordCount")
+      .textContent =
+      visibleCount +
+      (visibleCount === 1
+        ? " record"
+        : " records");
+
+  }
+
+
+
+  /* =====================================================
+     TOP SEARCH
+     ===================================================== */
+
+  function syncTopSearch() {
+
+    const topSearch =
+      document
+        .getElementById("inventoryTopSearch")
+        .value;
+
+
+    document
+      .getElementById("searchInput")
+      .value =
+      topSearch;
+
+
+    filterTable();
+
+  }
+
+
+
+  /* =====================================================
+     FORMAT DATE
+     ===================================================== */
+
+  function formatDisplayDate(dateValue) {
+
+    if (!dateValue) {
+      return "";
+    }
+
+
+    const parts =
+      dateValue.split("-");
+
+
+    if (parts.length !== 3) {
+      return dateValue;
+    }
+
+
+    const months = [
+
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+
+    ];
+
+
+    const year = parts[0];
+
+    const month =
+      months[
+        parseInt(parts[1], 10) - 1
+      ];
+
+    const day =
+      parseInt(parts[2], 10);
+
+
+    return day +
+      " " +
+      month +
+      " " +
+      year;
+
+  }
+
+
+
+  /* =====================================================
+     CONVERT DATE
+     ===================================================== */
+
+  function convertToInputDate(dateText) {
+
+    const parts =
+      dateText
+        .trim()
+        .split(" ");
+
+
+    if (parts.length !== 3) {
+      return "";
+    }
+
+
+    const months = {
+
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12"
+
+    };
+
+
+    const day =
+      parts[0].padStart(2, "0");
+
+    const month =
+      months[parts[1]];
+
+    const year =
+      parts[2];
+
+
+    if (!month) {
+      return "";
+    }
+
+
+    return year +
+      "-" +
+      month +
+      "-" +
+      day;
+
+  }
+
+
+
+  /* =====================================================
+     ADD BLOOD UNIT
+     ===================================================== */
 
   function addBloodUnit() {
 
+    const donorId =
+      document
+        .getElementById("donorIdInput")
+        .value
+        .trim();
+
+    const bloodGroup =
+      document
+        .getElementById("bloodGroupInput")
+        .value;
+
+    const component =
+      document
+        .getElementById("componentInput")
+        .value;
+
+    const quantity =
+      document
+        .getElementById("quantityInput")
+        .value
+        .trim();
+
+    const collectionDate =
+      document
+        .getElementById("collectionDateInput")
+        .value;
+
+    const expiryDate =
+      document
+        .getElementById("expiryDateInput")
+        .value;
+
+    const storageLocation =
+      document
+        .getElementById("storageLocationInput")
+        .value
+        .trim();
+
+    if (!donorId) {
+      alert("Please enter Donor ID.");
+      return;
+    }
+
+    if (!quantity || Number(quantity) < 1) {
+      alert("Please enter a valid quantity.");
+      return;
+    }
+
+    if (!collectionDate) {
+      alert("Please select Collection Date.");
+      return;
+    }
+
+    if (!expiryDate) {
+      alert("Please select Expiry Date.");
+      return;
+    }
+
+    if (expiryDate < collectionDate) {
+      alert("Expiry Date cannot be before Collection Date.");
+      return;
+    }
+
+    const rows =
+      document.querySelectorAll(
+        "#inventoryTable tbody tr"
+      );
+
+    let highestUnitNumber = 1000;
+
+    rows.forEach(function(row) {
+      const unitId = row.cells[0].textContent.trim();
+      const match = unitId.match(/BU-(\d+)/);
+
+      if (match) {
+        highestUnitNumber = Math.max(
+          highestUnitNumber,
+          Number(match[1])
+        );
+      }
+    });
+
+    const newUnitId =
+      "BU-" + (highestUnitNumber + 1);
+
+    const tbody =
+      document.querySelector("#inventoryTable tbody");
+
+    const row = document.createElement("tr");
+
+    row.dataset.storageLocation = storageLocation;
+
+    row.innerHTML = `
+      <td>${newUnitId}</td>
+      <td><strong>${bloodGroup}</strong></td>
+      <td>${component}</td>
+      <td>${donorId}</td>
+      <td>${formatDisplayDate(collectionDate)}</td>
+      <td>${formatDisplayDate(expiryDate)}</td>
+      <td>${quantity}</td>
+      <td>
+        <span class="badge available">
+          Available
+        </span>
+      </td>
+      <td>
+        <div class="action-menu-wrapper">
+          <button
+            class="icon-btn"
+            onclick="toggleActionMenu(this, event)"
+            aria-label="Actions">
+            ⋮
+          </button>
+
+          <div class="inventory-action-menu">
+            <button onclick="viewUnit(this)">
+              👁 View Details
+            </button>
+
+            <button onclick="editUnit(this)">
+              ✏ Edit Unit
+            </button>
+
+            <button onclick="changeStatus(this)">
+              🔄 Change Status
+            </button>
+
+            <hr>
+
+            <button
+              class="danger-action"
+              onclick="removeUnit(this)">
+              🗑 Remove Unit
+            </button>
+          </div>
+        </div>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+
+    updateInventorySummary();
+    filterTable();
     closeModal();
 
-    alert("Demo: Blood unit added successfully!");
+    document.getElementById("donorIdInput").value = "";
+    document.getElementById("bloodGroupInput").value = "A+";
+    document.getElementById("componentInput").value = "Whole Blood";
+    document.getElementById("quantityInput").value = "";
+    document.getElementById("collectionDateInput").value = "";
+    document.getElementById("expiryDateInput").value = "";
+    document.getElementById("storageLocationInput").value = "";
+
+    alert(
+      "Blood unit " +
+      newUnitId +
+      " added successfully!"
+    );
 
   }
+
+
+
+  /* =====================================================
+     ACTION MENU
+     ===================================================== */
+
+  function toggleActionMenu(button, event) {
+
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const currentMenu =
+      button.parentElement.querySelector(
+        ".inventory-action-menu"
+      );
+
+    if (!currentMenu) {
+      return;
+    }
+
+    const wasOpen =
+      currentMenu.classList.contains("show");
+
+    closeActionMenus();
+
+    if (wasOpen) {
+      return;
+    }
+
+    const row = button.closest("tr");
+
+    /*
+      Move the menu outside the table/card.
+      This prevents overflow, transform and table-scroll
+      containers from clipping the dropdown.
+    */
+    currentMenu._inventoryRow = row;
+    currentMenu._inventoryButton = button;
+    currentMenu._inventoryParent = button.parentElement;
+
+    document.body.appendChild(currentMenu);
+
+    currentMenu.classList.add("show");
+
+    const rect =
+      button.getBoundingClientRect();
+
+    const menuWidth =
+      Math.min(
+        240,
+        Math.max(
+          175,
+          currentMenu.offsetWidth || 190
+        )
+      );
+
+    const menuHeight =
+      currentMenu.offsetHeight || 190;
+
+    const gap = 6;
+    const padding = 8;
+
+    let left =
+      rect.right -
+      menuWidth;
+
+    let top =
+      rect.bottom +
+      gap;
+
+    if (left < padding) {
+      left = padding;
+    }
+
+    if (
+      left + menuWidth >
+      window.innerWidth - padding
+    ) {
+      left =
+        window.innerWidth -
+        menuWidth -
+        padding;
+    }
+
+    if (
+      top + menuHeight >
+      window.innerHeight - padding
+    ) {
+      top =
+        rect.top -
+        menuHeight -
+        gap;
+    }
+
+    if (top < padding) {
+      top = padding;
+    }
+
+    currentMenu.style.left =
+      left + "px";
+
+    currentMenu.style.top =
+      top + "px";
+  }
+
+
+
+  /* =====================================================
+     CLOSE ACTION MENUS
+     ===================================================== */
+
+  document.addEventListener(
+    "click",
+    function(event) {
+
+      /*
+        Menu actions are allowed to execute first.
+      */
+      if (
+        event.target.closest(
+          ".inventory-action-menu"
+        )
+      ) {
+        return;
+      }
+
+      if (
+        !event.target.closest(
+          ".action-menu-wrapper"
+        )
+      ) {
+        closeActionMenus();
+      }
+
+    }
+  );
+
+
+
+
+  /* =====================================================
+     GET INVENTORY ROW FOR ACTION
+     ===================================================== */
+
+  function getInventoryRow(button) {
+
+    if (!button) {
+      return null;
+    }
+
+    /*
+      Action buttons live inside the menu. The menu itself is
+      temporarily moved to <body>, so the action button is no
+      longer inside the original table row. Read the saved row
+      reference from the menu when that happens.
+    */
+    const menu =
+      button.closest(".inventory-action-menu");
+
+    return (
+      button.closest("tr") ||
+      button._inventoryRow ||
+      (menu && menu._inventoryRow) ||
+      null
+    );
+
+  }
+
+
+
+  /* =====================================================
+     VIEW UNIT
+     ===================================================== */
+
+  function viewUnit(button) {
+
+    const row =
+      getInventoryRow(button);
+
+
+    const cells =
+      row.querySelectorAll("td");
+
+
+    document
+      .getElementById("detailUnitId")
+      .textContent =
+      cells[0].textContent.trim();
+
+
+    document
+      .getElementById("detailBloodGroup")
+      .textContent =
+      cells[1].textContent.trim();
+
+
+    document
+      .getElementById("detailComponent")
+      .textContent =
+      cells[2].textContent.trim();
+
+
+    document
+      .getElementById("detailDonorId")
+      .textContent =
+      cells[3].textContent.trim();
+
+
+    document
+      .getElementById("detailCollectionDate")
+      .textContent =
+      cells[4].textContent.trim();
+
+
+    document
+      .getElementById("detailExpiryDate")
+      .textContent =
+      cells[5].textContent.trim();
+
+
+    document
+      .getElementById("detailQuantity")
+      .textContent =
+      cells[6].textContent.trim() +
+      " Units";
+
+
+    document
+      .getElementById("detailStatus")
+      .textContent =
+      cells[7].textContent.trim();
+
+
+    document
+      .getElementById("detailStorageLocation")
+      .textContent =
+      row.dataset.storageLocation ||
+      "Not specified";
+
+
+    closeActionMenus();
+
+
+    document
+      .getElementById("detailsModal")
+      .classList.add("show");
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE DETAILS MODAL
+     ===================================================== */
+
+  function closeDetailsModal() {
+
+    document
+      .getElementById("detailsModal")
+      .classList.remove("show");
+
+  }
+
+
+
+  /* =====================================================
+     EDIT UNIT
+     ===================================================== */
+
+  function editUnit(button) {
+
+    const row =
+      getInventoryRow(button);
+
+
+    const cells =
+      row.querySelectorAll("td");
+
+
+    const unitId =
+      cells[0]
+        .textContent
+        .trim();
+
+
+    const bloodGroup =
+      cells[1]
+        .textContent
+        .trim();
+
+
+    const component =
+      cells[2]
+        .textContent
+        .trim();
+
+
+    const donorId =
+      cells[3]
+        .textContent
+        .trim();
+
+
+    const collectionDate =
+      cells[4]
+        .textContent
+        .trim();
+
+
+    const expiryDate =
+      cells[5]
+        .textContent
+        .trim();
+
+
+    const quantity =
+      cells[6]
+        .textContent
+        .trim();
+
+
+    const status =
+      cells[7]
+        .textContent
+        .trim();
+
+
+    const storageLocation =
+      row.dataset.storageLocation || "";
+
+
+    document
+      .getElementById("editUnitId")
+      .value =
+      unitId;
+
+
+    document
+      .getElementById("editDonorId")
+      .value =
+      donorId;
+
+
+    document
+      .getElementById("editBloodGroup")
+      .value =
+      bloodGroup;
+
+
+    document
+      .getElementById("editComponent")
+      .value =
+      component;
+
+
+    document
+      .getElementById("editQuantity")
+      .value =
+      quantity;
+
+
+    document
+      .getElementById("editStatus")
+      .value =
+      status;
+
+
+    document
+      .getElementById("editStorageLocation")
+      .value =
+      storageLocation;
+
+
+    document
+      .getElementById("editCollectionDate")
+      .value =
+      convertToInputDate(
+        collectionDate
+      );
+
+
+    document
+      .getElementById("editExpiryDate")
+      .value =
+      convertToInputDate(
+        expiryDate
+      );
+
+
+    closeActionMenus();
+
+
+    document
+      .getElementById("editModal")
+      .classList.add("show");
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE EDIT MODAL
+     ===================================================== */
+
+  function closeEditModal() {
+
+    document
+      .getElementById("editModal")
+      .classList.remove("show");
+
+  }
+
+
+
+  /* =====================================================
+     SAVE EDITED UNIT
+     ===================================================== */
+
+  function saveEditedUnit() {
+
+    const unitId =
+      document
+        .getElementById("editUnitId")
+        .value
+        .trim();
+
+
+    const donorId =
+      document
+        .getElementById("editDonorId")
+        .value
+        .trim();
+
+
+    const bloodGroup =
+      document
+        .getElementById("editBloodGroup")
+        .value;
+
+
+    const component =
+      document
+        .getElementById("editComponent")
+        .value;
+
+
+    const quantity =
+      document
+        .getElementById("editQuantity")
+        .value
+        .trim();
+
+
+    const status =
+      document
+        .getElementById("editStatus")
+        .value;
+
+
+    const collectionDate =
+      document
+        .getElementById("editCollectionDate")
+        .value;
+
+
+    const expiryDate =
+      document
+        .getElementById("editExpiryDate")
+        .value;
+
+
+    const storageLocation =
+      document
+        .getElementById("editStorageLocation")
+        .value
+        .trim();
+
+
+    if (!donorId) {
+
+      alert("Please enter Donor ID.");
+
+      return;
+
+    }
+
+
+    if (!quantity || Number(quantity) < 1) {
+
+      alert("Please enter a valid quantity.");
+
+      return;
+
+    }
+
+
+    if (!collectionDate) {
+
+      alert("Please select Collection Date.");
+
+      return;
+
+    }
+
+
+    if (!expiryDate) {
+
+      alert("Please select Expiry Date.");
+
+      return;
+
+    }
+
+
+    const rows =
+      document.querySelectorAll(
+        "#inventoryTable tbody tr"
+      );
+
+
+    let updated = false;
+
+
+    rows.forEach(function(row) {
+
+      const rowUnitId =
+        row.cells[0]
+          .textContent
+          .trim();
+
+
+      if (rowUnitId === unitId) {
+
+        row.cells[1].innerHTML =
+          "<strong>" +
+          bloodGroup +
+          "</strong>";
+
+
+        row.cells[2].textContent =
+          component;
+
+
+        row.cells[3].textContent =
+          donorId;
+
+
+        row.cells[4].textContent =
+          formatDisplayDate(
+            collectionDate
+          );
+
+
+        row.cells[5].textContent =
+          formatDisplayDate(
+            expiryDate
+          );
+
+
+        row.cells[6].textContent =
+          quantity;
+
+
+        row.cells[7].innerHTML =
+          `
+          <span class="badge ${status.toLowerCase()}">
+            ${status}
+          </span>
+          `;
+
+
+        row.dataset.storageLocation =
+          storageLocation;
+
+
+        updated = true;
+
+      }
+
+    });
+
+
+    updateInventorySummary();
+
+
+    closeEditModal();
+
+    filterTable();
+
+
+    if (updated) {
+
+      alert(
+        "Blood unit " +
+        unitId +
+        " updated successfully!"
+      );
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     CHANGE STATUS
+     ===================================================== */
+
+  function changeStatus(button) {
+
+    const row =
+      getInventoryRow(button);
+
+
+    const unitId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    const currentStatus =
+      row.cells[7]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("statusUnitId")
+      .textContent =
+      unitId;
+
+
+    document
+      .getElementById("newStatus")
+      .value =
+      currentStatus;
+
+
+    window.selectedStatusRow =
+      row;
+
+
+    closeActionMenus();
+
+
+    document
+      .getElementById("statusModal")
+      .classList.add("show");
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE STATUS MODAL
+     ===================================================== */
+
+  function closeStatusModal() {
+
+    document
+      .getElementById("statusModal")
+      .classList.remove("show");
+
+
+    window.selectedStatusRow =
+      null;
+
+  }
+
+
+
+  /* =====================================================
+     SAVE STATUS CHANGE
+     ===================================================== */
+
+  function saveStatusChange() {
+
+    const row =
+      window.selectedStatusRow;
+
+
+    if (!row) {
+
+      alert(
+        "Blood unit could not be found."
+      );
+
+      return;
+
+    }
+
+
+    const newStatus =
+      document
+        .getElementById("newStatus")
+        .value;
+
+
+    const unitId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    row.cells[7].innerHTML =
+      `
+      <span class="badge ${newStatus.toLowerCase()}">
+        ${newStatus}
+      </span>
+      `;
+
+
+    updateInventorySummary();
+
+
+    closeStatusModal();
+
+
+    filterTable();
+
+
+    alert(
+      "Status of " +
+      unitId +
+      " changed to " +
+      newStatus +
+      " successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     UPDATE SUMMARY
+     ===================================================== */
+
+  function updateInventorySummary() {
+
+    const rows =
+      document.querySelectorAll(
+        "#inventoryTable tbody tr"
+      );
+
+
+    let available = 0;
+    let reserved = 0;
+    let issued = 0;
+    let expired = 0;
+
+
+    rows.forEach(function(row) {
+
+      const status =
+        row.cells[7]
+          .textContent
+          .trim();
+
+
+      const quantity =
+        Number(
+          row.cells[6]
+            .textContent
+            .trim()
+        ) || 0;
+
+
+      if (status === "Available") {
+
+        available += quantity;
+
+      }
+
+
+      if (status === "Reserved") {
+
+        reserved += quantity;
+
+      }
+
+
+      if (status === "Issued") {
+
+        issued += quantity;
+
+      }
+
+
+      if (status === "Expired") {
+
+        expired += quantity;
+
+      }
+
+    });
+
+
+    document
+      .getElementById("availableCount")
+      .textContent =
+      available;
+
+
+    document
+      .getElementById("reservedCount")
+      .textContent =
+      reserved;
+
+
+    document
+      .getElementById("issuedCount")
+      .textContent =
+      issued;
+
+
+    document
+      .getElementById("expiredCount")
+      .textContent =
+      expired;
+
+  }
+
+
+
+  /* =====================================================
+     REMOVE UNIT
+     ===================================================== */
+
+  function removeUnit(button) {
+
+    const row =
+      getInventoryRow(button);
+
+    if (!row) {
+      return;
+    }
+
+    const unitId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+    closeActionMenus();
+
+    const confirmed =
+      confirm(
+        "Are you sure you want to remove " +
+        unitId +
+        " from the inventory?"
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    row.remove();
+
+    updateInventorySummary();
+    filterTable();
+
+    alert(
+      "Blood unit " +
+      unitId +
+      " has been removed successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE ALL ACTION MENUS
+     ===================================================== */
+
+  function closeActionMenus() {
+
+    document
+      .querySelectorAll(
+        ".inventory-action-menu.show"
+      )
+      .forEach(function(menu) {
+
+        const originalParent =
+          menu._inventoryParent;
+
+        menu.classList.remove("show");
+
+        menu.style.left = "";
+        menu.style.top = "";
+
+        /*
+          Return the menu to its original table cell.
+        */
+        if (
+          originalParent &&
+          originalParent.isConnected
+        ) {
+          originalParent.appendChild(menu);
+        }
+
+        menu._inventoryRow = null;
+        menu._inventoryButton = null;
+        menu._inventoryParent = null;
+
+      });
+
+  }
+
+
+
+  window.addEventListener("resize", closeActionMenus);
+  window.addEventListener("scroll", closeActionMenus, true);
+
+  document.addEventListener(
+    "keydown",
+    function(event) {
+
+      if (event.key === "Escape") {
+        closeActionMenus();
+      }
+
+    }
+  );
+
+
+
+
+  /* =====================================================
+     PROFILE MENU
+     ===================================================== */
+
+  function toggleProfileMenu() {
+
+    const menu =
+      document.getElementById(
+        "profileMenu"
+      );
+
+
+    if (menu) {
+
+      menu.classList.toggle("show");
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     NOTIFICATION MENU
+     ===================================================== */
+
+  function toggleNotificationMenu() {
+
+    const menu =
+      document.getElementById(
+        "notificationMenu"
+      );
+
+
+    if (menu) {
+
+      menu.classList.toggle("show");
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     CLOSE HEADER DROPDOWNS
+     ===================================================== */
+
+  document.addEventListener(
+    "click",
+    function(event) {
+
+      const adminArea =
+        document.querySelector(
+          ".admin-area"
+        );
+
+
+      const profileMenu =
+        document.getElementById(
+          "profileMenu"
+        );
+
+
+      const notificationArea =
+        document.querySelector(
+          ".notification-area"
+        );
+
+
+      const notificationMenu =
+        document.getElementById(
+          "notificationMenu"
+        );
+
+
+      if (
+        profileMenu &&
+        adminArea &&
+        !adminArea.contains(event.target)
+      ) {
+
+        profileMenu.classList.remove(
+          "show"
+        );
+
+      }
+
+
+      if (
+        notificationMenu &&
+        notificationArea &&
+        !notificationArea.contains(event.target)
+      ) {
+
+        notificationMenu.classList.remove(
+          "show"
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     INITIALIZE
+     ===================================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      filterTable();
+
+      updateInventorySummary();
+
+    }
+  );
+
 
 </script>
 
 
+
+<!-- =====================================================
+     EXISTING PROJECT JAVASCRIPT
+     ===================================================== -->
+
 <script src="../js/api.js"></script>
+
 <script src="../js/dashboard.js"></script>
+
 <script src="../js/backend.js"></script>
+
 <script src="../js/common.js"></script>
+
+
 </body>
+
 </html>

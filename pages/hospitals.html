@@ -2,21 +2,213 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>BloodConnect - Hospitals</title>
 
-    <link rel="stylesheet" href="../css/style.css">
+    <link
+        rel="stylesheet"
+        href="../css/style.css">
+
+
+    <style>
+
+        /* =====================================================
+           HOSPITAL ACTION MENU
+           ===================================================== */
+
+        .hospital-action-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hospital-action-menu {
+            position: absolute;
+            right: 0;
+            top: 38px;
+            width: 180px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 9px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            padding: 6px 0;
+            display: none;
+        }
+
+        .hospital-action-menu.show {
+            display: block;
+        }
+
+        .hospital-action-menu button {
+            width: 100%;
+            display: block;
+            border: none;
+            background: #ffffff;
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .hospital-action-menu button:hover {
+            background: #f7f7f7;
+        }
+
+        .hospital-action-menu .danger-action {
+            color: #c62828;
+        }
+
+        .hospital-action-menu .danger-action:hover {
+            background: #fff1f1;
+        }
+
+        .hospital-action-menu hr {
+            border: 0;
+            border-top: 1px solid #eeeeee;
+            margin: 5px 2px;
+        }
+
+
+        /* =====================================================
+           HOSPITAL DETAILS
+           ===================================================== */
+
+        .hospital-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .hospital-detail-item {
+            padding: 13px 14px;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+
+        .hospital-detail-item.full {
+            grid-column: 1 / -1;
+        }
+
+        .hospital-detail-item span {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .hospital-detail-item strong {
+            display: block;
+            font-size: 14px;
+            color: #222;
+        }
+
+
+        /* =====================================================
+           STATUS MODAL
+           ===================================================== */
+
+        .hospital-status-content {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .hospital-status-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: #f8f8f8;
+            border-radius: 8px;
+        }
+
+        .hospital-status-info span {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .hospital-status-info strong {
+            color: #222;
+            font-size: 16px;
+        }
+
+        .hospital-status-content label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .hospital-status-content select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .hospital-status-content select:focus {
+            border-color: #b91c1c;
+            box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 650px) {
+
+            .hospital-action-menu {
+                min-width: 175px;
+            }
+
+            .hospital-action-menu button {
+                min-width: 163px;
+                font-size: 13px;
+            }
+
+            .hospital-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hospital-detail-item.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
 
-    <!-- ================= SIDEBAR ================= -->
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside class="sidebar">
+
 
         <div class="brand">
 
@@ -24,88 +216,176 @@
                 ♥
             </div>
 
+
             <div>
-                <h2>BloodConnect</h2>
-                <span>Save Lives Together</span>
+
+                <h2>
+                    BloodConnect
+                </h2>
+
+                <span>
+                    Save Lives Together
+                </span>
+
             </div>
 
         </div>
 
 
-        <!-- ================= NAVIGATION ================= -->
-
         <nav>
 
-            <a class="nav-item" href="../index.html">
-                <span>⌂</span>
+
+            <a
+                class="nav-item"
+                href="../index.html">
+
+                <span>
+                    ⌂
+                </span>
+
                 Dashboard
+
             </a>
 
-            <a class="nav-item" href="inventory.html">
-                <span>🩸</span>
+
+            <a
+                class="nav-item"
+                href="inventory.html">
+
+                <span>
+                    🩸
+                </span>
+
                 Blood Inventory
+
             </a>
 
-            <a class="nav-item" href="donors.html">
-                <span>♟</span>
+
+            <a
+                class="nav-item"
+                href="donors.html">
+
+                <span>
+                    ♟
+                </span>
+
                 Donors
+
             </a>
 
-            <a class="nav-item" href="blood-requests.html">
-                <span>▤</span>
+
+            <a
+                class="nav-item"
+                href="blood-requests.html">
+
+                <span>
+                    ▤
+                </span>
+
                 Blood Requests
+
             </a>
 
-            <a class="nav-item active" href="hospitals.html">
-                <span>▦</span>
+
+            <a
+                class="nav-item active"
+                href="hospitals.html">
+
+                <span>
+                    ▦
+                </span>
+
                 Hospitals
+
             </a>
 
-            <a class="nav-item" href="transactions.html">
-                <span>⇄</span>
+
+            <a
+                class="nav-item"
+                href="transactions.html">
+
+                <span>
+                    ⇄
+                </span>
+
                 Transactions
+
             </a>
 
-            <a class="nav-item" href="reports.html">
-                <span>▥</span>
+
+            <a
+                class="nav-item"
+                href="reports.html">
+
+                <span>
+                    ▥
+                </span>
+
                 Reports
+
             </a>
 
-            <a class="nav-item" href="settings.html">
-                <span>⚙</span>
+
+            <a
+                class="nav-item"
+                href="settings.html">
+
+                <span>
+                    ⚙
+                </span>
+
                 Settings
+
             </a>
+
 
         </nav>
 
 
         <div class="sidebar-quote">
+
             “A single unit of blood can save up to 3 lives.”
+
         </div>
 
 
-        <a class="logout" href="../login.html">
-            <span>↪</span>
+        <a
+            class="logout"
+            href="../login.html">
+
+            <span>
+                ↪
+            </span>
+
             Logout
+
         </a>
+
 
     </aside>
 
 
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
 
     <main class="main">
 
 
-        <!-- ================= TOP BAR ================= -->
+        <!-- =================================================
+             TOP BAR
+             ================================================= -->
 
         <header class="topbar">
+
 
             <button
                 class="menu-btn"
                 onclick="toggleSidebar()">
+
                 ☰
+
             </button>
 
 
@@ -114,18 +394,25 @@
                 ⌕
 
                 <input
+                    id="hospitalTopSearch"
                     type="text"
-                    placeholder="Search donors, blood groups, hospitals..."
-                >
+                    placeholder="Search hospitals, cities, contact persons..."
+                    onkeyup="syncTopHospitalSearch()">
 
             </div>
 
 
             <div class="top-user">
 
+
                 <span class="notification">
+
                     ♧
-                    <b>3</b>
+
+                    <b>
+                        3
+                    </b>
+
                 </span>
 
 
@@ -146,13 +433,17 @@
 
                 </div>
 
+
             </div>
+
 
         </header>
 
 
 
-        <!-- ================= PAGE CONTENT ================= -->
+        <!-- =================================================
+             CONTENT
+             ================================================= -->
 
         <section class="content">
 
@@ -160,6 +451,7 @@
             <!-- PAGE HEADING -->
 
             <div class="page-heading">
+
 
                 <div>
 
@@ -182,16 +474,19 @@
 
                 </button>
 
+
             </div>
 
 
 
-            <!-- ================= SUMMARY CARDS ================= -->
+            <!-- =================================================
+                 SUMMARY CARDS
+                 ================================================= -->
 
             <div class="stats">
 
 
-                <!-- TOTAL HOSPITALS -->
+                <!-- TOTAL -->
 
                 <div class="card stat">
 
@@ -199,19 +494,16 @@
                         ▦
                     </div>
 
+
                     <div>
 
                         <span>
                             Total Hospitals
                         </span>
 
-                        <strong>
-                            48
+                        <strong id="totalHospitals">
+                            0
                         </strong>
-
-                        <em class="up">
-                            ↑ +6%
-                        </em>
 
                         <small>
                             Registered hospitals
@@ -223,7 +515,7 @@
 
 
 
-                <!-- ACTIVE HOSPITALS -->
+                <!-- ACTIVE -->
 
                 <div class="card stat">
 
@@ -231,19 +523,16 @@
                         ✓
                     </div>
 
+
                     <div>
 
                         <span>
                             Active Hospitals
                         </span>
 
-                        <strong>
-                            42
+                        <strong id="activeHospitals">
+                            0
                         </strong>
-
-                        <em class="up">
-                            ↑ +4%
-                        </em>
 
                         <small>
                             Currently active
@@ -255,7 +544,7 @@
 
 
 
-                <!-- REQUESTING HOSPITALS -->
+                <!-- REQUESTING -->
 
                 <div class="card stat">
 
@@ -263,22 +552,19 @@
                         ▤
                     </div>
 
+
                     <div>
 
                         <span>
                             Requesting Hospitals
                         </span>
 
-                        <strong>
-                            12
+                        <strong id="requestingHospitals">
+                            0
                         </strong>
 
-                        <em class="orange-text">
-                            ↑ +8%
-                        </em>
-
                         <small>
-                            This month
+                            Hospitals with blood requests
                         </small>
 
                     </div>
@@ -287,7 +573,7 @@
 
 
 
-                <!-- NEW HOSPITALS -->
+                <!-- NEW -->
 
                 <div class="card stat">
 
@@ -295,19 +581,16 @@
                         ＋
                     </div>
 
+
                     <div>
 
                         <span>
                             New Hospitals
                         </span>
 
-                        <strong>
-                            5
+                        <strong id="newHospitals">
+                            0
                         </strong>
-
-                        <em class="up">
-                            ↑ +10%
-                        </em>
 
                         <small>
                             Registered this month
@@ -317,20 +600,23 @@
 
                 </div>
 
+
             </div>
 
 
 
-            <!-- ================= SEARCH / FILTER ================= -->
+            <!-- =================================================
+                 FILTER BAR
+                 ================================================= -->
 
             <div class="filter-bar card">
+
 
                 <input
                     type="text"
                     id="hospitalSearch"
                     placeholder="Search by hospital name, ID or city..."
-                    onkeyup="filterHospitals()"
-                >
+                    onkeyup="filterHospitals()">
 
 
                 <select
@@ -357,8 +643,11 @@
                         Ahmednagar
                     </option>
 
-                </select>
+                    <option value="Other">
+                        Other
+                    </option>
 
+                </select>
 
 
                 <select
@@ -380,7 +669,6 @@
                 </select>
 
 
-
                 <button
                     class="secondary-btn"
                     onclick="resetHospitalFilters()">
@@ -389,46 +677,83 @@
 
                 </button>
 
+
             </div>
 
 
 
-            <!-- ================= HOSPITAL TABLE ================= -->
+            <!-- =================================================
+                 HOSPITAL TABLE
+                 ================================================= -->
 
             <section class="card table-card">
 
+
                 <div class="card-title">
+
 
                     <h2>
                         Registered Hospitals
                     </h2>
 
-                    <span class="record-count">
+
+                    <span
+                        class="record-count"
+                        id="hospitalRecordCount">
+
                         8 hospitals
+
                     </span>
+
 
                 </div>
 
 
-
                 <div class="table-scroll">
+
 
                     <table id="hospitalTable">
 
+
                         <thead>
+
 
                             <tr>
 
-                                <th>Hospital ID</th>
-                                <th>Hospital Name</th>
-                                <th>City</th>
-                                <th>Contact Person</th>
-                                <th>Phone</th>
-                                <th>Blood Requests</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>
+                                    Hospital ID
+                                </th>
+
+                                <th>
+                                    Hospital Name
+                                </th>
+
+                                <th>
+                                    City
+                                </th>
+
+                                <th>
+                                    Contact Person
+                                </th>
+
+                                <th>
+                                    Phone
+                                </th>
+
+                                <th>
+                                    Blood Requests
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
 
                             </tr>
+
 
                         </thead>
 
@@ -436,233 +761,865 @@
                         <tbody>
 
 
-                            <!-- HOSPITAL 1 -->
+                            <!-- =================================================
+                                 HOSPITAL 1
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-001"
+                                data-email="contact@citycare.com"
+                                data-address="Pune, Maharashtra"
+                                data-created="05 Sep 2026">
 
-                                <td>H-1001</td>
-                                <td>City Care Hospital</td>
-                                <td>Pune</td>
-                                <td>Dr. Rahul Sharma</td>
-                                <td>9876543210</td>
-                                <td>24</td>
 
                                 <td>
+                                    H-1001
+                                </td>
+
+                                <td>
+                                    City Care Hospital
+                                </td>
+
+                                <td>
+                                    Pune
+                                </td>
+
+                                <td>
+                                    Dr. Rahul Sharma
+                                </td>
+
+                                <td>
+                                    9876543210
+                                </td>
+
+                                <td>
+                                    24
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1001')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 2 -->
+                            <!-- =================================================
+                                 HOSPITAL 2
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-002"
+                                data-email="contact@rubyhospital.com"
+                                data-address="Pune, Maharashtra"
+                                data-created="08 Sep 2026">
 
-                                <td>H-1002</td>
-                                <td>Ruby Hospital</td>
-                                <td>Pune</td>
-                                <td>Dr. Priya Patil</td>
-                                <td>9823456712</td>
-                                <td>18</td>
 
                                 <td>
+                                    H-1002
+                                </td>
+
+                                <td>
+                                    Ruby Hospital
+                                </td>
+
+                                <td>
+                                    Pune
+                                </td>
+
+                                <td>
+                                    Dr. Priya Patil
+                                </td>
+
+                                <td>
+                                    9823456712
+                                </td>
+
+                                <td>
+                                    18
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1002')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 3 -->
+                            <!-- =================================================
+                                 HOSPITAL 3
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-003"
+                                data-email="contact@sahyadri.com"
+                                data-address="Pune, Maharashtra"
+                                data-created="10 Sep 2026">
 
-                                <td>H-1003</td>
-                                <td>Sahyadri Hospital</td>
-                                <td>Pune</td>
-                                <td>Dr. Amit Kulkarni</td>
-                                <td>9765432180</td>
-                                <td>31</td>
 
                                 <td>
+                                    H-1003
+                                </td>
+
+                                <td>
+                                    Sahyadri Hospital
+                                </td>
+
+                                <td>
+                                    Pune
+                                </td>
+
+                                <td>
+                                    Dr. Amit Kulkarni
+                                </td>
+
+                                <td>
+                                    9765432180
+                                </td>
+
+                                <td>
+                                    31
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1003')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 4 -->
+                            <!-- =================================================
+                                 HOSPITAL 4
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-004"
+                                data-email="contact@dmhospital.com"
+                                data-address="Pune, Maharashtra"
+                                data-created="12 Sep 2026">
 
-                                <td>H-1004</td>
-                                <td>Deenanath Mangeshkar Hospital</td>
-                                <td>Pune</td>
-                                <td>Dr. Sneha Joshi</td>
-                                <td>9988776655</td>
-                                <td>42</td>
 
                                 <td>
+                                    H-1004
+                                </td>
+
+                                <td>
+                                    Deenanath Mangeshkar Hospital
+                                </td>
+
+                                <td>
+                                    Pune
+                                </td>
+
+                                <td>
+                                    Dr. Sneha Joshi
+                                </td>
+
+                                <td>
+                                    9988776655
+                                </td>
+
+                                <td>
+                                    42
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1004')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 5 -->
+                            <!-- =================================================
+                                 HOSPITAL 5
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-005"
+                                data-email="contact@noble.com"
+                                data-address="Mumbai, Maharashtra"
+                                data-created="15 Sep 2026">
 
-                                <td>H-1005</td>
-                                <td>Noble Hospital</td>
-                                <td>Mumbai</td>
-                                <td>Dr. Rohit Deshmukh</td>
-                                <td>9876123450</td>
-                                <td>16</td>
 
                                 <td>
+                                    H-1005
+                                </td>
+
+                                <td>
+                                    Noble Hospital
+                                </td>
+
+                                <td>
+                                    Mumbai
+                                </td>
+
+                                <td>
+                                    Dr. Rohit Deshmukh
+                                </td>
+
+                                <td>
+                                    9876123450
+                                </td>
+
+                                <td>
+                                    16
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1005')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 6 -->
+                            <!-- =================================================
+                                 HOSPITAL 6
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-006"
+                                data-email="contact@jehangir.com"
+                                data-address="Nashik, Maharashtra"
+                                data-created="17 Sep 2026">
 
-                                <td>H-1006</td>
-                                <td>Jehangir Hospital</td>
-                                <td>Nashik</td>
-                                <td>Dr. Neha More</td>
-                                <td>9765123487</td>
-                                <td>11</td>
 
                                 <td>
+                                    H-1006
+                                </td>
+
+                                <td>
+                                    Jehangir Hospital
+                                </td>
+
+                                <td>
+                                    Nashik
+                                </td>
+
+                                <td>
+                                    Dr. Neha More
+                                </td>
+
+                                <td>
+                                    9765123487
+                                </td>
+
+                                <td>
+                                    11
+                                </td>
+
+                                <td>
+
                                     <span class="badge reserved">
                                         Inactive
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1006')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 7 -->
+                            <!-- =================================================
+                                 HOSPITAL 7
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-007"
+                                data-email="contact@kem.com"
+                                data-address="Mumbai, Maharashtra"
+                                data-created="19 Sep 2026">
 
-                                <td>H-1007</td>
-                                <td>KEM Hospital</td>
-                                <td>Mumbai</td>
-                                <td>Dr. Sagar Pawar</td>
-                                <td>9898989898</td>
-                                <td>27</td>
 
                                 <td>
+                                    H-1007
+                                </td>
+
+                                <td>
+                                    KEM Hospital
+                                </td>
+
+                                <td>
+                                    Mumbai
+                                </td>
+
+                                <td>
+                                    Dr. Sagar Pawar
+                                </td>
+
+                                <td>
+                                    9898989898
+                                </td>
+
+                                <td>
+                                    27
+                                </td>
+
+                                <td>
+
                                     <span class="badge available">
                                         Active
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1007')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
 
 
-                            <!-- HOSPITAL 8 -->
+                            <!-- =================================================
+                                 HOSPITAL 8
+                                 ================================================= -->
 
-                            <tr>
+                            <tr
+                                data-registration="REG-008"
+                                data-email="contact@columbiaasia.com"
+                                data-address="Ahmednagar, Maharashtra"
+                                data-created="20 Sep 2026">
 
-                                <td>H-1008</td>
-                                <td>Columbia Asia Hospital</td>
-                                <td>Ahmednagar</td>
-                                <td>Dr. Pooja Shinde</td>
-                                <td>9812345678</td>
-                                <td>9</td>
 
                                 <td>
+                                    H-1008
+                                </td>
+
+                                <td>
+                                    Columbia Asia Hospital
+                                </td>
+
+                                <td>
+                                    Ahmednagar
+                                </td>
+
+                                <td>
+                                    Dr. Pooja Shinde
+                                </td>
+
+                                <td>
+                                    9812345678
+                                </td>
+
+                                <td>
+                                    9
+                                </td>
+
+                                <td>
+
                                     <span class="badge reserved">
                                         Inactive
                                     </span>
+
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewHospital('H-1008')">
-                                        👁
-                                    </button>
+
+                                    <div class="hospital-action-wrapper">
+
+
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleHospitalActionMenu(this, event)">
+
+                                            ⋮
+
+                                        </button>
+
+
+                                        <div class="hospital-action-menu">
+
+
+                                            <button
+                                                onclick="viewHospital(this)">
+
+                                                👁 View Details
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="editHospital(this)">
+
+                                                ✏ Edit Hospital
+
+                                            </button>
+
+
+                                            <button
+                                                onclick="changeHospitalStatus(this)">
+
+                                                🔄 Change Status
+
+                                            </button>
+
+
+                                            <hr>
+
+
+                                            <button
+                                                class="danger-action"
+                                                onclick="removeHospital(this)">
+
+                                                🗑 Remove Hospital
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </div>
+
                                 </td>
+
 
                             </tr>
 
@@ -671,39 +1628,58 @@
 
                     </table>
 
+
                 </div>
+
 
             </section>
 
+
         </section>
 
+
     </main>
+
 
 </div>
 
 
 
-<!-- ===================================================== -->
-<!-- REGISTER HOSPITAL MODAL -->
-<!-- ===================================================== -->
+<!-- =====================================================
+     REGISTER HOSPITAL MODAL
+     ===================================================== -->
 
 <div
     id="hospitalModal"
-    class="modal"
->
+    class="modal">
+
 
     <div class="modal-box">
 
 
         <div class="modal-head">
 
-            <h2>
-                Register New Hospital
-            </h2>
 
-            <button onclick="closeHospitalModal()">
+            <div>
+
+                <h2>
+                    Register New Hospital
+                </h2>
+
+                <p class="modal-subtitle">
+                    Add a hospital to the BloodConnect system
+                </p>
+
+            </div>
+
+
+            <button
+                onclick="closeHospitalModal()">
+
                 ×
+
             </button>
+
 
         </div>
 
@@ -717,12 +1693,11 @@
                 Hospital Name
 
                 <input
+                    id="newHospitalName"
                     type="text"
-                    placeholder="Enter hospital name"
-                >
+                    placeholder="Enter hospital name">
 
             </label>
-
 
 
             <label>
@@ -730,30 +1705,42 @@
                 Registration Number
 
                 <input
+                    id="newHospitalRegistration"
                     type="text"
-                    placeholder="Enter registration number"
-                >
+                    placeholder="Enter registration number">
 
             </label>
-
 
 
             <label>
 
                 City
 
-                <select>
+                <select id="newHospitalCity">
 
-                    <option>Pune</option>
-                    <option>Mumbai</option>
-                    <option>Nashik</option>
-                    <option>Ahmednagar</option>
-                    <option>Other</option>
+                    <option value="Pune">
+                        Pune
+                    </option>
+
+                    <option value="Mumbai">
+                        Mumbai
+                    </option>
+
+                    <option value="Nashik">
+                        Nashik
+                    </option>
+
+                    <option value="Ahmednagar">
+                        Ahmednagar
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
 
                 </select>
 
             </label>
-
 
 
             <label>
@@ -761,12 +1748,11 @@
                 Contact Person
 
                 <input
+                    id="newHospitalContact"
                     type="text"
-                    placeholder="Enter contact person"
-                >
+                    placeholder="Enter contact person">
 
             </label>
-
 
 
             <label>
@@ -774,12 +1760,12 @@
                 Phone Number
 
                 <input
+                    id="newHospitalPhone"
                     type="tel"
-                    placeholder="Enter phone number"
-                >
+                    maxlength="10"
+                    placeholder="Enter phone number">
 
             </label>
-
 
 
             <label>
@@ -787,12 +1773,11 @@
                 Email
 
                 <input
+                    id="newHospitalEmail"
                     type="email"
-                    placeholder="Enter email address"
-                >
+                    placeholder="Enter email address">
 
             </label>
-
 
 
             <label class="full">
@@ -800,9 +1785,9 @@
                 Hospital Address
 
                 <input
+                    id="newHospitalAddress"
                     type="text"
-                    placeholder="Enter complete hospital address"
-                >
+                    placeholder="Enter complete hospital address">
 
             </label>
 
@@ -812,6 +1797,7 @@
 
 
         <div class="modal-actions">
+
 
             <button
                 class="secondary-btn"
@@ -830,6 +1816,7 @@
 
             </button>
 
+
         </div>
 
 
@@ -839,40 +1826,52 @@
 
 
 
-<!-- ===================================================== -->
-<!-- VIEW HOSPITAL MODAL -->
-<!-- ===================================================== -->
+<!-- =====================================================
+     VIEW HOSPITAL MODAL
+     ===================================================== -->
 
 <div
     id="viewHospitalModal"
-    class="modal"
->
+    class="modal">
+
 
     <div class="modal-box">
 
 
         <div class="modal-head">
 
-            <h2>
-                Hospital Details
-            </h2>
 
-            <button onclick="closeViewHospital()">
+            <div>
+
+                <h2>
+                    Hospital Details
+                </h2>
+
+                <p class="modal-subtitle">
+                    Complete information about this hospital
+                </p>
+
+            </div>
+
+
+            <button
+                onclick="closeViewHospital()">
+
                 ×
+
             </button>
+
 
         </div>
 
 
-        <div
-            id="hospitalDetails"
-            style="line-height: 2;"
-        >
+        <div id="hospitalDetails">
 
         </div>
 
 
         <div class="modal-actions">
+
 
             <button
                 class="secondary-btn"
@@ -882,6 +1881,7 @@
 
             </button>
 
+
         </div>
 
 
@@ -891,226 +1891,1901 @@
 
 
 
-<!-- ================= JAVASCRIPT ================= -->
+<!-- =====================================================
+     EDIT HOSPITAL MODAL
+     ===================================================== -->
+
+<div
+    id="editHospitalModal"
+    class="modal">
+
+
+    <div class="modal-box">
+
+
+        <div class="modal-head">
+
+
+            <div>
+
+                <h2>
+                    Edit Hospital
+                </h2>
+
+                <p class="modal-subtitle">
+                    Update hospital information
+                </p>
+
+            </div>
+
+
+            <button
+                onclick="closeEditHospitalModal()">
+
+                ×
+
+            </button>
+
+
+        </div>
 
 
 
+        <div class="form-grid">
+
+
+            <label>
+
+                Hospital ID
+
+                <input
+                    id="editHospitalId"
+                    type="text"
+                    readonly>
+
+            </label>
+
+
+            <label>
+
+                Hospital Name
+
+                <input
+                    id="editHospitalName"
+                    type="text">
+
+            </label>
+
+
+            <label>
+
+                Registration Number
+
+                <input
+                    id="editHospitalRegistration"
+                    type="text">
+
+            </label>
+
+
+            <label>
+
+                City
+
+                <select id="editHospitalCity">
+
+                    <option value="Pune">
+                        Pune
+                    </option>
+
+                    <option value="Mumbai">
+                        Mumbai
+                    </option>
+
+                    <option value="Nashik">
+                        Nashik
+                    </option>
+
+                    <option value="Ahmednagar">
+                        Ahmednagar
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+
+                Contact Person
+
+                <input
+                    id="editHospitalContact"
+                    type="text">
+
+            </label>
+
+
+            <label>
+
+                Phone Number
+
+                <input
+                    id="editHospitalPhone"
+                    type="tel"
+                    maxlength="10">
+
+            </label>
+
+
+            <label>
+
+                Email
+
+                <input
+                    id="editHospitalEmail"
+                    type="email">
+
+            </label>
+
+
+            <label>
+
+                Status
+
+                <select id="editHospitalStatus">
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label class="full">
+
+                Hospital Address
+
+                <input
+                    id="editHospitalAddress"
+                    type="text">
+
+            </label>
+
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+
+            <button
+                class="secondary-btn"
+                onclick="closeEditHospitalModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                class="primary-btn"
+                onclick="saveEditedHospital()">
+
+                Save Changes
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CHANGE STATUS MODAL
+     ===================================================== -->
+
+<div
+    id="hospitalStatusModal"
+    class="modal">
+
+
+    <div class="modal-box">
+
+
+        <div class="modal-head">
+
+
+            <div>
+
+                <h2>
+                    Change Hospital Status
+                </h2>
+
+                <p class="modal-subtitle">
+                    Update the current hospital status
+                </p>
+
+            </div>
+
+
+            <button
+                onclick="closeHospitalStatusModal()">
+
+                ×
+
+            </button>
+
+
+        </div>
+
+
+
+        <div class="hospital-status-content">
+
+
+            <div class="hospital-status-info">
+
+                <span>
+                    Hospital ID
+                </span>
+
+                <strong id="hospitalStatusId">
+                    -
+                </strong>
+
+            </div>
+
+
+            <label>
+
+                New Status
+
+                <select id="newHospitalStatus">
+
+                    <option value="Active">
+                        Active
+                    </option>
+
+                    <option value="Inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </label>
+
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+
+            <button
+                class="secondary-btn"
+                onclick="closeHospitalStatusModal()">
+
+                Cancel
+
+            </button>
+
+
+            <button
+                class="primary-btn"
+                onclick="saveHospitalStatus()">
+
+                Save Status
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script>
 
 
-/* =========================================
-   OPEN REGISTER HOSPITAL MODAL
-========================================= */
+    /* =====================================================
+       GLOBAL VARIABLES
+       ===================================================== */
 
-function openHospitalModal() {
+    let selectedHospitalRow = null;
 
-    document
-        .getElementById("hospitalModal")
-        .classList
-        .add("show");
-
-}
+    let hospitalIdCounter = 1008;
 
 
 
-/* =========================================
-   CLOSE REGISTER HOSPITAL MODAL
-========================================= */
+    /* =====================================================
+       HTML ESCAPE
+       ===================================================== */
 
-function closeHospitalModal() {
+    function escapeHospitalHTML(value) {
 
-    document
-        .getElementById("hospitalModal")
-        .classList
-        .remove("show");
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
-}
-
-
-
-/* =========================================
-   REGISTER HOSPITAL
-========================================= */
-
-function registerHospital() {
-
-    alert(
-        "Demo: Hospital registered successfully!"
-    );
-
-    closeHospitalModal();
-
-}
+    }
 
 
 
-/* =========================================
-   SEARCH & FILTER
-========================================= */
+    /* =====================================================
+       OPEN REGISTER MODAL
+       ===================================================== */
 
-function filterHospitals() {
+    function openHospitalModal() {
 
-    const search =
         document
-        .getElementById("hospitalSearch")
-        .value
-        .toLowerCase();
+            .getElementById("hospitalModal")
+            .classList
+            .add("show");
+
+    }
 
 
-    const city =
+
+    /* =====================================================
+       CLOSE REGISTER MODAL
+       ===================================================== */
+
+    function closeHospitalModal() {
+
         document
-        .getElementById("hospitalCityFilter")
-        .value;
+            .getElementById("hospitalModal")
+            .classList
+            .remove("show");
+
+    }
 
 
-    const status =
-        document
-        .getElementById("hospitalStatusFilter")
-        .value;
+
+    /* =====================================================
+       REGISTER HOSPITAL
+       ===================================================== */
+
+    function registerHospital() {
 
 
-    const rows =
-        document.querySelectorAll(
-            "#hospitalTable tbody tr"
-        );
+        const name =
+            document
+                .getElementById("newHospitalName")
+                .value
+                .trim();
 
 
-    rows.forEach(function(row) {
-
-        const text =
-            row.innerText.toLowerCase();
-
-
-        const rowCity =
-            row.cells[2]
-            ? row.cells[2].innerText.trim()
-            : "";
+        const registration =
+            document
+                .getElementById("newHospitalRegistration")
+                .value
+                .trim();
 
 
-        const rowStatus =
-            row.cells[6]
-            ? row.cells[6].innerText.trim()
-            : "";
+        const city =
+            document
+                .getElementById("newHospitalCity")
+                .value;
 
 
-        const matchesSearch =
-            !search ||
-            text.includes(search);
+        const contact =
+            document
+                .getElementById("newHospitalContact")
+                .value
+                .trim();
 
 
-        const matchesCity =
-            !city ||
-            rowCity === city;
+        const phone =
+            document
+                .getElementById("newHospitalPhone")
+                .value
+                .trim();
 
 
-        const matchesStatus =
-            !status ||
-            rowStatus === status;
+        const email =
+            document
+                .getElementById("newHospitalEmail")
+                .value
+                .trim();
 
 
-        if (
-            matchesSearch &&
-            matchesCity &&
-            matchesStatus
-        ) {
+        const address =
+            document
+                .getElementById("newHospitalAddress")
+                .value
+                .trim();
 
-            row.style.display = "";
 
-        } else {
 
-            row.style.display = "none";
+        if (!name) {
+
+            alert(
+                "Please enter hospital name."
+            );
+
+            return;
 
         }
 
-    });
 
-}
+        if (!registration) {
 
+            alert(
+                "Please enter registration number."
+            );
 
+            return;
 
-/* =========================================
-   RESET FILTERS
-========================================= */
-
-function resetHospitalFilters() {
-
-    document
-        .getElementById("hospitalSearch")
-        .value = "";
+        }
 
 
-    document
-        .getElementById("hospitalCityFilter")
-        .value = "";
+        if (!contact) {
+
+            alert(
+                "Please enter contact person."
+            );
+
+            return;
+
+        }
 
 
-    document
-        .getElementById("hospitalStatusFilter")
-        .value = "";
+        if (!/^[0-9]{10}$/.test(phone)) {
+
+            alert(
+                "Please enter a valid 10-digit phone number."
+            );
+
+            return;
+
+        }
 
 
-    filterHospitals();
+        if (
+            email &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        ) {
 
-}
+            alert(
+                "Please enter a valid email address."
+            );
+
+            return;
+
+        }
+
+
+        if (!address) {
+
+            alert(
+                "Please enter hospital address."
+            );
+
+            return;
+
+        }
 
 
 
-/* =========================================
-   VIEW HOSPITAL
-========================================= */
+        hospitalIdCounter++;
 
-function viewHospital(hospitalId) {
 
-    document
-        .getElementById("hospitalDetails")
-        .innerHTML = `
+        const hospitalId =
+            "H-" + hospitalIdCounter;
 
-            <p>
-                <strong>Hospital ID:</strong>
-                ${hospitalId}
-            </p>
 
-            <p>
-                <strong>Status:</strong>
-                Active
-            </p>
+        const tbody =
+            document.querySelector(
+                "#hospitalTable tbody"
+            );
 
-            <p>
-                <strong>Blood Requests:</strong>
-                Available in the hospital request history.
-            </p>
 
-            <p>
-                <strong>Action:</strong>
-                Full hospital details will be connected
-                to the Java backend later.
-            </p>
+        const row =
+            document.createElement("tr");
+
+
+        const currentDate =
+            new Date();
+
+
+        const createdDate =
+            currentDate.toLocaleDateString(
+                "en-GB",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+
+
+        row.dataset.registration =
+            registration;
+
+
+        row.dataset.email =
+            email;
+
+
+        row.dataset.address =
+            address;
+
+
+        row.dataset.created =
+            createdDate;
+
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHospitalHTML(hospitalId)}
+            </td>
+
+            <td>
+                ${escapeHospitalHTML(name)}
+            </td>
+
+            <td>
+                ${escapeHospitalHTML(city)}
+            </td>
+
+            <td>
+                ${escapeHospitalHTML(contact)}
+            </td>
+
+            <td>
+                ${escapeHospitalHTML(phone)}
+            </td>
+
+            <td>
+                0
+            </td>
+
+            <td>
+
+                <span class="badge available">
+                    Active
+                </span>
+
+            </td>
+
+            <td>
+
+                <div class="hospital-action-wrapper">
+
+                    <button
+                        class="icon-btn"
+                        onclick="toggleHospitalActionMenu(this, event)">
+
+                        ⋮
+
+                    </button>
+
+                    <div class="hospital-action-menu">
+
+                        <button
+                            onclick="viewHospital(this)">
+
+                            👁 View Details
+
+                        </button>
+
+                        <button
+                            onclick="editHospital(this)">
+
+                            ✏ Edit Hospital
+
+                        </button>
+
+                        <button
+                            onclick="changeHospitalStatus(this)">
+
+                            🔄 Change Status
+
+                        </button>
+
+                        <hr>
+
+                        <button
+                            class="danger-action"
+                            onclick="removeHospital(this)">
+
+                            🗑 Remove Hospital
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </td>
 
         `;
 
 
-    document
-        .getElementById("viewHospitalModal")
-        .classList
-        .add("show");
-
-}
+        tbody.appendChild(row);
 
 
+        clearHospitalForm();
 
-/* =========================================
-   CLOSE VIEW HOSPITAL
-========================================= */
+        closeHospitalModal();
 
-function closeViewHospital() {
+        updateHospitalStats();
 
-    document
-        .getElementById("viewHospitalModal")
-        .classList
-        .remove("show");
+        filterHospitals();
 
-}
+
+        alert(
+            "Hospital " +
+            hospitalId +
+            " registered successfully!"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       CLEAR REGISTER FORM
+       ===================================================== */
+
+    function clearHospitalForm() {
+
+        document
+            .getElementById("newHospitalName")
+            .value = "";
+
+
+        document
+            .getElementById("newHospitalRegistration")
+            .value = "";
+
+
+        document
+            .getElementById("newHospitalCity")
+            .value = "Pune";
+
+
+        document
+            .getElementById("newHospitalContact")
+            .value = "";
+
+
+        document
+            .getElementById("newHospitalPhone")
+            .value = "";
+
+
+        document
+            .getElementById("newHospitalEmail")
+            .value = "";
+
+
+        document
+            .getElementById("newHospitalAddress")
+            .value = "";
+
+    }
+
+
+
+    /* =====================================================
+       SEARCH & FILTER
+       ===================================================== */
+
+    function filterHospitals() {
+
+
+        const search =
+            document
+                .getElementById("hospitalSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const city =
+            document
+                .getElementById("hospitalCityFilter")
+                .value;
+
+
+        const status =
+            document
+                .getElementById("hospitalStatusFilter")
+                .value;
+
+
+
+        const rows =
+            document.querySelectorAll(
+                "#hospitalTable tbody tr"
+            );
+
+
+        let visibleCount = 0;
+
+
+
+        rows.forEach(function(row) {
+
+
+            const text =
+                row.innerText
+                    .toLowerCase();
+
+
+            const rowCity =
+                row.cells[2]
+                    ? row.cells[2]
+                        .innerText
+                        .trim()
+                    : "";
+
+
+            const rowStatus =
+                row.cells[6]
+                    ? row.cells[6]
+                        .innerText
+                        .trim()
+                    : "";
+
+
+
+            const matchesSearch =
+                !search ||
+                text.includes(search);
+
+
+            const matchesCity =
+                !city ||
+                rowCity === city;
+
+
+            const matchesStatus =
+                !status ||
+                rowStatus === status;
+
+
+
+            if (
+                matchesSearch &&
+                matchesCity &&
+                matchesStatus
+            ) {
+
+                row.style.display = "";
+
+                visibleCount++;
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+
+        });
+
+
+
+        document
+            .getElementById("hospitalRecordCount")
+            .textContent =
+                visibleCount +
+                (
+                    visibleCount === 1
+                        ? " hospital"
+                        : " hospitals"
+                );
+
+    }
+
+
+
+    /* =====================================================
+       TOP SEARCH
+       ===================================================== */
+
+    function syncTopHospitalSearch() {
+
+        const value =
+            document
+                .getElementById("hospitalTopSearch")
+                .value;
+
+
+        document
+            .getElementById("hospitalSearch")
+            .value = value;
+
+
+        filterHospitals();
+
+    }
+
+
+
+    /* =====================================================
+       RESET FILTERS
+       ===================================================== */
+
+    function resetHospitalFilters() {
+
+
+        document
+            .getElementById("hospitalSearch")
+            .value = "";
+
+
+        document
+            .getElementById("hospitalCityFilter")
+            .value = "";
+
+
+        document
+            .getElementById("hospitalStatusFilter")
+            .value = "";
+
+
+        document
+            .getElementById("hospitalTopSearch")
+            .value = "";
+
+
+        filterHospitals();
+
+    }
+
+
+
+    /* =====================================================
+       ACTION MENU
+       ===================================================== */
+
+    function toggleHospitalActionMenu(
+        button,
+        event
+    ) {
+
+        event.stopPropagation();
+
+
+        const menu =
+            button
+                .closest(
+                    ".hospital-action-wrapper"
+                )
+                .querySelector(
+                    ".hospital-action-menu"
+                );
+
+
+        const alreadyOpen =
+            menu.classList.contains("show");
+
+
+        closeHospitalActionMenus();
+
+
+        if (!alreadyOpen) {
+
+            menu.classList.add("show");
+
+        }
+
+    }
+
+
+
+    function closeHospitalActionMenus() {
+
+        document
+            .querySelectorAll(
+                ".hospital-action-menu.show"
+            )
+            .forEach(function(menu) {
+
+                menu.classList.remove("show");
+
+            });
+
+    }
+
+
+
+    document.addEventListener(
+        "click",
+        function() {
+
+            closeHospitalActionMenus();
+
+        }
+    );
+
+
+
+    /* =====================================================
+       VIEW HOSPITAL
+       ===================================================== */
+
+    function viewHospital(button) {
+
+
+        const row =
+            button.closest("tr");
+
+
+        const hospitalId =
+            row.cells[0]
+                .innerText
+                .trim();
+
+
+        const name =
+            row.cells[1]
+                .innerText
+                .trim();
+
+
+        const city =
+            row.cells[2]
+                .innerText
+                .trim();
+
+
+        const contact =
+            row.cells[3]
+                .innerText
+                .trim();
+
+
+        const phone =
+            row.cells[4]
+                .innerText
+                .trim();
+
+
+        const requests =
+            row.cells[5]
+                .innerText
+                .trim();
+
+
+        const status =
+            row.cells[6]
+                .innerText
+                .trim();
+
+
+        const registration =
+            row.dataset.registration ||
+            "Not available";
+
+
+        const email =
+            row.dataset.email ||
+            "Not available";
+
+
+        const address =
+            row.dataset.address ||
+            "Not available";
+
+
+        const created =
+            row.dataset.created ||
+            "Not available";
+
+
+        closeHospitalActionMenus();
+
+
+
+        document
+            .getElementById("hospitalDetails")
+            .innerHTML = `
+
+                <div class="hospital-detail-grid">
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Hospital ID
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(hospitalId)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Hospital Name
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(name)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Registration Number
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(registration)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            City
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(city)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Contact Person
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(contact)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Phone Number
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(phone)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(email)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Blood Requests
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(requests)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(status)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item">
+
+                        <span>
+                            Registered On
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(created)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="hospital-detail-item full">
+
+                        <span>
+                            Hospital Address
+                        </span>
+
+                        <strong>
+                            ${escapeHospitalHTML(address)}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+        document
+            .getElementById("viewHospitalModal")
+            .classList
+            .add("show");
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE VIEW MODAL
+       ===================================================== */
+
+    function closeViewHospital() {
+
+        document
+            .getElementById("viewHospitalModal")
+            .classList
+            .remove("show");
+
+    }
+
+
+
+    /* =====================================================
+       EDIT HOSPITAL
+       ===================================================== */
+
+    function editHospital(button) {
+
+
+        const row =
+            button.closest("tr");
+
+
+        selectedHospitalRow =
+            row;
+
+
+        document
+            .getElementById("editHospitalId")
+            .value =
+                row.cells[0]
+                    .innerText
+                    .trim();
+
+
+        document
+            .getElementById("editHospitalName")
+            .value =
+                row.cells[1]
+                    .innerText
+                    .trim();
+
+
+        document
+            .getElementById("editHospitalCity")
+            .value =
+                row.cells[2]
+                    .innerText
+                    .trim();
+
+
+        document
+            .getElementById("editHospitalContact")
+            .value =
+                row.cells[3]
+                    .innerText
+                    .trim();
+
+
+        document
+            .getElementById("editHospitalPhone")
+            .value =
+                row.cells[4]
+                    .innerText
+                    .trim();
+
+
+        document
+            .getElementById("editHospitalRegistration")
+            .value =
+                row.dataset.registration ||
+                "";
+
+
+        document
+            .getElementById("editHospitalEmail")
+            .value =
+                row.dataset.email ||
+                "";
+
+
+        document
+            .getElementById("editHospitalAddress")
+            .value =
+                row.dataset.address ||
+                "";
+
+
+        document
+            .getElementById("editHospitalStatus")
+            .value =
+                row.cells[6]
+                    .innerText
+                    .trim();
+
+
+        closeHospitalActionMenus();
+
+
+        document
+            .getElementById("editHospitalModal")
+            .classList
+            .add("show");
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE EDIT MODAL
+       ===================================================== */
+
+    function closeEditHospitalModal() {
+
+        document
+            .getElementById("editHospitalModal")
+            .classList
+            .remove("show");
+
+
+        selectedHospitalRow =
+            null;
+
+    }
+
+
+
+    /* =====================================================
+       SAVE EDITED HOSPITAL
+       ===================================================== */
+
+    function saveEditedHospital() {
+
+
+        const row =
+            selectedHospitalRow;
+
+
+        if (!row) {
+
+            alert(
+                "Hospital could not be found."
+            );
+
+            return;
+
+        }
+
+
+
+        const name =
+            document
+                .getElementById("editHospitalName")
+                .value
+                .trim();
+
+
+        const registration =
+            document
+                .getElementById("editHospitalRegistration")
+                .value
+                .trim();
+
+
+        const city =
+            document
+                .getElementById("editHospitalCity")
+                .value;
+
+
+        const contact =
+            document
+                .getElementById("editHospitalContact")
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById("editHospitalPhone")
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById("editHospitalEmail")
+                .value
+                .trim();
+
+
+        const address =
+            document
+                .getElementById("editHospitalAddress")
+                .value
+                .trim();
+
+
+        const status =
+            document
+                .getElementById("editHospitalStatus")
+                .value;
+
+
+
+        if (!name) {
+
+            alert(
+                "Please enter hospital name."
+            );
+
+            return;
+
+        }
+
+
+        if (!registration) {
+
+            alert(
+                "Please enter registration number."
+            );
+
+            return;
+
+        }
+
+
+        if (!contact) {
+
+            alert(
+                "Please enter contact person."
+            );
+
+            return;
+
+        }
+
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+
+            alert(
+                "Please enter a valid 10-digit phone number."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            email &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        ) {
+
+            alert(
+                "Please enter a valid email address."
+            );
+
+            return;
+
+        }
+
+
+        if (!address) {
+
+            alert(
+                "Please enter hospital address."
+            );
+
+            return;
+
+        }
+
+
+
+        row.cells[1].innerText =
+            name;
+
+
+        row.cells[2].innerText =
+            city;
+
+
+        row.cells[3].innerText =
+            contact;
+
+
+        row.cells[4].innerText =
+            phone;
+
+
+        row.cells[6].innerHTML =
+            getHospitalStatusBadge(status);
+
+
+
+        row.dataset.registration =
+            registration;
+
+
+        row.dataset.email =
+            email;
+
+
+        row.dataset.address =
+            address;
+
+
+
+        updateHospitalStats();
+
+        closeEditHospitalModal();
+
+        filterHospitals();
+
+
+        alert(
+            "Hospital " +
+            row.cells[0].innerText.trim() +
+            " updated successfully!"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       STATUS BADGE
+       ===================================================== */
+
+    function getHospitalStatusBadge(status) {
+
+
+        const badgeClass =
+            status === "Active"
+                ? "available"
+                : "reserved";
+
+
+        return `
+
+            <span class="badge ${badgeClass}">
+                ${escapeHospitalHTML(status)}
+            </span>
+
+        `;
+
+    }
+
+
+
+    /* =====================================================
+       CHANGE STATUS
+       ===================================================== */
+
+    function changeHospitalStatus(button) {
+
+
+        const row =
+            button.closest("tr");
+
+
+        selectedHospitalRow =
+            row;
+
+
+        const hospitalId =
+            row.cells[0]
+                .innerText
+                .trim();
+
+
+        const currentStatus =
+            row.cells[6]
+                .innerText
+                .trim();
+
+
+        document
+            .getElementById("hospitalStatusId")
+            .textContent =
+                hospitalId;
+
+
+        document
+            .getElementById("newHospitalStatus")
+            .value =
+                currentStatus;
+
+
+        closeHospitalActionMenus();
+
+
+        document
+            .getElementById("hospitalStatusModal")
+            .classList
+            .add("show");
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE STATUS MODAL
+       ===================================================== */
+
+    function closeHospitalStatusModal() {
+
+        document
+            .getElementById("hospitalStatusModal")
+            .classList
+            .remove("show");
+
+
+        selectedHospitalRow =
+            null;
+
+    }
+
+
+
+    /* =====================================================
+       SAVE STATUS
+       ===================================================== */
+
+    function saveHospitalStatus() {
+
+
+        const row =
+            selectedHospitalRow;
+
+
+        if (!row) {
+
+            alert(
+                "Hospital could not be found."
+            );
+
+            return;
+
+        }
+
+
+        const newStatus =
+            document
+                .getElementById("newHospitalStatus")
+                .value;
+
+
+        const hospitalId =
+            row.cells[0]
+                .innerText
+                .trim();
+
+
+        row.cells[6].innerHTML =
+            getHospitalStatusBadge(
+                newStatus
+            );
+
+
+        updateHospitalStats();
+
+        closeHospitalStatusModal();
+
+        filterHospitals();
+
+
+        alert(
+            "Status of " +
+            hospitalId +
+            " changed to " +
+            newStatus +
+            " successfully!"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       REMOVE HOSPITAL
+       ===================================================== */
+
+    function removeHospital(button) {
+
+
+        const row =
+            button.closest("tr");
+
+
+        const hospitalId =
+            row.cells[0]
+                .innerText
+                .trim();
+
+
+        const hospitalName =
+            row.cells[1]
+                .innerText
+                .trim();
+
+
+        closeHospitalActionMenus();
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to remove " +
+                hospitalName +
+                " (" +
+                hospitalId +
+                ")?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        row.remove();
+
+
+        updateHospitalStats();
+
+        filterHospitals();
+
+
+        alert(
+            "Hospital " +
+            hospitalId +
+            " removed successfully!"
+        );
+
+    }
+
+
+
+    /* =====================================================
+       UPDATE HOSPITAL STATISTICS
+       ===================================================== */
+
+    function updateHospitalStats() {
+
+
+        const rows =
+            document.querySelectorAll(
+                "#hospitalTable tbody tr"
+            );
+
+
+        let total =
+            0;
+
+
+        let active =
+            0;
+
+
+        let requesting =
+            0;
+
+
+        let newHospitals =
+            0;
+
+
+
+        rows.forEach(function(row) {
+
+
+            total++;
+
+
+            const status =
+                row.cells[6]
+                    ? row.cells[6]
+                        .innerText
+                        .trim()
+                    : "";
+
+
+            const requestCount =
+                row.cells[5]
+                    ? parseInt(
+                        row.cells[5]
+                            .innerText
+                            .trim()
+                    ) || 0
+                    : 0;
+
+
+            if (status === "Active") {
+
+                active++;
+
+            }
+
+
+            if (requestCount > 0) {
+
+                requesting++;
+
+            }
+
+
+            if (
+                row.dataset.created
+                    .toLowerCase()
+                    .includes("sep")
+            ) {
+
+                newHospitals++;
+
+            }
+
+
+        });
+
+
+
+        document
+            .getElementById("totalHospitals")
+            .textContent =
+                total;
+
+
+        document
+            .getElementById("activeHospitals")
+            .textContent =
+                active;
+
+
+        document
+            .getElementById("requestingHospitals")
+            .textContent =
+                requesting;
+
+
+        document
+            .getElementById("newHospitals")
+            .textContent =
+                newHospitals;
+
+    }
+
+
+
+    /* =====================================================
+       CLOSE MODALS BY CLICKING OUTSIDE
+       ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event) {
+
+
+            const modals =
+                document.querySelectorAll(
+                    ".modal"
+                );
+
+
+            modals.forEach(function(modal) {
+
+
+                if (
+                    event.target === modal
+                ) {
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                    selectedHospitalRow =
+                        null;
+
+                }
+
+
+            });
+
+        }
+    );
+
+
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+
+            updateHospitalStats();
+
+            filterHospitals();
+
+
+        }
+    );
 
 
 </script>
@@ -1120,6 +3795,8 @@ function closeViewHospital() {
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>
+
+
 </body>
 
 </html>

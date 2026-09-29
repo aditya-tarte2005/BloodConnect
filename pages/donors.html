@@ -8,13 +8,162 @@
   <title>BloodConnect - Donors</title>
 
   <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    /* =====================================================
+       DONOR PAGE
+       ===================================================== */
+
+    .donor-action-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .donor-action-menu {
+      position: fixed;
+      min-width: 190px;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      padding: 6px;
+      z-index: 99999;
+      display: none;
+    }
+
+    .donor-action-menu.show {
+      display: block;
+    }
+
+    .donor-action-menu button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13px;
+      color: #333;
+      white-space: nowrap;
+    }
+
+    .donor-action-menu button:hover {
+      background: #f7f7f7;
+    }
+
+    .donor-action-menu .danger-action {
+      color: #c62828;
+    }
+
+    .donor-action-menu .danger-action:hover {
+      background: #fff1f1;
+    }
+
+    .donor-action-menu hr {
+      border: none;
+      border-top: 1px solid #eeeeee;
+      margin: 5px 0;
+    }
+
+    .donor-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .donor-detail-item {
+      padding: 14px;
+      background: #f8f8f8;
+      border-radius: 8px;
+    }
+
+    .donor-detail-item span {
+      display: block;
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .donor-detail-item strong {
+      color: #222;
+      font-size: 14px;
+    }
+
+    .donor-detail-full {
+      grid-column: 1 / -1;
+    }
+
+    .donor-status-content {
+      margin-top: 18px;
+    }
+
+    .donor-status-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+
+    .donor-status-info span {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .donor-status-info strong {
+      font-size: 15px;
+    }
+
+    .donor-status-content label {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .donor-status-content select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      outline: none;
+    }
+
+    @media (max-width: 700px) {
+
+      .donor-details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .donor-detail-full {
+        grid-column: auto;
+      }
+
+    }
+  </style>
+
 </head>
+
 
 <body>
 
 <div class="app">
 
-  <!-- ================= SIDEBAR ================= -->
+
+  <!-- =====================================================
+       SIDEBAR
+       ===================================================== -->
+
   <aside class="sidebar">
 
     <div class="brand">
@@ -31,7 +180,6 @@
     </div>
 
 
-    <!-- ================= NAVIGATION ================= -->
     <nav>
 
       <a class="nav-item" href="../index.html">
@@ -91,17 +239,26 @@
 
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- =====================================================
+       MAIN
+       ===================================================== -->
+
   <main class="main">
 
 
-    <!-- ================= TOP BAR ================= -->
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
     <header class="topbar">
 
       <button
         class="menu-btn"
-        onclick="toggleSidebar()">
+        onclick="toggleSidebar()"
+        aria-label="Toggle navigation">
+
         ☰
+
       </button>
 
 
@@ -111,8 +268,9 @@
 
         <input
           type="text"
+          id="donorTopSearch"
           placeholder="Search donors, blood groups, hospitals..."
-        >
+          onkeyup="syncDonorTopSearch()">
 
       </div>
 
@@ -139,11 +297,15 @@
 
 
 
-    <!-- ================= CONTENT ================= -->
+    <!-- =====================================================
+         CONTENT
+         ===================================================== -->
+
     <section class="content">
 
 
-      <!-- Page Heading -->
+      <!-- PAGE HEADING -->
+
       <div class="page-heading">
 
         <div>
@@ -171,7 +333,10 @@
 
 
 
-      <!-- ================= STAT CARDS ================= -->
+      <!-- =====================================================
+           STAT CARDS
+           ===================================================== -->
+
       <div class="stats">
 
 
@@ -185,10 +350,12 @@
 
             <span>Total Donors</span>
 
-            <strong>1,248</strong>
+            <strong id="totalDonorCount">
+              8
+            </strong>
 
             <em class="up">
-              ↑ +12%
+              Registered
             </em>
 
             <small>
@@ -211,10 +378,12 @@
 
             <span>Active Donors</span>
 
-            <strong>982</strong>
+            <strong id="activeDonorCount">
+              7
+            </strong>
 
             <em class="up">
-              ↑ +8%
+              Eligible
             </em>
 
             <small>
@@ -237,14 +406,16 @@
 
             <span>Donations This Month</span>
 
-            <strong>156</strong>
+            <strong id="monthlyDonationCount">
+              156
+            </strong>
 
             <em class="orange-text">
-              ↑ +5%
+              September
             </em>
 
             <small>
-              September 2026
+              Recorded donations
             </small>
 
           </div>
@@ -263,10 +434,12 @@
 
             <span>New Donors</span>
 
-            <strong>42</strong>
+            <strong id="newDonorCount">
+              8
+            </strong>
 
             <em class="up">
-              ↑ +10%
+              This month
             </em>
 
             <small>
@@ -281,7 +454,10 @@
 
 
 
-      <!-- ================= FILTER BAR ================= -->
+      <!-- =====================================================
+           FILTER BAR
+           ===================================================== -->
+
       <div class="filter-bar card">
 
 
@@ -289,8 +465,7 @@
           id="donorSearch"
           type="text"
           placeholder="Search by name, donor ID or phone..."
-          onkeyup="filterDonors()"
-        >
+          onkeyup="filterDonors()">
 
 
         <select
@@ -344,18 +519,33 @@
 
 
 
-      <!-- ================= DONOR TABLE ================= -->
+      <!-- =====================================================
+           DONOR TABLE
+           ===================================================== -->
+
       <section class="card table-card">
 
 
         <div class="card-title">
 
-          <h2>
-            Registered Donors
-          </h2>
+          <div>
 
-          <span class="record-count">
+            <h2>
+              Registered Donors
+            </h2>
+
+            <p class="table-subtitle">
+              Manage all registered blood donors
+            </p>
+
+          </div>
+
+          <span
+            class="record-count"
+            id="donorRecordCount">
+
             8 donors
+
           </span>
 
         </div>
@@ -388,7 +578,11 @@
             <tbody>
 
 
-              <tr>
+              <!-- DONOR 1 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-09-01">
 
                 <td>D-501</td>
                 <td>Rahul Sharma</td>
@@ -405,17 +599,57 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-501')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)"
+                      aria-label="Donor actions">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 2 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-09-03">
 
                 <td>D-502</td>
                 <td>Priya Patil</td>
@@ -432,17 +666,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-502')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 3 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-09-04">
 
                 <td>D-503</td>
                 <td>Amit Kulkarni</td>
@@ -459,17 +732,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-503')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 4 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-09-05">
 
                 <td>D-504</td>
                 <td>Sneha Joshi</td>
@@ -486,17 +798,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-504')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 5 -->
+
+              <tr
+                data-address="Ahmednagar, Maharashtra"
+                data-registered="2026-09-06">
 
                 <td>D-505</td>
                 <td>Rohit Deshmukh</td>
@@ -513,17 +864,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-505')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 6 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-09-07">
 
                 <td>D-506</td>
                 <td>Neha More</td>
@@ -540,17 +930,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-506')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 7 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-08-20">
 
                 <td>D-507</td>
                 <td>Vikas Pawar</td>
@@ -567,17 +996,56 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-507')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
 
 
-              <tr>
+
+              <!-- DONOR 8 -->
+
+              <tr
+                data-address="Pune, Maharashtra"
+                data-registered="2026-08-18">
 
                 <td>D-508</td>
                 <td>Pooja Shinde</td>
@@ -594,11 +1062,45 @@
                 </td>
 
                 <td>
-                  <button
-                    class="icon-btn"
-                    onclick="viewDonor('D-508')">
-                    ⋮
-                  </button>
+
+                  <div class="donor-action-wrapper">
+
+                    <button
+                      class="icon-btn"
+                      onclick="toggleDonorActionMenu(this, event)">
+
+                      ⋮
+
+                    </button>
+
+                    <div class="donor-action-menu">
+
+                      <button onclick="viewDonor(this)">
+                        👁 View Details
+                      </button>
+
+                      <button onclick="editDonor(this)">
+                        ✏ Edit Donor
+                      </button>
+
+                      <button onclick="changeDonorStatus(this)">
+                        🔄 Change Status
+                      </button>
+
+                      <hr>
+
+                      <button
+                        class="danger-action"
+                        onclick="removeDonor(this)">
+
+                        🗑 Remove Donor
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
                 </td>
 
               </tr>
@@ -620,27 +1122,35 @@
 
 
 
-<!-- ================= REGISTER DONOR MODAL ================= -->
+<!-- =====================================================
+     REGISTER DONOR MODAL
+     ===================================================== -->
+
 <div
   id="donorModal"
   class="modal">
 
-
   <div class="modal-box">
-
 
     <div class="modal-head">
 
-      <h2>
-        Register Donor
-      </h2>
+      <div>
+
+        <h2>
+          Register Donor
+        </h2>
+
+        <p class="modal-subtitle">
+          Enter donor information
+        </p>
+
+      </div>
 
       <button onclick="closeDonorModal()">
         ×
       </button>
 
     </div>
-
 
 
     <div class="form-grid">
@@ -653,8 +1163,7 @@
         <input
           id="newDonorName"
           type="text"
-          placeholder="Enter donor name"
-        >
+          placeholder="Enter donor name">
 
       </label>
 
@@ -684,11 +1193,11 @@
         Age
 
         <input
+          id="newDonorAge"
           type="number"
           min="18"
           max="65"
-          placeholder="Enter age"
-        >
+          placeholder="Enter age">
 
       </label>
 
@@ -697,7 +1206,7 @@
 
         Gender
 
-        <select>
+        <select id="newDonorGender">
 
           <option>Male</option>
           <option>Female</option>
@@ -713,9 +1222,10 @@
         Phone
 
         <input
+          id="newDonorPhone"
           type="tel"
-          placeholder="Enter phone number"
-        >
+          maxlength="10"
+          placeholder="Enter phone number">
 
       </label>
 
@@ -724,7 +1234,9 @@
 
         Last Donation Date
 
-        <input type="date">
+        <input
+          id="newDonorLastDonation"
+          type="date">
 
       </label>
 
@@ -734,9 +1246,9 @@
         Address
 
         <input
+          id="newDonorAddress"
           type="text"
-          placeholder="Enter donor address"
-        >
+          placeholder="Enter donor address">
 
       </label>
 
@@ -744,9 +1256,7 @@
     </div>
 
 
-
     <div class="modal-actions">
-
 
       <button
         class="secondary-btn"
@@ -767,27 +1277,35 @@
 
     </div>
 
-
   </div>
 
 </div>
 
 
 
-<!-- ================= VIEW DONOR MODAL ================= -->
+<!-- =====================================================
+     VIEW DONOR MODAL
+     ===================================================== -->
+
 <div
   id="viewDonorModal"
   class="modal">
 
-
   <div class="modal-box">
-
 
     <div class="modal-head">
 
-      <h2>
-        Donor Details
-      </h2>
+      <div>
+
+        <h2>
+          Donor Details
+        </h2>
+
+        <p class="modal-subtitle">
+          Complete donor information
+        </p>
+
+      </div>
 
       <button onclick="closeViewDonor()">
         ×
@@ -796,11 +1314,9 @@
     </div>
 
 
-    <div id="donorDetails">
-
-      <p>
-        Select a donor to view details.
-      </p>
+    <div
+      id="donorDetails"
+      class="donor-details-grid">
 
     </div>
 
@@ -817,6 +1333,174 @@
 
     </div>
 
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     EDIT DONOR MODAL
+     ===================================================== -->
+
+<div
+  id="editDonorModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Edit Donor
+        </h2>
+
+        <p class="modal-subtitle">
+          Update donor information
+        </p>
+
+      </div>
+
+      <button onclick="closeEditDonor()">
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="form-grid">
+
+
+      <label>
+
+        Donor ID
+
+        <input
+          id="editDonorId"
+          type="text"
+          disabled>
+
+      </label>
+
+
+      <label>
+
+        Donor Name
+
+        <input
+          id="editDonorName"
+          type="text">
+
+      </label>
+
+
+      <label>
+
+        Blood Group
+
+        <select id="editDonorGroup">
+
+          <option>A+</option>
+          <option>A-</option>
+          <option>B+</option>
+          <option>B-</option>
+          <option>AB+</option>
+          <option>AB-</option>
+          <option>O+</option>
+          <option>O-</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Age
+
+        <input
+          id="editDonorAge"
+          type="number"
+          min="18"
+          max="65">
+
+      </label>
+
+
+      <label>
+
+        Gender
+
+        <select id="editDonorGender">
+
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+
+        Phone
+
+        <input
+          id="editDonorPhone"
+          type="tel"
+          maxlength="10">
+
+      </label>
+
+
+      <label>
+
+        Last Donation Date
+
+        <input
+          id="editDonorLastDonation"
+          type="date">
+
+      </label>
+
+
+      <label class="full">
+
+        Address
+
+        <input
+          id="editDonorAddress"
+          type="text">
+
+      </label>
+
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeEditDonor()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveEditedDonor()">
+
+        Save Changes
+
+      </button>
+
+    </div>
 
   </div>
 
@@ -824,12 +1508,110 @@
 
 
 
+<!-- =====================================================
+     CHANGE STATUS MODAL
+     ===================================================== -->
+
+<div
+  id="donorStatusModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <div>
+
+        <h2>
+          Change Donor Status
+        </h2>
+
+        <p class="modal-subtitle">
+          Update donor eligibility status
+        </p>
+
+      </div>
+
+      <button onclick="closeDonorStatusModal()">
+        ×
+      </button>
+
+    </div>
 
 
+    <div class="donor-status-content">
+
+      <div class="donor-status-info">
+
+        <span>
+          Donor ID
+        </span>
+
+        <strong id="donorStatusId">
+          -
+        </strong>
+
+      </div>
+
+
+      <label>
+
+        New Status
+
+        <select id="newDonorStatus">
+
+          <option value="Active">
+            Active
+          </option>
+
+          <option value="Inactive">
+            Inactive
+          </option>
+
+        </select>
+
+      </label>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeDonorStatusModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        onclick="saveDonorStatus()">
+
+        Save Status
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
 
 <script>
 
-  /* ================= REGISTER DONOR MODAL ================= */
+
+  /* =====================================================
+     REGISTER DONOR MODAL
+     ===================================================== */
 
   function openDonorModal() {
 
@@ -849,35 +1631,96 @@
   }
 
 
+
+  /* =====================================================
+     REGISTER DONOR
+     ===================================================== */
+
   function registerDonor() {
 
-    closeDonorModal();
-
-    alert("Demo: Donor registered successfully!");
-
-  }
-
-
-
-  /* ================= FILTER DONORS ================= */
-
-  function filterDonors() {
-
-    const search =
+    const name =
       document
-        .getElementById("donorSearch")
+        .getElementById("newDonorName")
         .value
-        .toLowerCase();
+        .trim();
 
     const group =
       document
-        .getElementById("donorGroupFilter")
+        .getElementById("newDonorGroup")
         .value;
 
-    const status =
+    const age =
       document
-        .getElementById("donorStatusFilter")
+        .getElementById("newDonorAge")
+        .value
+        .trim();
+
+    const gender =
+      document
+        .getElementById("newDonorGender")
         .value;
+
+    const phone =
+      document
+        .getElementById("newDonorPhone")
+        .value
+        .trim();
+
+    const lastDonation =
+      document
+        .getElementById("newDonorLastDonation")
+        .value;
+
+    const address =
+      document
+        .getElementById("newDonorAddress")
+        .value
+        .trim();
+
+
+    if (!name) {
+
+      alert("Please enter donor name.");
+
+      return;
+
+    }
+
+
+    if (!age || Number(age) < 18 || Number(age) > 65) {
+
+      alert("Donor age must be between 18 and 65.");
+
+      return;
+
+    }
+
+
+    if (!phone || !/^[0-9]{10}$/.test(phone)) {
+
+      alert("Please enter a valid 10-digit phone number.");
+
+      return;
+
+    }
+
+
+    if (!lastDonation) {
+
+      alert("Please select last donation date.");
+
+      return;
+
+    }
+
+
+    if (!address) {
+
+      alert("Please enter donor address.");
+
+      return;
+
+    }
 
 
     const rows =
@@ -886,19 +1729,353 @@
       );
 
 
+    let maxId = 500;
+
+
+    rows.forEach(function(row) {
+
+      const id =
+        row.cells[0]
+          .textContent
+          .trim();
+
+      const number =
+        parseInt(
+          id.replace("D-", ""),
+          10
+        );
+
+
+      if (!isNaN(number) && number > maxId) {
+
+        maxId = number;
+
+      }
+
+    });
+
+
+    const newId =
+      "D-" + (maxId + 1);
+
+
+    const row =
+      document.createElement("tr");
+
+
+    row.dataset.address =
+      address;
+
+    row.dataset.registered =
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    row.innerHTML = `
+
+      <td>${newId}</td>
+
+      <td>${escapeDonorHTML(name)}</td>
+
+      <td>${group}</td>
+
+      <td>${age}</td>
+
+      <td>${gender}</td>
+
+      <td>${phone}</td>
+
+      <td>${formatDonorDate(lastDonation)}</td>
+
+      <td>
+
+        <span class="badge available">
+          Active
+        </span>
+
+      </td>
+
+      <td>
+
+        <div class="donor-action-wrapper">
+
+          <button
+            class="icon-btn"
+            onclick="toggleDonorActionMenu(this, event)"
+            aria-label="Donor actions">
+
+            ⋮
+
+          </button>
+
+          <div class="donor-action-menu">
+
+            <button onclick="viewDonor(this)">
+              👁 View Details
+            </button>
+
+            <button onclick="editDonor(this)">
+              ✏ Edit Donor
+            </button>
+
+            <button onclick="changeDonorStatus(this)">
+              🔄 Change Status
+            </button>
+
+            <hr>
+
+            <button
+              class="danger-action"
+              onclick="removeDonor(this)">
+
+              🗑 Remove Donor
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </td>
+
+    `;
+
+
+    document
+      .querySelector("#donorTable tbody")
+      .appendChild(row);
+
+
+    closeDonorActionMenus();
+
+
+    document
+      .getElementById("newDonorName")
+      .value = "";
+
+    document
+      .getElementById("newDonorAge")
+      .value = "";
+
+    document
+      .getElementById("newDonorPhone")
+      .value = "";
+
+    document
+      .getElementById("newDonorLastDonation")
+      .value = "";
+
+    document
+      .getElementById("newDonorAddress")
+      .value = "";
+
+
+    closeDonorModal();
+
+
+    updateDonorStats();
+
+    filterDonors();
+
+
+    alert(
+      "Donor " +
+      newId +
+      " registered successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     ESCAPE HTML
+     ===================================================== */
+
+  function escapeDonorHTML(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+
+  /* =====================================================
+     DATE FORMAT
+     ===================================================== */
+
+  function formatDonorDate(value) {
+
+    if (!value) {
+      return "-";
+    }
+
+
+    const parts =
+      value.split("-");
+
+
+    if (parts.length !== 3) {
+      return value;
+    }
+
+
+    const months = [
+
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+
+    ];
+
+
+    return (
+      parseInt(parts[2], 10) +
+      " " +
+      months[
+        parseInt(parts[1], 10) - 1
+      ] +
+      " " +
+      parts[0]
+    );
+
+  }
+
+
+
+  /* =====================================================
+     INPUT DATE CONVERSION
+     ===================================================== */
+
+  function donorInputDate(dateText) {
+
+    if (!dateText || dateText === "-") {
+      return "";
+    }
+
+
+    const parts =
+      dateText
+        .trim()
+        .split(" ");
+
+
+    if (parts.length !== 3) {
+      return "";
+    }
+
+
+    const months = {
+
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12"
+
+    };
+
+
+    const month =
+      months[parts[1]];
+
+
+    if (!month) {
+      return "";
+    }
+
+
+    return (
+      parts[2] +
+      "-" +
+      month +
+      "-" +
+      parts[0].padStart(2, "0")
+    );
+
+  }
+
+
+
+  /* =====================================================
+     FILTER DONORS
+     ===================================================== */
+
+  function filterDonors() {
+
+    const search =
+      document
+        .getElementById("donorSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const group =
+      document
+        .getElementById("donorGroupFilter")
+        .value
+        .toLowerCase();
+
+    const status =
+      document
+        .getElementById("donorStatusFilter")
+        .value
+        .toLowerCase();
+
+
+    const rows =
+      document.querySelectorAll(
+        "#donorTable tbody tr"
+      );
+
+
+    let visibleCount = 0;
+
+
     rows.forEach(function(row) {
 
       const text =
-        row.innerText.toLowerCase();
+        row.innerText
+          .toLowerCase();
+
 
       const rowGroup =
         row.cells[2]
-          ? row.cells[2].innerText.trim()
+          ? row.cells[2]
+              .innerText
+              .trim()
+              .toLowerCase()
           : "";
+
 
       const rowStatus =
         row.cells[7]
-          ? row.cells[7].innerText.trim()
+          ? row.cells[7]
+              .innerText
+              .trim()
+              .toLowerCase()
           : "";
 
 
@@ -925,6 +2102,8 @@
 
         row.style.display = "";
 
+        visibleCount++;
+
       } else {
 
         row.style.display = "none";
@@ -933,16 +2112,57 @@
 
     });
 
+
+    document
+      .getElementById("donorRecordCount")
+      .textContent =
+      visibleCount +
+      (
+        visibleCount === 1
+          ? " donor"
+          : " donors"
+      );
+
   }
 
 
 
-  /* ================= RESET FILTERS ================= */
+  /* =====================================================
+     TOP SEARCH
+     ===================================================== */
+
+  function syncDonorTopSearch() {
+
+    const value =
+      document
+        .getElementById("donorTopSearch")
+        .value;
+
+
+    document
+      .getElementById("donorSearch")
+      .value =
+      value;
+
+
+    filterDonors();
+
+  }
+
+
+
+  /* =====================================================
+     RESET FILTERS
+     ===================================================== */
 
   function resetDonorFilters() {
 
     document
       .getElementById("donorSearch")
+      .value = "";
+
+    document
+      .getElementById("donorTopSearch")
       .value = "";
 
     document
@@ -953,46 +2173,363 @@
       .getElementById("donorStatusFilter")
       .value = "";
 
+
     filterDonors();
 
   }
 
 
 
-  /* ================= VIEW DONOR ================= */
+  /* =====================================================
+     ACTION MENU
+     ===================================================== */
 
-  function viewDonor(id) {
+  function toggleDonorActionMenu(button, event) {
 
-    const details =
-      document.getElementById("donorDetails");
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
 
-    details.innerHTML = `
+    const wrapper =
+      button.closest(".donor-action-wrapper");
 
-      <div style="padding: 10px 0;">
 
-        <p>
-          <strong>Donor ID:</strong> ${id}
-        </p>
+    if (!wrapper) {
+      return;
+    }
 
-        <p>
-          <strong>Status:</strong> Active
-        </p>
 
-        <p>
-          <strong>Blood Donation Record:</strong>
-          Available
-        </p>
+    const menu =
+      wrapper.querySelector(".donor-action-menu");
 
-        <p>
-          <strong>Note:</strong>
-          This is demo data. Backend integration
-          will be added later.
-        </p>
 
-      </div>
+    if (!menu) {
+      return;
+    }
 
-    `;
+
+    const wasOpen =
+      menu.classList.contains("show");
+
+
+    closeDonorActionMenus();
+
+
+    if (wasOpen) {
+      return;
+    }
+
+
+    /*
+      IMPORTANT:
+      The donor table is inside a horizontally scrollable container.
+      A normal dropdown can therefore be clipped by the table.
+      We temporarily move the menu to <body> while it is open.
+    */
+
+    menu.__donorOriginalParent = wrapper;
+    menu.__donorRow = button.closest("tr");
+
+
+    document.body.appendChild(menu);
+
+
+    const rect =
+      button.getBoundingClientRect();
+
+
+    menu.classList.add("show");
+
+
+    const menuWidth =
+      menu.offsetWidth || 190;
+
+    const menuHeight =
+      menu.offsetHeight || 180;
+
+
+    let left =
+      rect.right -
+      menuWidth;
+
+
+    let top =
+      rect.bottom +
+      6;
+
+
+    if (left < 8) {
+      left = 8;
+    }
+
+
+    if (
+      left + menuWidth >
+      window.innerWidth - 8
+    ) {
+      left =
+        window.innerWidth -
+        menuWidth -
+        8;
+    }
+
+
+    if (
+      top + menuHeight >
+      window.innerHeight - 8
+    ) {
+      top =
+        rect.top -
+        menuHeight -
+        6;
+    }
+
+
+    if (top < 8) {
+      top = 8;
+    }
+
+
+    menu.style.position = "fixed";
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+    menu.style.zIndex = "999999";
+  }
+
+
+
+  function closeDonorActionMenus(exceptMenu) {
+
+    document
+      .querySelectorAll(
+        ".donor-action-menu.show"
+      )
+      .forEach(function(menu) {
+
+        if (menu === exceptMenu) {
+          return;
+        }
+
+
+        menu.classList.remove("show");
+
+
+        /*
+          Put the menu back inside its original row.
+          This keeps the HTML structure correct for the next click.
+        */
+
+        if (menu.__donorOriginalParent) {
+
+          menu.__donorOriginalParent.appendChild(menu);
+
+          menu.style.position = "";
+          menu.style.left = "";
+          menu.style.top = "";
+          menu.style.zIndex = "";
+
+          menu.__donorOriginalParent = null;
+          menu.__donorRow = null;
+        }
+
+      });
+
+  }
+
+
+
+  function getDonorRowFromActionButton(button) {
+
+    const directRow =
+      button.closest("tr");
+
+
+    if (directRow) {
+      return directRow;
+    }
+
+
+    const menu =
+      button.closest(".donor-action-menu");
+
+
+    if (
+      menu &&
+      menu.__donorRow
+    ) {
+      return menu.__donorRow;
+    }
+
+
+    return null;
+  }
+
+
+
+  document.addEventListener(
+    "click",
+    function(event) {
+
+      if (
+        !event.target.closest(
+          ".donor-action-wrapper"
+        ) &&
+        !event.target.closest(
+          ".donor-action-menu"
+        )
+      ) {
+
+        closeDonorActionMenus();
+
+      }
+
+    }
+  );
+
+
+
+  window.addEventListener(
+    "scroll",
+    function() {
+
+      closeDonorActionMenus();
+
+    },
+    true
+  );
+
+
+
+  window.addEventListener(
+    "resize",
+    function() {
+
+      closeDonorActionMenus();
+
+    }
+  );
+
+
+
+  /* =====================================================
+     VIEW DONOR
+     ===================================================== */
+
+  function viewDonor(button) {
+
+    const row =
+      getDonorRowFromActionButton(button);
+
+
+    if (!row) {
+      return;
+    }
+
+
+    const cells =
+      row.querySelectorAll("td");
+
+
+    const donorId =
+      cells[0]
+        .textContent
+        .trim();
+
+    const name =
+      cells[1]
+        .textContent
+        .trim();
+
+    const group =
+      cells[2]
+        .textContent
+        .trim();
+
+    const age =
+      cells[3]
+        .textContent
+        .trim();
+
+    const gender =
+      cells[4]
+        .textContent
+        .trim();
+
+    const phone =
+      cells[5]
+        .textContent
+        .trim();
+
+    const lastDonation =
+      cells[6]
+        .textContent
+        .trim();
+
+    const status =
+      cells[7]
+        .textContent
+        .trim();
+
+    const address =
+      row.dataset.address ||
+      "Not specified";
+
+
+    document
+      .getElementById("donorDetails")
+      .innerHTML = `
+
+        <div class="donor-detail-item">
+          <span>Donor ID</span>
+          <strong>${escapeDonorHTML(donorId)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Donor Name</span>
+          <strong>${escapeDonorHTML(name)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Blood Group</span>
+          <strong>${escapeDonorHTML(group)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Age</span>
+          <strong>${escapeDonorHTML(age)} years</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Gender</span>
+          <strong>${escapeDonorHTML(gender)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Phone</span>
+          <strong>${escapeDonorHTML(phone)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Last Donation</span>
+          <strong>${escapeDonorHTML(lastDonation)}</strong>
+        </div>
+
+        <div class="donor-detail-item">
+          <span>Status</span>
+          <strong>${escapeDonorHTML(status)}</strong>
+        </div>
+
+        <div class="donor-detail-item donor-detail-full">
+          <span>Address</span>
+          <strong>${escapeDonorHTML(address)}</strong>
+        </div>
+
+      `;
+
+
+    closeDonorActionMenus();
 
 
     document
@@ -1000,6 +2537,7 @@
       .classList.add("show");
 
   }
+
 
 
   function closeViewDonor() {
@@ -1010,6 +2548,575 @@
 
   }
 
+
+
+  /* =====================================================
+     EDIT DONOR
+     ===================================================== */
+
+  function editDonor(button) {
+
+    const row =
+      getDonorRowFromActionButton(button);
+
+
+    if (!row) {
+      return;
+    }
+
+
+    const cells =
+      row.querySelectorAll("td");
+
+
+    document
+      .getElementById("editDonorId")
+      .value =
+      cells[0]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorName")
+      .value =
+      cells[1]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorGroup")
+      .value =
+      cells[2]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorAge")
+      .value =
+      cells[3]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorGender")
+      .value =
+      cells[4]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorPhone")
+      .value =
+      cells[5]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("editDonorLastDonation")
+      .value =
+      donorInputDate(
+        cells[6]
+          .textContent
+          .trim()
+      );
+
+
+    document
+      .getElementById("editDonorAddress")
+      .value =
+      row.dataset.address ||
+      "";
+
+
+    window.selectedDonorRow =
+      row;
+
+
+    closeDonorActionMenus();
+
+
+    document
+      .getElementById("editDonorModal")
+      .classList.add("show");
+
+  }
+
+
+
+  function closeEditDonor() {
+
+    document
+      .getElementById("editDonorModal")
+      .classList.remove("show");
+
+
+    window.selectedDonorRow =
+      null;
+
+  }
+
+
+
+  /* =====================================================
+     SAVE EDITED DONOR
+     ===================================================== */
+
+  function saveEditedDonor() {
+
+    const row =
+      window.selectedDonorRow;
+
+
+    if (!row) {
+
+      alert("Donor could not be found.");
+
+      return;
+
+    }
+
+
+    const name =
+      document
+        .getElementById("editDonorName")
+        .value
+        .trim();
+
+    const group =
+      document
+        .getElementById("editDonorGroup")
+        .value;
+
+    const age =
+      document
+        .getElementById("editDonorAge")
+        .value
+        .trim();
+
+    const gender =
+      document
+        .getElementById("editDonorGender")
+        .value;
+
+    const phone =
+      document
+        .getElementById("editDonorPhone")
+        .value
+        .trim();
+
+    const lastDonation =
+      document
+        .getElementById("editDonorLastDonation")
+        .value;
+
+    const address =
+      document
+        .getElementById("editDonorAddress")
+        .value
+        .trim();
+
+
+    if (!name) {
+
+      alert("Please enter donor name.");
+
+      return;
+
+    }
+
+
+    if (
+      !age ||
+      Number(age) < 18 ||
+      Number(age) > 65
+    ) {
+
+      alert("Donor age must be between 18 and 65.");
+
+      return;
+
+    }
+
+
+    if (
+      !phone ||
+      !/^[0-9]{10}$/.test(phone)
+    ) {
+
+      alert("Please enter a valid 10-digit phone number.");
+
+      return;
+
+    }
+
+
+    if (!lastDonation) {
+
+      alert("Please select last donation date.");
+
+      return;
+
+    }
+
+
+    if (!address) {
+
+      alert("Please enter donor address.");
+
+      return;
+
+    }
+
+
+    row.cells[1].textContent =
+      name;
+
+    row.cells[2].textContent =
+      group;
+
+    row.cells[3].textContent =
+      age;
+
+    row.cells[4].textContent =
+      gender;
+
+    row.cells[5].textContent =
+      phone;
+
+    row.cells[6].textContent =
+      formatDonorDate(
+        lastDonation
+      );
+
+
+    row.dataset.address =
+      address;
+
+
+    const donorId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    closeEditDonor();
+
+
+    updateDonorStats();
+
+    filterDonors();
+
+
+    alert(
+      "Donor " +
+      donorId +
+      " updated successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     CHANGE DONOR STATUS
+     ===================================================== */
+
+  function changeDonorStatus(button) {
+
+    const row =
+      getDonorRowFromActionButton(button);
+
+
+    if (!row) {
+      return;
+    }
+
+
+    const donorId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    const currentStatus =
+      row.cells[7]
+        .textContent
+        .trim();
+
+
+    document
+      .getElementById("donorStatusId")
+      .textContent =
+      donorId;
+
+
+    document
+      .getElementById("newDonorStatus")
+      .value =
+      currentStatus;
+
+
+    window.selectedDonorStatusRow =
+      row;
+
+
+    closeDonorActionMenus();
+
+
+    document
+      .getElementById("donorStatusModal")
+      .classList.add("show");
+
+  }
+
+
+
+  function closeDonorStatusModal() {
+
+    document
+      .getElementById("donorStatusModal")
+      .classList.remove("show");
+
+
+    window.selectedDonorStatusRow =
+      null;
+
+  }
+
+
+
+  function saveDonorStatus() {
+
+    const row =
+      window.selectedDonorStatusRow;
+
+
+    if (!row) {
+
+      alert("Donor could not be found.");
+
+      return;
+
+    }
+
+
+    const status =
+      document
+        .getElementById("newDonorStatus")
+        .value;
+
+
+    const donorId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    const badgeClass =
+      status === "Active"
+        ? "available"
+        : "issued";
+
+
+    row.cells[7].innerHTML = `
+
+      <span class="badge ${badgeClass}">
+        ${status}
+      </span>
+
+    `;
+
+
+    closeDonorStatusModal();
+
+
+    updateDonorStats();
+
+    filterDonors();
+
+
+    alert(
+      "Status of " +
+      donorId +
+      " changed to " +
+      status +
+      " successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     REMOVE DONOR
+     ===================================================== */
+
+  function removeDonor(button) {
+
+    const row =
+      getDonorRowFromActionButton(button);
+
+
+    if (!row) {
+      return;
+    }
+
+
+    const donorId =
+      row.cells[0]
+        .textContent
+        .trim();
+
+
+    const donorName =
+      row.cells[1]
+        .textContent
+        .trim();
+
+
+    closeDonorActionMenus();
+
+
+    const confirmed =
+      confirm(
+        "Are you sure you want to remove " +
+        donorName +
+        " (" +
+        donorId +
+        ") from the donor list?"
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    row.remove();
+
+
+    updateDonorStats();
+
+    filterDonors();
+
+
+    alert(
+      "Donor " +
+      donorId +
+      " removed successfully!"
+    );
+
+  }
+
+
+
+  /* =====================================================
+     UPDATE DONOR STATISTICS
+     ===================================================== */
+
+  function updateDonorStats() {
+
+    const rows =
+      document.querySelectorAll(
+        "#donorTable tbody tr"
+      );
+
+
+    let total =
+      rows.length;
+
+    let active =
+      0;
+
+    let newDonors =
+      0;
+
+
+    const currentMonth =
+      "2026-09";
+
+
+    rows.forEach(function(row) {
+
+      const status =
+        row.cells[7]
+          .textContent
+          .trim();
+
+
+      if (status === "Active") {
+
+        active++;
+
+      }
+
+
+      const registered =
+        row.dataset.registered ||
+        "";
+
+
+      if (
+        registered.startsWith(
+          currentMonth
+        )
+      ) {
+
+        newDonors++;
+
+      }
+
+    });
+
+
+    document
+      .getElementById("totalDonorCount")
+      .textContent =
+      total;
+
+
+    document
+      .getElementById("activeDonorCount")
+      .textContent =
+      active;
+
+
+    document
+      .getElementById("newDonorCount")
+      .textContent =
+      newDonors;
+
+
+    document
+      .getElementById("monthlyDonationCount")
+      .textContent =
+      156;
+
+  }
+
+
+
+  /* =====================================================
+     INITIALIZE PAGE
+     ===================================================== */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      updateDonorStats();
+
+      filterDonors();
+
+    }
+  );
+
 </script>
 
 
@@ -1017,5 +3124,7 @@
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>
+
 </body>
+
 </html>

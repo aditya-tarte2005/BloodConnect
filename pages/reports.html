@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -13,8 +12,141 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-</head>
+    <style>
+        /* ================= REPORT PAGE ENHANCEMENTS ================= */
 
+        .report-toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .report-export-menu {
+            position: relative;
+        }
+
+        .report-export-options {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            display: none;
+            min-width: 190px;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            box-shadow: 0 10px 28px rgba(0,0,0,.15);
+            padding: 6px;
+            z-index: 9999;
+        }
+
+        .report-export-options.show {
+            display: block;
+        }
+
+        .report-export-options button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            text-align: left;
+            padding: 11px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .report-export-options button:hover {
+            background: #f5f5f5;
+        }
+
+        .report-filter-info {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .report-summary-table td,
+        .report-summary-table th {
+            white-space: nowrap;
+        }
+
+        .report-empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        .report-chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .report-chart-container.doughnut {
+            height: 280px;
+        }
+
+        .report-insight-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .report-insight {
+            padding: 18px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .report-insight span {
+            display: block;
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 7px;
+        }
+
+        .report-insight strong {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .report-insight small {
+            color: #777;
+        }
+
+        @media (max-width: 900px) {
+            .report-insight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .report-chart-container {
+                height: 250px;
+            }
+
+            .report-chart-container.doughnut {
+                height: 250px;
+            }
+
+            .report-toolbar {
+                width: 100%;
+            }
+
+            .report-toolbar button {
+                flex: 1;
+            }
+
+            .report-export-options {
+                left: 0;
+                right: auto;
+            }
+        }
+    </style>
+</head>
 
 <body>
 
@@ -25,20 +157,13 @@
     <aside class="sidebar">
 
         <div class="brand">
-
-            <div class="brand-icon">
-                ♥
-            </div>
+            <div class="brand-icon">♥</div>
 
             <div>
                 <h2>BloodConnect</h2>
                 <span>Save Lives Together</span>
             </div>
-
         </div>
-
-
-        <!-- ================= NAVIGATION ================= -->
 
         <nav>
 
@@ -84,11 +209,9 @@
 
         </nav>
 
-
         <div class="sidebar-quote">
             “A single unit of blood can save up to 3 lives.”
         </div>
-
 
         <a class="logout" href="../login.html">
             <span>↪</span>
@@ -97,12 +220,9 @@
 
     </aside>
 
-
-
     <!-- ================= MAIN ================= -->
 
     <main class="main">
-
 
         <!-- ================= TOP BAR ================= -->
 
@@ -111,91 +231,92 @@
             <button
                 class="menu-btn"
                 onclick="toggleSidebar()">
-
                 ☰
-
             </button>
 
-
             <div class="search">
-
                 ⌕
-
                 <input
                     type="text"
+                    id="reportSearch"
                     placeholder="Search reports..."
+                    onkeyup="filterReportTables()"
                 >
-
             </div>
-
 
             <div class="top-user">
 
                 <span class="notification">
-
                     ♧
-
                     <b>3</b>
-
                 </span>
 
-
-                <div class="avatar">
-                    A
-                </div>
-
+                <div class="avatar">A</div>
 
                 <div>
-
-                    <strong>
-                        Admin
-                    </strong>
-
-                    <small>
-                        Blood Bank
-                    </small>
-
+                    <strong>Admin</strong>
+                    <small>Blood Bank</small>
                 </div>
 
             </div>
 
         </header>
 
-
-
         <!-- ================= PAGE CONTENT ================= -->
 
         <section class="content">
 
-
-            <!-- ================= PAGE HEADING ================= -->
+            <!-- PAGE HEADING -->
 
             <div class="page-heading">
 
                 <div>
-
-                    <h1>
-                        Reports
-                    </h1>
+                    <h1>Reports</h1>
 
                     <p>
                         View blood bank performance and activity reports.
                     </p>
 
+                    <div class="report-filter-info" id="reportFilterInfo">
+                        Showing this month's report data
+                    </div>
                 </div>
 
+                <div class="report-toolbar">
 
-                <button
-                    class="primary-btn"
-                    onclick="exportReport()">
+                    <div class="report-export-menu">
 
-                    ↓ Export Report
+                        <button
+                            class="secondary-btn"
+                            onclick="toggleExportMenu()">
+                            ↓ Export
+                        </button>
 
-                </button>
+                        <div
+                            id="reportExportOptions"
+                            class="report-export-options">
+
+                            <button onclick="exportReportCSV()">
+                                📄 Export CSV
+                            </button>
+
+                            <button onclick="printReport()">
+                                🖨 Print Report
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="primary-btn"
+                        onclick="refreshReport()">
+                        ↻ Refresh
+                    </button>
+
+                </div>
 
             </div>
-
-
 
             <!-- ================= REPORT FILTER ================= -->
 
@@ -223,7 +344,6 @@
 
                 </select>
 
-
                 <select
                     id="reportType"
                     onchange="updateReport()">
@@ -250,23 +370,17 @@
 
                 </select>
 
-
                 <button
                     class="secondary-btn"
                     onclick="resetReportFilters()">
-
                     Reset
-
                 </button>
 
             </div>
 
-
-
             <!-- ================= SUMMARY CARDS ================= -->
 
             <div class="stats">
-
 
                 <div class="card stat">
 
@@ -275,12 +389,9 @@
                     </div>
 
                     <div>
+                        <span>Total Donations</span>
 
-                        <span>
-                            Total Donations
-                        </span>
-
-                        <strong>
+                        <strong id="totalDonations">
                             156
                         </strong>
 
@@ -288,15 +399,12 @@
                             ↑ +12%
                         </em>
 
-                        <small>
+                        <small id="donationPeriodLabel">
                             This month
                         </small>
-
                     </div>
 
                 </div>
-
-
 
                 <div class="card stat">
 
@@ -305,12 +413,9 @@
                     </div>
 
                     <div>
+                        <span>Blood Issued</span>
 
-                        <span>
-                            Blood Issued
-                        </span>
-
-                        <strong>
+                        <strong id="totalIssued">
                             98
                         </strong>
 
@@ -318,15 +423,12 @@
                             ↑ +8%
                         </em>
 
-                        <small>
+                        <small id="issuePeriodLabel">
                             Units issued
                         </small>
-
                     </div>
 
                 </div>
-
-
 
                 <div class="card stat">
 
@@ -335,12 +437,9 @@
                     </div>
 
                     <div>
+                        <span>Active Donors</span>
 
-                        <span>
-                            Active Donors
-                        </span>
-
-                        <strong>
+                        <strong id="activeDonors">
                             982
                         </strong>
 
@@ -351,12 +450,9 @@
                         <small>
                             Eligible donors
                         </small>
-
                     </div>
 
                 </div>
-
-
 
                 <div class="card stat">
 
@@ -365,12 +461,9 @@
                     </div>
 
                     <div>
+                        <span>Requests Fulfilled</span>
 
-                        <span>
-                            Requests Fulfilled
-                        </span>
-
-                        <strong>
+                        <strong id="fulfilledRequests">
                             128
                         </strong>
 
@@ -381,226 +474,132 @@
                         <small>
                             Hospital requests
                         </small>
-
                     </div>
 
                 </div>
 
-
             </div>
-
-
 
             <!-- ================= CHARTS ================= -->
 
             <div class="dashboard-grid">
 
-
-                <!-- DONATION CHART -->
-
                 <section class="card chart-card">
 
                     <div class="card-title">
-
-                        <h2>
-                            Blood Donations
-                        </h2>
-
-                        <span>
+                        <h2>Blood Donations</h2>
+                        <span id="donationChartLabel">
                             Monthly
                         </span>
-
                     </div>
 
-
-                    <canvas id="donationChart"></canvas>
+                    <div class="report-chart-container">
+                        <canvas id="donationChart"></canvas>
+                    </div>
 
                 </section>
 
-
-
-                <!-- BLOOD GROUP CHART -->
-
                 <section class="card chart-card">
 
                     <div class="card-title">
-
-                        <h2>
-                            Blood Group Distribution
-                        </h2>
-
+                        <h2>Blood Group Distribution</h2>
                     </div>
 
-
-                    <div
-                        style="
-                        height:260px;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        "
-                    >
-
+                    <div class="report-chart-container doughnut">
                         <canvas id="bloodGroupChart"></canvas>
-
                     </div>
 
                 </section>
 
             </div>
 
+            <!-- ================= INSIGHTS ================= -->
 
+            <div class="report-insight-grid">
+
+                <div class="report-insight">
+                    <span>Total Available Units</span>
+                    <strong id="availableUnits">1,120</strong>
+                    <small>Current inventory availability</small>
+                </div>
+
+                <div class="report-insight">
+                    <span>Pending Requests</span>
+                    <strong id="pendingRequests">24</strong>
+                    <small>Requests waiting for processing</small>
+                </div>
+
+                <div class="report-insight">
+                    <span>Expired Units</span>
+                    <strong id="expiredUnits">25</strong>
+                    <small>Units marked as expired</small>
+                </div>
+
+            </div>
 
             <!-- ================= REPORT SUMMARY ================= -->
 
             <div class="dashboard-grid bottom">
-
 
                 <!-- COMPONENT REPORT -->
 
                 <section class="card table-card">
 
                     <div class="card-title">
-
-                        <h2>
-                            Component Summary
-                        </h2>
-
+                        <h2>Component Summary</h2>
+                        <span id="componentRecordCount">
+                            4 components
+                        </span>
                     </div>
-
 
                     <div class="table-scroll">
 
-                        <table>
+                        <table
+                            id="componentTable"
+                            class="report-summary-table">
 
                             <thead>
-
                                 <tr>
-
-                                    <th>
-                                        Component
-                                    </th>
-
-                                    <th>
-                                        Available
-                                    </th>
-
-                                    <th>
-                                        Issued
-                                    </th>
-
-                                    <th>
-                                        Expired
-                                    </th>
-
-                                    <th>
-                                        Total
-                                    </th>
-
+                                    <th>Component</th>
+                                    <th>Available</th>
+                                    <th>Issued</th>
+                                    <th>Expired</th>
+                                    <th>Total</th>
                                 </tr>
-
                             </thead>
-
 
                             <tbody>
 
                                 <tr>
-
-                                    <td>
-                                        Whole Blood
-                                    </td>
-
-                                    <td>
-                                        540
-                                    </td>
-
-                                    <td>
-                                        320
-                                    </td>
-
-                                    <td>
-                                        12
-                                    </td>
-
-                                    <td>
-                                        872
-                                    </td>
-
+                                    <td>Whole Blood</td>
+                                    <td>540</td>
+                                    <td>320</td>
+                                    <td>12</td>
+                                    <td>872</td>
                                 </tr>
 
-
                                 <tr>
-
-                                    <td>
-                                        RBC
-                                    </td>
-
-                                    <td>
-                                        280
-                                    </td>
-
-                                    <td>
-                                        210
-                                    </td>
-
-                                    <td>
-                                        6
-                                    </td>
-
-                                    <td>
-                                        496
-                                    </td>
-
+                                    <td>RBC</td>
+                                    <td>280</td>
+                                    <td>210</td>
+                                    <td>6</td>
+                                    <td>496</td>
                                 </tr>
 
-
                                 <tr>
-
-                                    <td>
-                                        Plasma
-                                    </td>
-
-                                    <td>
-                                        190
-                                    </td>
-
-                                    <td>
-                                        140
-                                    </td>
-
-                                    <td>
-                                        5
-                                    </td>
-
-                                    <td>
-                                        335
-                                    </td>
-
+                                    <td>Plasma</td>
+                                    <td>190</td>
+                                    <td>140</td>
+                                    <td>5</td>
+                                    <td>335</td>
                                 </tr>
 
-
                                 <tr>
-
-                                    <td>
-                                        Platelets
-                                    </td>
-
-                                    <td>
-                                        110
-                                    </td>
-
-                                    <td>
-                                        85
-                                    </td>
-
-                                    <td>
-                                        2
-                                    </td>
-
-                                    <td>
-                                        197
-                                    </td>
-
+                                    <td>Platelets</td>
+                                    <td>110</td>
+                                    <td>85</td>
+                                    <td>2</td>
+                                    <td>197</td>
                                 </tr>
 
                             </tbody>
@@ -610,103 +609,62 @@
                     </div>
 
                 </section>
-
-
 
                 <!-- REQUEST SUMMARY -->
 
                 <section class="card table-card">
 
                     <div class="card-title">
-
-                        <h2>
-                            Request Summary
-                        </h2>
-
+                        <h2>Request Summary</h2>
+                        <span>
+                            Current status
+                        </span>
                     </div>
-
 
                     <div class="table-scroll">
 
-                        <table>
+                        <table
+                            id="requestTable"
+                            class="report-summary-table">
 
                             <thead>
-
                                 <tr>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Requests
-                                    </th>
-
-                                    <th>
-                                        Units
-                                    </th>
-
+                                    <th>Status</th>
+                                    <th>Requests</th>
+                                    <th>Units</th>
                                 </tr>
-
                             </thead>
-
 
                             <tbody>
 
                                 <tr>
-
                                     <td>
                                         <span class="badge available">
                                             Completed
                                         </span>
                                     </td>
-
-                                    <td>
-                                        103
-                                    </td>
-
-                                    <td>
-                                        420
-                                    </td>
-
+                                    <td>103</td>
+                                    <td>420</td>
                                 </tr>
 
-
                                 <tr>
-
                                     <td>
                                         <span class="badge reserved">
                                             Pending
                                         </span>
                                     </td>
-
-                                    <td>
-                                        24
-                                    </td>
-
-                                    <td>
-                                        86
-                                    </td>
-
+                                    <td>24</td>
+                                    <td>86</td>
                                 </tr>
 
-
                                 <tr>
-
                                     <td>
                                         <span class="badge expired">
                                             Cancelled
                                         </span>
                                     </td>
-
-                                    <td>
-                                        7
-                                    </td>
-
-                                    <td>
-                                        21
-                                    </td>
-
+                                    <td>7</td>
+                                    <td>21</td>
                                 </tr>
 
                             </tbody>
@@ -719,126 +677,71 @@
 
             </div>
 
-
-
             <!-- ================= QUICK REPORT ACTIONS ================= -->
 
             <div class="quick-actions">
-
 
                 <a
                     href="transactions.html"
                     class="action red-action">
 
-                    <span>
-                        ⇄
-                    </span>
+                    <span>⇄</span>
 
                     <div>
-
-                        <b>
-                            Transaction Report
-                        </b>
-
-                        <small>
-                            View transaction history
-                        </small>
-
+                        <b>Transaction Report</b>
+                        <small>View transaction history</small>
                     </div>
 
-                    <strong>
-                        →
-                    </strong>
+                    <strong>→</strong>
 
                 </a>
-
-
 
                 <a
                     href="inventory.html"
                     class="action green-action">
 
-                    <span>
-                        🩸
-                    </span>
+                    <span>🩸</span>
 
                     <div>
-
-                        <b>
-                            Inventory Report
-                        </b>
-
-                        <small>
-                            Check blood stock
-                        </small>
-
+                        <b>Inventory Report</b>
+                        <small>Check blood stock</small>
                     </div>
 
-                    <strong>
-                        →
-                    </strong>
+                    <strong>→</strong>
 
                 </a>
-
-
 
                 <a
                     href="donors.html"
                     class="action blue-action">
 
-                    <span>
-                        ♟
-                    </span>
+                    <span>♟</span>
 
                     <div>
-
-                        <b>
-                            Donor Report
-                        </b>
-
-                        <small>
-                            View donor information
-                        </small>
-
+                        <b>Donor Report</b>
+                        <small>View donor information</small>
                     </div>
 
-                    <strong>
-                        →
-                    </strong>
+                    <strong>→</strong>
 
                 </a>
-
-
 
                 <a
                     href="blood-requests.html"
                     class="action purple-action">
 
-                    <span>
-                        ▤
-                    </span>
+                    <span>▤</span>
 
                     <div>
-
-                        <b>
-                            Request Report
-                        </b>
-
-                        <small>
-                            View hospital requests
-                        </small>
-
+                        <b>Request Report</b>
+                        <small>View hospital requests</small>
                     </div>
 
-                    <strong>
-                        →
-                    </strong>
+                    <strong>→</strong>
 
                 </a>
 
-
             </div>
-
 
         </section>
 
@@ -846,201 +749,291 @@
 
 </div>
 
-
-
 <!-- ================= JAVASCRIPT ================= -->
-
-
-
 
 <script>
 
+let donationChartInstance = null;
+let bloodGroupChartInstance = null;
 
 /* =========================================
-   DONATION CHART
+   REPORT DATA
 ========================================= */
 
-const donationCanvas =
-    document.getElementById("donationChart");
+const reportData = {
 
+    today: {
+        donations: 8,
+        issued: 5,
+        donors: 982,
+        fulfilled: 6
+    },
 
-if (donationCanvas) {
+    week: {
+        donations: 42,
+        issued: 27,
+        donors: 982,
+        fulfilled: 31
+    },
 
-    new Chart(
-        donationCanvas,
-        {
-            type: "line",
+    month: {
+        donations: 156,
+        issued: 98,
+        donors: 982,
+        fulfilled: 128
+    },
 
-            data: {
+    year: {
+        donations: 1420,
+        issued: 892,
+        donors: 982,
+        fulfilled: 1030
+    }
 
-                labels: [
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep"
-                ],
+};
 
-                datasets: [
+/* =========================================
+   CREATE DONATION CHART
+========================================= */
 
-                    {
-                        label: "Donations",
+function createDonationChart(period) {
 
-                        data: [
-                            82,
-                            105,
-                            96,
-                            128,
-                            141,
-                            156
-                        ],
+    const canvas =
+        document.getElementById("donationChart");
 
-                        borderColor: "#df3a42",
+    if (!canvas) {
+        return;
+    }
 
-                        backgroundColor:
-                            "rgba(223,58,66,0.12)",
+    if (donationChartInstance) {
+        donationChartInstance.destroy();
+    }
 
-                        fill: true,
+    let labels;
+    let data;
+    let chartLabel;
 
-                        tension: 0.35,
+    if (period === "today") {
 
-                        pointRadius: 4
+        labels = [
+            "8 AM",
+            "10 AM",
+            "12 PM",
+            "2 PM",
+            "4 PM",
+            "6 PM"
+        ];
 
-                    }
+        data = [
+            1, 2, 1, 2, 1, 1
+        ];
 
-                ]
+        chartLabel = "Today";
 
-            },
+    } else if (period === "week") {
 
-            options: {
+        labels = [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+            "Sun"
+        ];
 
-                responsive: true,
+        data = [
+            4, 7, 5, 8, 6, 7, 5
+        ];
 
-                plugins: {
+        chartLabel = "Weekly";
 
-                    legend: {
-                        display: false
-                    }
+    } else if (period === "year") {
 
+        labels = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+        ];
+
+        data = [
+            96, 102, 110, 82, 105, 96,
+            128, 141, 156, 118, 130, 136
+        ];
+
+        chartLabel = "Yearly";
+
+    } else {
+
+        labels = [
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep"
+        ];
+
+        data = [
+            82,
+            105,
+            96,
+            128,
+            141,
+            156
+        ];
+
+        chartLabel = "Monthly";
+    }
+
+    document.getElementById("donationChartLabel").textContent =
+        chartLabel;
+
+    donationChartInstance =
+        new Chart(
+            canvas,
+            {
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+                        {
+                            label: "Donations",
+                            data: data,
+                            borderColor: "#df3a42",
+                            backgroundColor: "rgba(223,58,66,0.12)",
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 4
+                        }
+                    ]
                 },
 
-                scales: {
+                options: {
 
-                    y: {
-                        beginAtZero: true
-                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
 
-                    x: {
-                        grid: {
+                    plugins: {
+                        legend: {
                             display: false
                         }
+                    },
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true
+                        },
+
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+
                     }
-
                 }
-
             }
-
-        }
-    );
-
+        );
 }
-
-
 
 /* =========================================
    BLOOD GROUP CHART
 ========================================= */
 
-const bloodGroupCanvas =
-    document.getElementById("bloodGroupChart");
+function createBloodGroupChart() {
 
+    const canvas =
+        document.getElementById("bloodGroupChart");
 
-if (bloodGroupCanvas) {
+    if (!canvas) {
+        return;
+    }
 
-    new Chart(
-        bloodGroupCanvas,
-        {
-            type: "doughnut",
+    if (bloodGroupChartInstance) {
+        bloodGroupChartInstance.destroy();
+    }
 
-            data: {
+    bloodGroupChartInstance =
+        new Chart(
+            canvas,
+            {
+                type: "doughnut",
 
-                labels: [
-                    "A+",
-                    "A-",
-                    "B+",
-                    "B-",
-                    "O+",
-                    "O-",
-                    "AB+",
-                    "AB-"
-                ],
+                data: {
 
-                datasets: [
+                    labels: [
+                        "A+",
+                        "A-",
+                        "B+",
+                        "B-",
+                        "O+",
+                        "O-",
+                        "AB+",
+                        "AB-"
+                    ],
 
-                    {
+                    datasets: [
+                        {
+                            data: [
+                                22,
+                                7,
+                                18,
+                                5,
+                                28,
+                                6,
+                                10,
+                                4
+                            ],
 
-                        data: [
-                            22,
-                            7,
-                            18,
-                            5,
-                            28,
-                            6,
-                            10,
-                            4
-                        ],
+                            backgroundColor: [
+                                "#df323a",
+                                "#3478dc",
+                                "#38a866",
+                                "#f3ae25",
+                                "#9b59b6",
+                                "#e67e22",
+                                "#16a085",
+                                "#34495e"
+                            ],
 
-                        backgroundColor: [
+                            borderWidth: 0
+                        }
+                    ]
+                },
 
-                            "#df323a",
-                            "#3478dc",
-                            "#38a866",
-                            "#f3ae25",
-                            "#9b59b6",
-                            "#e67e22",
-                            "#16a085",
-                            "#34495e"
+                options: {
 
-                        ],
+                    responsive: true,
+                    maintainAspectRatio: false,
 
-                        borderWidth: 0
+                    cutout: "60%",
 
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
                     }
-
-                ]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                cutout: "60%",
-
-                plugins: {
-
-                    legend: {
-
-                        position: "bottom"
-
-                    }
-
                 }
-
             }
-
-        }
-    );
-
+        );
 }
 
-
-
 /* =========================================
-   REPORT FILTER
+   UPDATE REPORT
 ========================================= */
 
 function updateReport() {
@@ -1051,28 +1044,130 @@ function updateReport() {
     const type =
         document.getElementById("reportType").value;
 
+    const data =
+        reportData[period];
 
-    console.log(
-        "Report period:",
-        period,
-        "Report type:",
-        type
-    );
+    document.getElementById("totalDonations").textContent =
+        data.donations;
 
+    document.getElementById("totalIssued").textContent =
+        data.issued;
 
-    alert(
-        "Demo: Report updated for " +
-        period +
-        " - " +
-        type
-    );
+    document.getElementById("activeDonors").textContent =
+        data.donors;
 
+    document.getElementById("fulfilledRequests").textContent =
+        data.fulfilled;
+
+    const periodText = {
+        today: "Today",
+        week: "This week",
+        month: "This month",
+        year: "This year"
+    };
+
+    document.getElementById("donationPeriodLabel").textContent =
+        periodText[period];
+
+    document.getElementById("issuePeriodLabel").textContent =
+        period === "today"
+            ? "Units issued today"
+            : "Units issued";
+
+    document.getElementById("reportFilterInfo").textContent =
+        `Showing ${periodText[period].toLowerCase()} data • ${
+            type === "all"
+                ? "All reports"
+                : getReportTypeName(type)
+        }`;
+
+    createDonationChart(period);
+
+    applyReportTypeVisibility(type);
 }
 
+/* =========================================
+   REPORT TYPE DISPLAY
+========================================= */
 
+function getReportTypeName(type) {
+
+    const names = {
+        donation: "Donation Report",
+        issue: "Blood Issue Report",
+        inventory: "Inventory Report",
+        request: "Blood Request Report"
+    };
+
+    return names[type] || "All reports";
+}
+
+function applyReportTypeVisibility(type) {
+
+    const chartCards =
+        document.querySelectorAll(".chart-card");
+
+    const componentSection =
+        document
+        .querySelector("#componentTable")
+        ?.closest(".table-card");
+
+    const requestSection =
+        document
+        .querySelector("#requestTable")
+        ?.closest(".table-card");
+
+    const insights =
+        document.querySelector(".report-insight-grid");
+
+    chartCards.forEach(card => {
+        card.style.display = "";
+    });
+
+    if (componentSection) {
+        componentSection.style.display = "";
+    }
+
+    if (requestSection) {
+        requestSection.style.display = "";
+    }
+
+    if (insights) {
+        insights.style.display = "";
+    }
+
+    if (type === "donation") {
+
+        if (requestSection) {
+            requestSection.style.display = "none";
+        }
+
+    } else if (type === "issue") {
+
+        if (componentSection) {
+            componentSection.style.display = "none";
+        }
+
+    } else if (type === "inventory") {
+
+        chartCards[0].style.display = "none";
+
+        if (requestSection) {
+            requestSection.style.display = "none";
+        }
+
+    } else if (type === "request") {
+
+        if (componentSection) {
+            componentSection.style.display = "none";
+        }
+
+        chartCards[0].style.display = "none";
+    }
+}
 
 /* =========================================
-   RESET REPORT FILTERS
+   RESET FILTERS
 ========================================= */
 
 function resetReportFilters() {
@@ -1083,30 +1178,217 @@ function resetReportFilters() {
     document.getElementById("reportType").value =
         "all";
 
+    document.getElementById("reportSearch").value = "";
+
+    updateReport();
+
+    filterReportTables();
 }
-
-
 
 /* =========================================
-   EXPORT REPORT
+   SEARCH REPORT TABLES
 ========================================= */
 
-function exportReport() {
+function filterReportTables() {
 
-    alert(
-        "Demo: Report will be exported successfully."
-    );
+    const search =
+        document
+        .getElementById("reportSearch")
+        .value
+        .toLowerCase()
+        .trim();
 
+    const tables =
+        document.querySelectorAll(
+            "#componentTable tbody tr, #requestTable tbody tr"
+        );
+
+    tables.forEach(row => {
+
+        const text =
+            row.innerText.toLowerCase();
+
+        row.style.display =
+            !search || text.includes(search)
+                ? ""
+                : "none";
+    });
 }
 
+/* =========================================
+   EXPORT MENU
+========================================= */
+
+function toggleExportMenu() {
+
+    document
+        .getElementById("reportExportOptions")
+        .classList
+        .toggle("show");
+}
+
+document.addEventListener("click", function(event) {
+
+    const menu =
+        document.getElementById("reportExportOptions");
+
+    const button =
+        event.target.closest(".report-export-menu");
+
+    if (!button && menu) {
+        menu.classList.remove("show");
+    }
+});
+
+/* =========================================
+   EXPORT CSV
+========================================= */
+
+function exportReportCSV() {
+
+    const period =
+        document.getElementById("reportPeriod").value;
+
+    const type =
+        document.getElementById("reportType").value;
+
+    const rows = [
+        [
+            "BloodConnect Report",
+            ""
+        ],
+        [
+            "Period",
+            period
+        ],
+        [
+            "Report Type",
+            getReportTypeName(type)
+        ],
+        [],
+        [
+            "Metric",
+            "Value"
+        ],
+        [
+            "Total Donations",
+            document.getElementById("totalDonations").innerText
+        ],
+        [
+            "Blood Issued",
+            document.getElementById("totalIssued").innerText
+        ],
+        [
+            "Active Donors",
+            document.getElementById("activeDonors").innerText
+        ],
+        [
+            "Requests Fulfilled",
+            document.getElementById("fulfilledRequests").innerText
+        ],
+        [
+            "Available Units",
+            document.getElementById("availableUnits").innerText
+        ],
+        [
+            "Pending Requests",
+            document.getElementById("pendingRequests").innerText
+        ],
+        [
+            "Expired Units",
+            document.getElementById("expiredUnits").innerText
+        ]
+    ];
+
+    const csv =
+        rows.map(row =>
+            row.map(value =>
+                `"${String(value ?? "").replace(/"/g, '""')}"`
+            ).join(",")
+        ).join("\n");
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "BloodConnect_Report.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    document
+        .getElementById("reportExportOptions")
+        .classList
+        .remove("show");
+
+    alert("Report exported successfully!");
+}
+
+/* =========================================
+   PRINT REPORT
+========================================= */
+
+function printReport() {
+
+    document
+        .getElementById("reportExportOptions")
+        .classList
+        .remove("show");
+
+    window.print();
+}
+
+/* =========================================
+   REFRESH
+========================================= */
+
+function refreshReport() {
+
+    updateReport();
+    filterReportTables();
+
+    alert("Report refreshed successfully!");
+}
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    createDonationChart("month");
+
+    createBloodGroupChart();
+
+    updateReport();
+
+    filterReportTables();
+});
 
 </script>
-
 
 <script src="../js/api.js"></script>
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>
-</body>
 
+</body>
 </html>
