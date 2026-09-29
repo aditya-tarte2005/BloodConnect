@@ -11,6 +11,55 @@
 
     <link rel="stylesheet" href="../css/style.css">
 
+
+<style>
+.transaction-action-wrap{position:relative;display:inline-block}
+.transaction-action-menu{
+    position:fixed;display:none;min-width:190px;width:max-content;max-width:240px;
+    background:#fff;border:1px solid #e5e5e5;border-radius:10px;
+    box-shadow:0 10px 28px rgba(0,0,0,.15);padding:6px;
+    z-index:99999!important;overflow:hidden;box-sizing:border-box;
+    max-height:calc(100vh - 16px)
+}
+.transaction-action-menu.show{display:block}
+.transaction-action-menu button{
+    width:100%;border:0;background:transparent;text-align:left;
+    padding:11px 13px;border-radius:8px;font-size:14px;cursor:pointer;color:#333
+}
+.transaction-action-menu button:hover{background:#f5f5f5}
+.transaction-action-menu .danger{color:#dc2626}
+.transaction-action-menu .danger:hover{background:#fff1f2}
+.transaction-action-menu .menu-divider{height:1px;background:#e5e5e5;margin:5px 0}
+.transaction-form-grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px
+}
+.transaction-form-grid .full{grid-column:1/-1}
+.transaction-form-grid label{
+    display:flex;flex-direction:column;gap:7px;font-weight:600;font-size:14px
+}
+.transaction-form-grid input,.transaction-form-grid select{
+    width:100%;box-sizing:border-box;padding:11px 12px;
+    border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff
+}
+.transaction-details-grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px
+}
+.transaction-detail-item{
+    background:#f8f9fa;padding:12px;border-radius:8px
+}
+.transaction-detail-item span{
+    display:block;color:#777;font-size:12px;margin-bottom:4px
+}
+.transaction-detail-item strong{
+    display:block;color:#222;word-break:break-word
+}
+@media(max-width:700px){
+    .transaction-form-grid,.transaction-details-grid{grid-template-columns:1fr}
+    .transaction-form-grid .full{grid-column:auto}
+    .transaction-action-menu{max-width:calc(100vw - 20px)}
+}
+</style>
+
 </head>
 
 
@@ -132,7 +181,9 @@
 
                 <input
                     type="text"
+                    id="topTransactionSearch"
                     placeholder="Search transaction, donor, hospital..."
+                    onkeyup="syncTopTransactionSearch()"
                 >
 
             </div>
@@ -194,13 +245,19 @@
                 </div>
 
 
-                <button
-                    class="primary-btn"
-                    onclick="exportTransactions()">
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button
+                        class="secondary-btn"
+                        onclick="exportTransactions()">
+                        ↓ Export Report
+                    </button>
 
-                    ↓ Export Report
-
-                </button>
+                    <button
+                        class="primary-btn"
+                        onclick="openAddTransactionModal()">
+                        + Add Transaction
+                    </button>
+                </div>
 
             </div>
 
@@ -223,8 +280,8 @@
                             Total Transactions
                         </span>
 
-                        <strong>
-                            2,486
+                        <strong id="totalTransactions">
+                            10
                         </strong>
 
                         <em class="up">
@@ -253,8 +310,8 @@
                             Donations
                         </span>
 
-                        <strong>
-                            1,420
+                        <strong id="donationTransactions">
+                            3
                         </strong>
 
                         <em class="up">
@@ -283,8 +340,8 @@
                             Blood Issued
                         </span>
 
-                        <strong>
-                            892
+                        <strong id="issueTransactions">
+                            2
                         </strong>
 
                         <em class="orange-text">
@@ -313,8 +370,8 @@
                             Other Transactions
                         </span>
 
-                        <strong>
-                            174
+                        <strong id="otherTransactions">
+                            5
                         </strong>
 
                         <em class="up">
@@ -430,7 +487,7 @@
                         Transaction History
                     </h2>
 
-                    <span class="record-count">
+                    <span class="record-count" id="transactionRecordCount">
                         10 transactions
                     </span>
 
@@ -481,11 +538,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5001')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -508,11 +567,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5002')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -535,11 +596,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5003')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -562,11 +625,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5004')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -589,11 +654,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5005')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -616,11 +683,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5006')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -643,11 +712,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5007')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -670,11 +741,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5008')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -697,11 +770,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5009')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -724,11 +799,13 @@
                                 </td>
 
                                 <td>
-                                    <button
-                                        class="icon-btn"
-                                        onclick="viewTransaction('TXN-5010')">
-                                        👁
-                                    </button>
+                                    <div class="transaction-action-wrap">
+                                        <button
+                                            class="icon-btn"
+                                            onclick="toggleTransactionActionMenu(this)">
+                                            ⋮
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>
@@ -749,6 +826,16 @@
 </div>
 
 
+
+
+<!-- ================= TRANSACTION ACTION MENU ================= -->
+<div id="transactionActionMenu" class="transaction-action-menu">
+    <button type="button" onclick="viewSelectedTransaction()">👁 View Details</button>
+    <button type="button" onclick="editSelectedTransaction()">✏️ Edit Transaction</button>
+    <button type="button" onclick="changeSelectedTransactionStatus()">🔄 Change Status</button>
+    <div class="menu-divider"></div>
+    <button type="button" class="danger" onclick="removeSelectedTransaction()">🗑 Remove Transaction</button>
+</div>
 
 <!-- ================= VIEW TRANSACTION MODAL ================= -->
 
@@ -803,13 +890,204 @@
 
 
 
+
+<!-- ================= ADD / EDIT TRANSACTION MODAL ================= -->
+<div id="transactionFormModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div>
+                <h2 id="transactionFormTitle">Add Transaction</h2>
+                <p class="modal-subtitle">Enter transaction information</p>
+            </div>
+            <button onclick="closeTransactionFormModal()">×</button>
+        </div>
+
+        <form id="transactionForm" onsubmit="saveTransaction(event)">
+            <div class="transaction-form-grid">
+                <label>
+                    Transaction ID
+                    <input type="text" id="transactionId" readonly>
+                </label>
+
+                <label>
+                    Date
+                    <input type="date" id="transactionDate" required>
+                </label>
+
+                <label>
+                    Transaction Type
+                    <select id="transactionType" required>
+                        <option value="">Select Type</option>
+                        <option value="Donation">Donation</option>
+                        <option value="Issue">Issue</option>
+                        <option value="Reservation">Reservation</option>
+                        <option value="Return">Return</option>
+                        <option value="Expiry">Expiry</option>
+                        <option value="Discard">Discard</option>
+                    </select>
+                </label>
+
+                <label>
+                    Blood Group
+                    <select id="transactionBloodGroup" required>
+                        <option value="">Select Group</option>
+                        <option>A+</option><option>A-</option>
+                        <option>B+</option><option>B-</option>
+                        <option>AB+</option><option>AB-</option>
+                        <option>O+</option><option>O-</option>
+                    </select>
+                </label>
+
+                <label>
+                    Component
+                    <select id="transactionComponent" required>
+                        <option value="">Select Component</option>
+                        <option>Whole Blood</option>
+                        <option>RBC</option>
+                        <option>Plasma</option>
+                        <option>Platelets</option>
+                    </select>
+                </label>
+
+                <label>
+                    Quantity
+                    <input type="number" id="transactionQuantity" min="1" required>
+                </label>
+
+                <label class="full">
+                    Reference
+                    <input type="text" id="transactionReference"
+                           placeholder="Donor ID, hospital or unit reference" required>
+                </label>
+
+                <label>
+                    Status
+                    <select id="transactionFormStatus" required>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn"
+                        onclick="closeTransactionFormModal()">Cancel</button>
+                <button type="submit" class="primary-btn">Save Transaction</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ================= CHANGE STATUS MODAL ================= -->
+<div id="transactionStatusModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2>Change Transaction Status</h2>
+            <button onclick="closeTransactionStatusModal()">×</button>
+        </div>
+
+        <div class="transaction-detail-item" style="margin-bottom:16px;">
+            <span>Transaction ID</span>
+            <strong id="statusTransactionId">-</strong>
+        </div>
+
+        <label style="display:flex;flex-direction:column;gap:7px;font-weight:600;">
+            New Status
+            <select id="newTransactionStatus"
+                    style="padding:11px;border:1px solid #ddd;border-radius:8px;">
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </label>
+
+        <div class="modal-actions">
+            <button class="secondary-btn"
+                    onclick="closeTransactionStatusModal()">Cancel</button>
+            <button class="primary-btn"
+                    onclick="saveTransactionStatus()">Save Status</button>
+        </div>
+    </div>
+</div>
+
 <!-- ================= JAVASCRIPT ================= -->
 
 
 
 
 <script>
+let selectedTransactionRow = null;
+let editingTransactionRow = null;
 
+const transactionMenu = document.getElementById("transactionActionMenu");
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function formatDisplayDate(dateValue) {
+    if (!dateValue) return "";
+
+    const date = new Date(dateValue + "T00:00:00");
+
+    return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function dateForInput(displayDate) {
+    const parts = displayDate.trim().split(" ");
+
+    if (parts.length !== 3) return "";
+
+    const monthMap = {
+        Jan: "01", Feb: "02", Mar: "03",
+        Apr: "04", May: "05", Jun: "06",
+        Jul: "07", Aug: "08", Sep: "09",
+        Oct: "10", Nov: "11", Dec: "12"
+    };
+
+    return `${parts[2]}-${monthMap[parts[1]] || "01"}-${parts[0].padStart(2, "0")}`;
+}
+
+function statusBadge(status) {
+    let className = "available";
+
+    if (status === "Pending") {
+        className = "reserved";
+    }
+
+    if (status === "Cancelled") {
+        className = "expired";
+    }
+
+    return `<span class="badge ${className}">${escapeHtml(status)}</span>`;
+}
+
+function getTransactionData(row) {
+    return {
+        id: row.cells[0].innerText.trim(),
+        date: row.cells[1].innerText.trim(),
+        type: row.cells[2].innerText.trim(),
+        group: row.cells[3].innerText.trim(),
+        component: row.cells[4].innerText.trim(),
+        quantity: row.cells[5].innerText.trim(),
+        reference: row.cells[6].innerText.trim(),
+        status: row.cells[7].innerText.trim()
+    };
+}
 
 /* =========================================
    FILTER TRANSACTIONS
@@ -818,32 +1096,24 @@
 function filterTransactions() {
 
     const search =
-        document
-        .getElementById("transactionSearch")
-        .value
-        .toLowerCase();
+        document.getElementById("transactionSearch").value
+        .toLowerCase()
+        .trim();
 
     const type =
-        document
-        .getElementById("transactionTypeFilter")
-        .value;
+        document.getElementById("transactionTypeFilter").value;
 
     const status =
-        document
-        .getElementById("transactionStatusFilter")
-        .value;
-
+        document.getElementById("transactionStatusFilter").value;
 
     const rows =
-        document.querySelectorAll(
-            "#transactionTable tbody tr"
-        );
+        document.querySelectorAll("#transactionTable tbody tr");
 
+    let visibleCount = 0;
 
     rows.forEach(function(row) {
 
-        const text =
-            row.innerText.toLowerCase();
+        const text = row.innerText.toLowerCase();
 
         const rowType =
             row.cells[2]
@@ -855,39 +1125,43 @@ function filterTransactions() {
             ? row.cells[7].innerText.trim()
             : "";
 
-
         const matchesSearch =
-            !search ||
-            text.includes(search);
+            !search || text.includes(search);
 
         const matchesType =
-            !type ||
-            rowType === type;
+            !type || rowType === type;
 
         const matchesStatus =
-            !status ||
-            rowStatus === status;
+            !status || rowStatus === status;
 
-
-        if (
+        const shouldShow =
             matchesSearch &&
             matchesType &&
-            matchesStatus
-        ) {
+            matchesStatus;
 
-            row.style.display = "";
+        row.style.display =
+            shouldShow ? "" : "none";
 
-        } else {
-
-            row.style.display = "none";
-
+        if (shouldShow) {
+            visibleCount++;
         }
-
     });
 
+    document.getElementById("transactionRecordCount").textContent =
+        `${visibleCount} transaction${visibleCount === 1 ? "" : "s"}`;
 }
 
+/* =========================================
+   TOP SEARCH
+========================================= */
 
+function syncTopTransactionSearch() {
+
+    document.getElementById("transactionSearch").value =
+        document.getElementById("topTransactionSearch").value;
+
+    filterTransactions();
+}
 
 /* =========================================
    RESET FILTERS
@@ -895,74 +1169,190 @@ function filterTransactions() {
 
 function resetTransactionFilters() {
 
-    document
-        .getElementById("transactionSearch")
-        .value = "";
-
-    document
-        .getElementById("transactionTypeFilter")
-        .value = "";
-
-    document
-        .getElementById("transactionStatusFilter")
-        .value = "";
+    document.getElementById("transactionSearch").value = "";
+    document.getElementById("topTransactionSearch").value = "";
+    document.getElementById("transactionTypeFilter").value = "";
+    document.getElementById("transactionStatusFilter").value = "";
 
     filterTransactions();
-
 }
 
+/* =========================================
+   ACTION MENU
+========================================= */
 
+function closeTransactionActionMenu() {
+
+    transactionMenu.classList.remove("show");
+
+    selectedTransactionRow = null;
+}
+
+function toggleTransactionActionMenu(button) {
+
+    const row = button.closest("tr");
+
+    if (
+        transactionMenu.classList.contains("show") &&
+        selectedTransactionRow === row
+    ) {
+        closeTransactionActionMenu();
+        return;
+    }
+
+    selectedTransactionRow = row;
+
+    transactionMenu._transactionRow = row;
+    transactionMenu._transactionButton = button;
+
+    document.body.appendChild(transactionMenu);
+
+    transactionMenu.classList.add("show");
+
+    const rect = button.getBoundingClientRect();
+
+    const menuWidth = 210;
+    const menuHeight = 190;
+
+    let left = rect.right - menuWidth;
+    let top = rect.bottom + 6;
+
+    if (left < 10) {
+        left = 10;
+    }
+
+    if (left + menuWidth > window.innerWidth - 10) {
+        left = window.innerWidth - menuWidth - 10;
+    }
+
+    if (top + menuHeight > window.innerHeight - 10) {
+        top = rect.top - menuHeight - 6;
+    }
+
+    if (top < 10) {
+        top = 10;
+    }
+
+    transactionMenu.style.left = `${left}px`;
+    transactionMenu.style.top = `${top}px`;
+}
+
+document.addEventListener("click", function(event) {
+
+    if (
+        transactionMenu.classList.contains("show") &&
+        !transactionMenu.contains(event.target) &&
+        !event.target.closest(".transaction-action-wrap")
+    ) {
+        closeTransactionActionMenu();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        closeTransactionActionMenu();
+        closeTransactionModal();
+        closeTransactionFormModal();
+        closeTransactionStatusModal();
+    }
+});
+
+window.addEventListener("resize", closeTransactionActionMenu);
+window.addEventListener("scroll", closeTransactionActionMenu, true);
 
 /* =========================================
    VIEW TRANSACTION
 ========================================= */
 
-function viewTransaction(transactionId) {
+function viewSelectedTransaction() {
 
-    document
-        .getElementById("transactionDetails")
-        .innerHTML = `
+    const row =
+        selectedTransactionRow ||
+        transactionMenu._transactionRow;
 
-            <p>
-                <strong>Transaction ID:</strong>
-                ${transactionId}
-            </p>
+    if (!row) {
+        return;
+    }
 
-            <p>
-                <strong>Transaction Type:</strong>
-                Inventory Transaction
-            </p>
+    const data = getTransactionData(row);
 
-            <p>
-                <strong>Blood Bank:</strong>
-                BloodConnect
-            </p>
+    closeTransactionActionMenu();
 
-            <p>
-                <strong>Status:</strong>
-                Completed
-            </p>
+    document.getElementById("transactionDetails").innerHTML = `
+        <div class="transaction-details-grid">
 
-            <p>
-                <strong>Information:</strong>
-                Complete transaction details will
-                be retrieved from the Java backend.
-            </p>
+            <div class="transaction-detail-item">
+                <span>Transaction ID</span>
+                <strong>${escapeHtml(data.id)}</strong>
+            </div>
 
-        `;
+            <div class="transaction-detail-item">
+                <span>Date</span>
+                <strong>${escapeHtml(data.date)}</strong>
+            </div>
 
+            <div class="transaction-detail-item">
+                <span>Transaction Type</span>
+                <strong>${escapeHtml(data.type)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Blood Group</span>
+                <strong>${escapeHtml(data.group)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Component</span>
+                <strong>${escapeHtml(data.component)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Quantity</span>
+                <strong>${escapeHtml(data.quantity)} unit(s)</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Reference</span>
+                <strong>${escapeHtml(data.reference)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Status</span>
+                <strong>${escapeHtml(data.status)}</strong>
+            </div>
+
+        </div>
+    `;
 
     document
         .getElementById("transactionModal")
         .classList
         .add("show");
-
 }
 
+/* Keep compatibility with old onclick calls */
+function viewTransaction(transactionId) {
 
+    const rows =
+        document.querySelectorAll("#transactionTable tbody tr");
+
+    for (const row of rows) {
+
+        if (
+            row.cells[0].innerText.trim() === transactionId
+        ) {
+
+            selectedTransactionRow = row;
+            viewSelectedTransaction();
+            return;
+        }
+    }
+}
 
 /* =========================================
-   CLOSE TRANSACTION MODAL
+   CLOSE VIEW MODAL
 ========================================= */
 
 function closeTransactionModal() {
@@ -971,23 +1361,457 @@ function closeTransactionModal() {
         .getElementById("transactionModal")
         .classList
         .remove("show");
-
 }
 
+/* =========================================
+   ADD TRANSACTION
+========================================= */
 
+function getNextTransactionId() {
+
+    const rows =
+        document.querySelectorAll("#transactionTable tbody tr");
+
+    let maxId = 5000;
+
+    rows.forEach(function(row) {
+
+        const match =
+            row.cells[0].innerText.match(/TXN-(\d+)/);
+
+        if (match) {
+            maxId =
+                Math.max(
+                    maxId,
+                    Number(match[1])
+                );
+        }
+    });
+
+    return `TXN-${maxId + 1}`;
+}
+
+function openAddTransactionModal() {
+
+    editingTransactionRow = null;
+
+    document.getElementById("transactionFormTitle").textContent =
+        "Add Transaction";
+
+    document.getElementById("transactionId").value =
+        getNextTransactionId();
+
+    document.getElementById("transactionDate").value =
+        new Date().toISOString().split("T")[0];
+
+    document.getElementById("transactionType").value = "";
+    document.getElementById("transactionBloodGroup").value = "";
+    document.getElementById("transactionComponent").value = "";
+    document.getElementById("transactionQuantity").value = "";
+    document.getElementById("transactionReference").value = "";
+    document.getElementById("transactionFormStatus").value =
+        "Completed";
+
+    document
+        .getElementById("transactionFormModal")
+        .classList
+        .add("show");
+}
+
+function closeTransactionFormModal() {
+
+    document
+        .getElementById("transactionFormModal")
+        .classList
+        .remove("show");
+
+    editingTransactionRow = null;
+}
 
 /* =========================================
-   EXPORT REPORT
+   EDIT TRANSACTION
+========================================= */
+
+function editSelectedTransaction() {
+
+    const row =
+        selectedTransactionRow ||
+        transactionMenu._transactionRow;
+
+    if (!row) {
+        return;
+    }
+
+    const data = getTransactionData(row);
+
+    editingTransactionRow = row;
+
+    closeTransactionActionMenu();
+
+    document.getElementById("transactionFormTitle").textContent =
+        "Edit Transaction";
+
+    document.getElementById("transactionId").value =
+        data.id;
+
+    document.getElementById("transactionDate").value =
+        dateForInput(data.date);
+
+    document.getElementById("transactionType").value =
+        data.type;
+
+    document.getElementById("transactionBloodGroup").value =
+        data.group;
+
+    document.getElementById("transactionComponent").value =
+        data.component;
+
+    document.getElementById("transactionQuantity").value =
+        data.quantity;
+
+    document.getElementById("transactionReference").value =
+        data.reference;
+
+    document.getElementById("transactionFormStatus").value =
+        data.status;
+
+    document
+        .getElementById("transactionFormModal")
+        .classList
+        .add("show");
+}
+
+function saveTransaction(event) {
+
+    event.preventDefault();
+
+    const id =
+        document.getElementById("transactionId").value.trim();
+
+    const date =
+        document.getElementById("transactionDate").value;
+
+    const type =
+        document.getElementById("transactionType").value;
+
+    const group =
+        document.getElementById("transactionBloodGroup").value;
+
+    const component =
+        document.getElementById("transactionComponent").value;
+
+    const quantity =
+        document.getElementById("transactionQuantity").value;
+
+    const reference =
+        document.getElementById("transactionReference").value.trim();
+
+    const status =
+        document.getElementById("transactionFormStatus").value;
+
+    if (
+        !id ||
+        !date ||
+        !type ||
+        !group ||
+        !component ||
+        !quantity ||
+        !reference ||
+        !status
+    ) {
+
+        alert("Please fill all transaction fields.");
+        return;
+    }
+
+    if (editingTransactionRow) {
+
+        const row = editingTransactionRow;
+
+        row.cells[0].textContent = id;
+        row.cells[1].textContent = formatDisplayDate(date);
+        row.cells[2].textContent = type;
+        row.cells[3].textContent = group;
+        row.cells[4].textContent = component;
+        row.cells[5].textContent = quantity;
+        row.cells[6].textContent = reference;
+        row.cells[7].innerHTML = statusBadge(status);
+
+        alert(`${id} updated successfully!`);
+
+    } else {
+
+        const tbody =
+            document.querySelector(
+                "#transactionTable tbody"
+            );
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${escapeHtml(id)}</td>
+            <td>${escapeHtml(formatDisplayDate(date))}</td>
+            <td>${escapeHtml(type)}</td>
+            <td>${escapeHtml(group)}</td>
+            <td>${escapeHtml(component)}</td>
+            <td>${escapeHtml(quantity)}</td>
+            <td>${escapeHtml(reference)}</td>
+            <td>${statusBadge(status)}</td>
+
+            <td>
+                <div class="transaction-action-wrap">
+
+                    <button
+                        class="icon-btn"
+                        onclick="toggleTransactionActionMenu(this)">
+                        ⋮
+                    </button>
+
+                </div>
+            </td>
+        `;
+
+        tbody.prepend(row);
+
+        alert(`${id} added successfully!`);
+    }
+
+    closeTransactionFormModal();
+
+    updateTransactionStats();
+
+    filterTransactions();
+}
+
+/* =========================================
+   CHANGE STATUS
+========================================= */
+
+function changeSelectedTransactionStatus() {
+
+    const row =
+        selectedTransactionRow ||
+        transactionMenu._transactionRow;
+
+    if (!row) {
+        return;
+    }
+
+    document.getElementById("statusTransactionId").textContent =
+        row.cells[0].innerText.trim();
+
+    document.getElementById("newTransactionStatus").value =
+        row.cells[7].innerText.trim();
+
+    selectedTransactionRow = row;
+
+    closeTransactionActionMenu();
+
+    document
+        .getElementById("transactionStatusModal")
+        .classList
+        .add("show");
+}
+
+function closeTransactionStatusModal() {
+
+    document
+        .getElementById("transactionStatusModal")
+        .classList
+        .remove("show");
+}
+
+function saveTransactionStatus() {
+
+    const row = selectedTransactionRow;
+
+    if (!row) {
+
+        alert("Transaction could not be found.");
+        return;
+    }
+
+    const newStatus =
+        document.getElementById("newTransactionStatus").value;
+
+    const transactionId =
+        row.cells[0].innerText.trim();
+
+    row.cells[7].innerHTML =
+        statusBadge(newStatus);
+
+    closeTransactionStatusModal();
+
+    updateTransactionStats();
+
+    filterTransactions();
+
+    alert(
+        `Status of ${transactionId} changed to ${newStatus} successfully!`
+    );
+}
+
+/* =========================================
+   REMOVE TRANSACTION
+========================================= */
+
+function removeSelectedTransaction() {
+
+    const row =
+        selectedTransactionRow ||
+        transactionMenu._transactionRow;
+
+    if (!row) {
+        return;
+    }
+
+    const transactionId =
+        row.cells[0].innerText.trim();
+
+    closeTransactionActionMenu();
+
+    if (
+        !confirm(
+            `Are you sure you want to remove transaction ${transactionId}?`
+        )
+    ) {
+        return;
+    }
+
+    row.remove();
+
+    updateTransactionStats();
+
+    filterTransactions();
+
+    alert(
+        `${transactionId} removed successfully!`
+    );
+}
+
+/* =========================================
+   UPDATE STATISTICS
+========================================= */
+
+function updateTransactionStats() {
+
+    const rows =
+        Array.from(
+            document.querySelectorAll(
+                "#transactionTable tbody tr"
+            )
+        );
+
+    const donations =
+        rows.filter(
+            row =>
+                row.cells[2]?.innerText.trim() === "Donation"
+        ).length;
+
+    const issues =
+        rows.filter(
+            row =>
+                row.cells[2]?.innerText.trim() === "Issue"
+        ).length;
+
+    const others =
+        rows.length -
+        donations -
+        issues;
+
+    document.getElementById("totalTransactions").textContent =
+        rows.length;
+
+    document.getElementById("donationTransactions").textContent =
+        donations;
+
+    document.getElementById("issueTransactions").textContent =
+        issues;
+
+    document.getElementById("otherTransactions").textContent =
+        others;
+}
+
+/* =========================================
+   EXPORT CSV
 ========================================= */
 
 function exportTransactions() {
 
-    alert(
-        "Demo: Transaction report will be exported."
-    );
+    const rows =
+        Array.from(
+            document.querySelectorAll(
+                "#transactionTable tr"
+            )
+        ).filter(
+            row => row.style.display !== "none"
+        );
 
+    if (rows.length <= 1) {
+
+        alert(
+            "No transactions available to export."
+        );
+
+        return;
+    }
+
+    const csvRows =
+        rows.map(function(row) {
+
+            return Array.from(row.cells)
+                .slice(0, 8)
+                .map(
+                    cell =>
+                        `"${cell.innerText
+                            .trim()
+                            .replace(/"/g, '""')}"`
+                )
+                .join(",");
+        });
+
+    const csv =
+        csvRows.join("\n");
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8;"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "BloodConnect_Transactions.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    alert(
+        "Transaction report exported successfully!"
+    );
 }
 
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+updateTransactionStats();
+filterTransactions();
 
 </script>
 
