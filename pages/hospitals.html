@@ -24,21 +24,54 @@
 
         .hospital-action-wrapper {
             position: relative;
-            display: inline-block;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            min-width: 40px;
+            height: 40px;
+            overflow: visible !important;
+        }
+
+        .hospital-action-trigger {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 34px !important;
+            height: 34px !important;
+            min-width: 34px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: 1px solid #d9dde5 !important;
+            border-radius: 7px !important;
+            background: #f3f4f6 !important;
+            color: #222 !important;
+            font-size: 22px !important;
+            line-height: 1 !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative;
+            z-index: 2;
+            box-sizing: border-box;
+        }
+
+        .hospital-action-trigger:hover {
+            background: #e9ebef !important;
         }
 
         .hospital-action-menu {
-            position: absolute;
-            right: 0;
-            top: 38px;
-            width: 180px;
+            position: fixed;
+            width: 190px;
             background: #ffffff;
             border: 1px solid #e5e5e5;
             border-radius: 9px;
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
+            z-index: 999999;
             padding: 6px 0;
             display: none;
+            box-sizing: border-box;
         }
 
         .hospital-action-menu.show {
@@ -193,6 +226,206 @@
         }
 
     </style>
+
+
+<style id="standard-status-modal">
+/* =========================================================
+   BLOODCONNECT - SHARED STATUS MODAL STYLE
+   Matches the Blood Requests status modal design.
+   ========================================================= */
+
+.status-standard-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  background: rgba(15, 23, 42, 0.58) !important;
+  backdrop-filter: blur(3px);
+  z-index: 999999 !important;
+}
+
+.status-standard-modal.show {
+  display: flex !important;
+}
+
+.status-standard-modal .status-standard-box {
+  width: min(820px, calc(100vw - 32px)) !important;
+  max-width: 820px !important;
+  padding: 30px !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22) !important;
+}
+
+.status-standard-modal .status-standard-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  margin-bottom: 22px !important;
+}
+
+.status-standard-modal .status-standard-head h2 {
+  margin: 0 0 7px !important;
+  color: #202a3d !important;
+  font-size: 30px !important;
+  line-height: 1.15 !important;
+  font-weight: 750 !important;
+}
+
+.status-standard-modal .status-standard-subtitle {
+  margin: 0 !important;
+  color: #7c8798 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.status-standard-modal .status-standard-close {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #f4f5f7 !important;
+  color: #20242a !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.status-standard-modal .status-standard-close:hover {
+  background: #eceef1 !important;
+}
+
+.status-standard-modal .status-standard-info {
+  width: 100% !important;
+  min-height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  margin: 0 0 22px !important;
+  padding: 0 20px !important;
+  border-radius: 11px !important;
+  background: #f7f7f8 !important;
+  color: #273247 !important;
+}
+
+.status-standard-modal .status-standard-info span {
+  color: #273247 !important;
+  font-size: 18px !important;
+  font-weight: 450 !important;
+}
+
+.status-standard-modal .status-standard-info strong {
+  color: #202a3d !important;
+  font-size: 18px !important;
+  font-weight: 750 !important;
+}
+
+.status-standard-modal .status-standard-form {
+  margin: 0 !important;
+}
+
+.status-standard-modal .status-standard-form label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  color: #273247 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.status-standard-modal .status-standard-form select {
+  width: 100% !important;
+  height: 52px !important;
+  min-height: 52px !important;
+  padding: 0 15px !important;
+  border: 1px solid #d9dde4 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  color: #20242a !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  box-sizing: border-box !important;
+}
+
+.status-standard-modal .status-standard-form select:focus {
+  outline: none !important;
+  border-color: #d91e2b !important;
+  box-shadow: 0 0 0 3px rgba(217, 30, 43, .08) !important;
+}
+
+.status-standard-modal .status-standard-error {
+  display: none;
+  margin: 0 0 14px !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  background: #fff0f0 !important;
+  color: #b42318 !important;
+  font-size: 13px !important;
+}
+
+.status-standard-modal .status-standard-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  margin-top: 24px !important;
+}
+
+.status-standard-modal .status-standard-actions button {
+  height: 54px !important;
+  min-width: 122px !important;
+  padding: 0 20px !important;
+  border-radius: 11px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.status-standard-modal .status-standard-actions .secondary-btn {
+  border: 1px solid #d9dde4 !important;
+  background: #ffffff !important;
+  color: #273247 !important;
+}
+
+.status-standard-modal .status-standard-actions .primary-btn {
+  border: 1px solid #d91e2b !important;
+  background: #d91e2b !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 650px) {
+  .status-standard-modal .status-standard-box {
+    padding: 22px !important;
+    border-radius: 16px !important;
+  }
+
+  .status-standard-modal .status-standard-head h2 {
+    font-size: 24px !important;
+  }
+
+  .status-standard-modal .status-standard-info span,
+  .status-standard-modal .status-standard-info strong {
+    font-size: 15px !important;
+  }
+
+  .status-standard-modal .status-standard-actions {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+  }
+
+  .status-standard-modal .status-standard-actions button {
+    width: 100% !important;
+  }
+}
+</style>
 
 </head>
 
@@ -810,7 +1043,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -918,7 +1151,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1026,7 +1259,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1134,7 +1367,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1242,7 +1475,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1350,7 +1583,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1458,7 +1691,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -1566,7 +1799,7 @@
 
 
                                         <button
-                                            class="icon-btn"
+                                            class="hospital-action-trigger"
                                             onclick="toggleHospitalActionMenu(this, event)">
 
                                             ⋮
@@ -2101,1692 +2334,917 @@
      CHANGE STATUS MODAL
      ===================================================== -->
 
-<div
-    id="hospitalStatusModal"
-    class="modal">
 
+<!-- ================= STANDARD STATUS MODAL ================= -->
+<div id="hospitalStatusModal" class="modal status-standard-modal">
+  <div class="modal-box status-standard-box">
 
-    <div class="modal-box">
+    <div class="modal-head status-standard-head">
+      <div>
+        <h2>Change Hospital Status</h2>
+        <p class="modal-subtitle status-standard-subtitle">Update the current hospital status</p>
+      </div>
 
-
-        <div class="modal-head">
-
-
-            <div>
-
-                <h2>
-                    Change Hospital Status
-                </h2>
-
-                <p class="modal-subtitle">
-                    Update the current hospital status
-                </p>
-
-            </div>
-
-
-            <button
-                onclick="closeHospitalStatusModal()">
-
-                ×
-
-            </button>
-
-
-        </div>
-
-
-
-        <div class="hospital-status-content">
-
-
-            <div class="hospital-status-info">
-
-                <span>
-                    Hospital ID
-                </span>
-
-                <strong id="hospitalStatusId">
-                    -
-                </strong>
-
-            </div>
-
-
-            <label>
-
-                New Status
-
-                <select id="newHospitalStatus">
-
-                    <option value="Active">
-                        Active
-                    </option>
-
-                    <option value="Inactive">
-                        Inactive
-                    </option>
-
-                </select>
-
-            </label>
-
-
-        </div>
-
-
-
-        <div class="modal-actions">
-
-
-            <button
-                class="secondary-btn"
-                onclick="closeHospitalStatusModal()">
-
-                Cancel
-
-            </button>
-
-
-            <button
-                class="primary-btn"
-                onclick="saveHospitalStatus()">
-
-                Save Status
-
-            </button>
-
-
-        </div>
-
-
+      <button
+        type="button"
+        class="status-standard-close"
+        onclick="closeHospitalStatusModal()"
+        aria-label="Close status modal">
+        ×
+      </button>
     </div>
 
+    <div id="hospitalStatusError" class="status-standard-error"></div>
+
+    <div class="status-standard-info">
+      <span>Hospital ID</span>
+      <strong id="hospitalStatusId">-</strong>
+    </div>
+
+    <div class="status-standard-form">
+      <label>
+        New Status
+        <select id="newHospitalStatus">
+          <option value="Active">Active</option><option value="Inactive">Inactive</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="modal-actions status-standard-actions">
+      <button
+        type="button"
+        class="secondary-btn"
+        onclick="closeHospitalStatusModal()">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="primary-btn"
+        onclick="saveHospitalStatus()">
+        Save Status
+      </button>
+    </div>
+
+  </div>
 </div>
 
-
-
-<!-- =====================================================
+<!--<!-- =====================================================
      JAVASCRIPT
      ===================================================== -->
 
 <script>
 
-
-    /* =====================================================
-       GLOBAL VARIABLES
-       ===================================================== */
-
     let selectedHospitalRow = null;
+    let hospitalIdCounter = 1000;
+    let hospitalData = [];
 
-    let hospitalIdCounter = 1008;
-
-
-
-    /* =====================================================
-       HTML ESCAPE
-       ===================================================== */
 
     function escapeHospitalHTML(value) {
-
-        return String(value || "")
+        return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
 
 
+    function getHospitalDisplayId(hospital, index) {
+        if (hospital.displayId) {
+            return hospital.displayId;
+        }
 
-    /* =====================================================
-       OPEN REGISTER MODAL
-       ===================================================== */
+        if (hospital.hospitalCode) {
+            return hospital.hospitalCode;
+        }
 
-    function openHospitalModal() {
+        const existingNumber = Number(hospital.id);
 
-        document
-            .getElementById("hospitalModal")
-            .classList
-            .add("show");
+        if (Number.isFinite(existingNumber) && existingNumber > 0) {
+            return "H-" + existingNumber;
+        }
 
+        return "H-" + (1001 + index);
     }
 
 
-
-    /* =====================================================
-       CLOSE REGISTER MODAL
-       ===================================================== */
-
-    function closeHospitalModal() {
-
-        document
-            .getElementById("hospitalModal")
-            .classList
-            .remove("show");
-
+    function getHospitalBackendId(row) {
+        return row ? row.dataset.backendId || "" : "";
     }
 
 
-
-    /* =====================================================
-       REGISTER HOSPITAL
-       ===================================================== */
-
-    function registerHospital() {
-
-
-        const name =
-            document
-                .getElementById("newHospitalName")
-                .value
-                .trim();
-
-
-        const registration =
-            document
-                .getElementById("newHospitalRegistration")
-                .value
-                .trim();
-
-
-        const city =
-            document
-                .getElementById("newHospitalCity")
-                .value;
-
-
-        const contact =
-            document
-                .getElementById("newHospitalContact")
-                .value
-                .trim();
-
-
-        const phone =
-            document
-                .getElementById("newHospitalPhone")
-                .value
-                .trim();
-
-
-        const email =
-            document
-                .getElementById("newHospitalEmail")
-                .value
-                .trim();
-
-
-        const address =
-            document
-                .getElementById("newHospitalAddress")
-                .value
-                .trim();
-
-
-
-        if (!name) {
-
-            alert(
-                "Please enter hospital name."
-            );
-
-            return;
-
-        }
-
-
-        if (!registration) {
-
-            alert(
-                "Please enter registration number."
-            );
-
-            return;
-
-        }
-
-
-        if (!contact) {
-
-            alert(
-                "Please enter contact person."
-            );
-
-            return;
-
-        }
-
-
-        if (!/^[0-9]{10}$/.test(phone)) {
-
-            alert(
-                "Please enter a valid 10-digit phone number."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            email &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-        ) {
-
-            alert(
-                "Please enter a valid email address."
-            );
-
-            return;
-
-        }
-
-
-        if (!address) {
-
-            alert(
-                "Please enter hospital address."
-            );
-
-            return;
-
-        }
-
-
-
-        hospitalIdCounter++;
-
-
-        const hospitalId =
-            "H-" + hospitalIdCounter;
-
-
-        const tbody =
-            document.querySelector(
-                "#hospitalTable tbody"
-            );
-
-
-        const row =
-            document.createElement("tr");
-
-
-        const currentDate =
-            new Date();
-
-
-        const createdDate =
-            currentDate.toLocaleDateString(
-                "en-GB",
-                {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric"
-                }
-            );
-
-
-
-        row.dataset.registration =
-            registration;
-
-
-        row.dataset.email =
-            email;
-
-
-        row.dataset.address =
-            address;
-
-
-        row.dataset.created =
-            createdDate;
-
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHospitalHTML(hospitalId)}
-            </td>
-
-            <td>
-                ${escapeHospitalHTML(name)}
-            </td>
-
-            <td>
-                ${escapeHospitalHTML(city)}
-            </td>
-
-            <td>
-                ${escapeHospitalHTML(contact)}
-            </td>
-
-            <td>
-                ${escapeHospitalHTML(phone)}
-            </td>
-
-            <td>
-                0
-            </td>
-
-            <td>
-
-                <span class="badge available">
-                    Active
-                </span>
-
-            </td>
-
-            <td>
-
-                <div class="hospital-action-wrapper">
-
-                    <button
-                        class="icon-btn"
-                        onclick="toggleHospitalActionMenu(this, event)">
-
-                        ⋮
-
-                    </button>
-
-                    <div class="hospital-action-menu">
-
-                        <button
-                            onclick="viewHospital(this)">
-
-                            👁 View Details
-
-                        </button>
-
-                        <button
-                            onclick="editHospital(this)">
-
-                            ✏ Edit Hospital
-
-                        </button>
-
-                        <button
-                            onclick="changeHospitalStatus(this)">
-
-                            🔄 Change Status
-
-                        </button>
-
-                        <hr>
-
-                        <button
-                            class="danger-action"
-                            onclick="removeHospital(this)">
-
-                            🗑 Remove Hospital
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </td>
-
-        `;
-
-
-        tbody.appendChild(row);
-
-
-        clearHospitalForm();
-
-        closeHospitalModal();
-
-        updateHospitalStats();
-
-        filterHospitals();
-
-
-        alert(
-            "Hospital " +
-            hospitalId +
-            " registered successfully!"
-        );
-
+    function normalizeHospital(hospital, index) {
+        return {
+            backendId: hospital.id || hospital.uuid || hospital.hospitalId || "",
+            displayId: getHospitalDisplayId(hospital, index),
+            name: hospital.name || hospital.hospitalName || "",
+            registration: hospital.registrationNumber || hospital.registration || hospital.registrationNo || "",
+            city: hospital.city || "",
+            contact: hospital.contactPerson || hospital.contact || hospital.contactName || "",
+            phone: hospital.phone || hospital.phoneNumber || hospital.contactNumber || "",
+            email: hospital.email || "",
+            address: hospital.address || "",
+            requests: Number(hospital.bloodRequests ?? hospital.requestCount ?? hospital.requests ?? 0) || 0,
+            status: hospital.status || "Active",
+            createdAt: hospital.createdAt || hospital.created || hospital.registeredOn || ""
+        };
     }
 
 
+    function formatHospitalDate(value) {
+        if (!value) {
+            return "Not available";
+        }
 
-    /* =====================================================
-       CLEAR REGISTER FORM
-       ===================================================== */
+        const date = new Date(value);
 
-    function clearHospitalForm() {
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
+        }
 
-        document
-            .getElementById("newHospitalName")
-            .value = "";
-
-
-        document
-            .getElementById("newHospitalRegistration")
-            .value = "";
-
-
-        document
-            .getElementById("newHospitalCity")
-            .value = "Pune";
-
-
-        document
-            .getElementById("newHospitalContact")
-            .value = "";
-
-
-        document
-            .getElementById("newHospitalPhone")
-            .value = "";
-
-
-        document
-            .getElementById("newHospitalEmail")
-            .value = "";
-
-
-        document
-            .getElementById("newHospitalAddress")
-            .value = "";
-
-    }
-
-
-
-    /* =====================================================
-       SEARCH & FILTER
-       ===================================================== */
-
-    function filterHospitals() {
-
-
-        const search =
-            document
-                .getElementById("hospitalSearch")
-                .value
-                .toLowerCase()
-                .trim();
-
-
-        const city =
-            document
-                .getElementById("hospitalCityFilter")
-                .value;
-
-
-        const status =
-            document
-                .getElementById("hospitalStatusFilter")
-                .value;
-
-
-
-        const rows =
-            document.querySelectorAll(
-                "#hospitalTable tbody tr"
-            );
-
-
-        let visibleCount = 0;
-
-
-
-        rows.forEach(function(row) {
-
-
-            const text =
-                row.innerText
-                    .toLowerCase();
-
-
-            const rowCity =
-                row.cells[2]
-                    ? row.cells[2]
-                        .innerText
-                        .trim()
-                    : "";
-
-
-            const rowStatus =
-                row.cells[6]
-                    ? row.cells[6]
-                        .innerText
-                        .trim()
-                    : "";
-
-
-
-            const matchesSearch =
-                !search ||
-                text.includes(search);
-
-
-            const matchesCity =
-                !city ||
-                rowCity === city;
-
-
-            const matchesStatus =
-                !status ||
-                rowStatus === status;
-
-
-
-            if (
-                matchesSearch &&
-                matchesCity &&
-                matchesStatus
-            ) {
-
-                row.style.display = "";
-
-                visibleCount++;
-
-            } else {
-
-                row.style.display = "none";
-
-            }
-
-
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
         });
-
-
-
-        document
-            .getElementById("hospitalRecordCount")
-            .textContent =
-                visibleCount +
-                (
-                    visibleCount === 1
-                        ? " hospital"
-                        : " hospitals"
-                );
-
     }
 
-
-
-    /* =====================================================
-       TOP SEARCH
-       ===================================================== */
-
-    function syncTopHospitalSearch() {
-
-        const value =
-            document
-                .getElementById("hospitalTopSearch")
-                .value;
-
-
-        document
-            .getElementById("hospitalSearch")
-            .value = value;
-
-
-        filterHospitals();
-
-    }
-
-
-
-    /* =====================================================
-       RESET FILTERS
-       ===================================================== */
-
-    function resetHospitalFilters() {
-
-
-        document
-            .getElementById("hospitalSearch")
-            .value = "";
-
-
-        document
-            .getElementById("hospitalCityFilter")
-            .value = "";
-
-
-        document
-            .getElementById("hospitalStatusFilter")
-            .value = "";
-
-
-        document
-            .getElementById("hospitalTopSearch")
-            .value = "";
-
-
-        filterHospitals();
-
-    }
-
-
-
-    /* =====================================================
-       ACTION MENU
-       ===================================================== */
-
-    function toggleHospitalActionMenu(
-        button,
-        event
-    ) {
-
-        event.stopPropagation();
-
-
-        const menu =
-            button
-                .closest(
-                    ".hospital-action-wrapper"
-                )
-                .querySelector(
-                    ".hospital-action-menu"
-                );
-
-
-        const alreadyOpen =
-            menu.classList.contains("show");
-
-
-        closeHospitalActionMenus();
-
-
-        if (!alreadyOpen) {
-
-            menu.classList.add("show");
-
-        }
-
-    }
-
-
-
-    function closeHospitalActionMenus() {
-
-        document
-            .querySelectorAll(
-                ".hospital-action-menu.show"
-            )
-            .forEach(function(menu) {
-
-                menu.classList.remove("show");
-
-            });
-
-    }
-
-
-
-    document.addEventListener(
-        "click",
-        function() {
-
-            closeHospitalActionMenus();
-
-        }
-    );
-
-
-
-    /* =====================================================
-       VIEW HOSPITAL
-       ===================================================== */
-
-    function viewHospital(button) {
-
-
-        const row =
-            button.closest("tr");
-
-
-        const hospitalId =
-            row.cells[0]
-                .innerText
-                .trim();
-
-
-        const name =
-            row.cells[1]
-                .innerText
-                .trim();
-
-
-        const city =
-            row.cells[2]
-                .innerText
-                .trim();
-
-
-        const contact =
-            row.cells[3]
-                .innerText
-                .trim();
-
-
-        const phone =
-            row.cells[4]
-                .innerText
-                .trim();
-
-
-        const requests =
-            row.cells[5]
-                .innerText
-                .trim();
-
-
-        const status =
-            row.cells[6]
-                .innerText
-                .trim();
-
-
-        const registration =
-            row.dataset.registration ||
-            "Not available";
-
-
-        const email =
-            row.dataset.email ||
-            "Not available";
-
-
-        const address =
-            row.dataset.address ||
-            "Not available";
-
-
-        const created =
-            row.dataset.created ||
-            "Not available";
-
-
-        closeHospitalActionMenus();
-
-
-
-        document
-            .getElementById("hospitalDetails")
-            .innerHTML = `
-
-                <div class="hospital-detail-grid">
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Hospital ID
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(hospitalId)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Hospital Name
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(name)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Registration Number
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(registration)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            City
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(city)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Contact Person
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(contact)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Phone Number
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(phone)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Email
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(email)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Blood Requests
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(requests)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Status
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(status)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item">
-
-                        <span>
-                            Registered On
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(created)}
-                        </strong>
-
-                    </div>
-
-
-                    <div class="hospital-detail-item full">
-
-                        <span>
-                            Hospital Address
-                        </span>
-
-                        <strong>
-                            ${escapeHospitalHTML(address)}
-                        </strong>
-
-                    </div>
-
-
-                </div>
-
-            `;
-
-
-        document
-            .getElementById("viewHospitalModal")
-            .classList
-            .add("show");
-
-    }
-
-
-
-    /* =====================================================
-       CLOSE VIEW MODAL
-       ===================================================== */
-
-    function closeViewHospital() {
-
-        document
-            .getElementById("viewHospitalModal")
-            .classList
-            .remove("show");
-
-    }
-
-
-
-    /* =====================================================
-       EDIT HOSPITAL
-       ===================================================== */
-
-    function editHospital(button) {
-
-
-        const row =
-            button.closest("tr");
-
-
-        selectedHospitalRow =
-            row;
-
-
-        document
-            .getElementById("editHospitalId")
-            .value =
-                row.cells[0]
-                    .innerText
-                    .trim();
-
-
-        document
-            .getElementById("editHospitalName")
-            .value =
-                row.cells[1]
-                    .innerText
-                    .trim();
-
-
-        document
-            .getElementById("editHospitalCity")
-            .value =
-                row.cells[2]
-                    .innerText
-                    .trim();
-
-
-        document
-            .getElementById("editHospitalContact")
-            .value =
-                row.cells[3]
-                    .innerText
-                    .trim();
-
-
-        document
-            .getElementById("editHospitalPhone")
-            .value =
-                row.cells[4]
-                    .innerText
-                    .trim();
-
-
-        document
-            .getElementById("editHospitalRegistration")
-            .value =
-                row.dataset.registration ||
-                "";
-
-
-        document
-            .getElementById("editHospitalEmail")
-            .value =
-                row.dataset.email ||
-                "";
-
-
-        document
-            .getElementById("editHospitalAddress")
-            .value =
-                row.dataset.address ||
-                "";
-
-
-        document
-            .getElementById("editHospitalStatus")
-            .value =
-                row.cells[6]
-                    .innerText
-                    .trim();
-
-
-        closeHospitalActionMenus();
-
-
-        document
-            .getElementById("editHospitalModal")
-            .classList
-            .add("show");
-
-    }
-
-
-
-    /* =====================================================
-       CLOSE EDIT MODAL
-       ===================================================== */
-
-    function closeEditHospitalModal() {
-
-        document
-            .getElementById("editHospitalModal")
-            .classList
-            .remove("show");
-
-
-        selectedHospitalRow =
-            null;
-
-    }
-
-
-
-    /* =====================================================
-       SAVE EDITED HOSPITAL
-       ===================================================== */
-
-    function saveEditedHospital() {
-
-
-        const row =
-            selectedHospitalRow;
-
-
-        if (!row) {
-
-            alert(
-                "Hospital could not be found."
-            );
-
-            return;
-
-        }
-
-
-
-        const name =
-            document
-                .getElementById("editHospitalName")
-                .value
-                .trim();
-
-
-        const registration =
-            document
-                .getElementById("editHospitalRegistration")
-                .value
-                .trim();
-
-
-        const city =
-            document
-                .getElementById("editHospitalCity")
-                .value;
-
-
-        const contact =
-            document
-                .getElementById("editHospitalContact")
-                .value
-                .trim();
-
-
-        const phone =
-            document
-                .getElementById("editHospitalPhone")
-                .value
-                .trim();
-
-
-        const email =
-            document
-                .getElementById("editHospitalEmail")
-                .value
-                .trim();
-
-
-        const address =
-            document
-                .getElementById("editHospitalAddress")
-                .value
-                .trim();
-
-
-        const status =
-            document
-                .getElementById("editHospitalStatus")
-                .value;
-
-
-
-        if (!name) {
-
-            alert(
-                "Please enter hospital name."
-            );
-
-            return;
-
-        }
-
-
-        if (!registration) {
-
-            alert(
-                "Please enter registration number."
-            );
-
-            return;
-
-        }
-
-
-        if (!contact) {
-
-            alert(
-                "Please enter contact person."
-            );
-
-            return;
-
-        }
-
-
-        if (!/^[0-9]{10}$/.test(phone)) {
-
-            alert(
-                "Please enter a valid 10-digit phone number."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            email &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-        ) {
-
-            alert(
-                "Please enter a valid email address."
-            );
-
-            return;
-
-        }
-
-
-        if (!address) {
-
-            alert(
-                "Please enter hospital address."
-            );
-
-            return;
-
-        }
-
-
-
-        row.cells[1].innerText =
-            name;
-
-
-        row.cells[2].innerText =
-            city;
-
-
-        row.cells[3].innerText =
-            contact;
-
-
-        row.cells[4].innerText =
-            phone;
-
-
-        row.cells[6].innerHTML =
-            getHospitalStatusBadge(status);
-
-
-
-        row.dataset.registration =
-            registration;
-
-
-        row.dataset.email =
-            email;
-
-
-        row.dataset.address =
-            address;
-
-
-
-        updateHospitalStats();
-
-        closeEditHospitalModal();
-
-        filterHospitals();
-
-
-        alert(
-            "Hospital " +
-            row.cells[0].innerText.trim() +
-            " updated successfully!"
-        );
-
-    }
-
-
-
-    /* =====================================================
-       STATUS BADGE
-       ===================================================== */
 
     function getHospitalStatusBadge(status) {
-
-
-        const badgeClass =
-            status === "Active"
-                ? "available"
-                : "reserved";
-
+        const badgeClass = status === "Active" ? "available" : "reserved";
 
         return `
-
             <span class="badge ${badgeClass}">
                 ${escapeHospitalHTML(status)}
             </span>
-
         `;
-
     }
 
 
-
-    /* =====================================================
-       CHANGE STATUS
-       ===================================================== */
-
-    function changeHospitalStatus(button) {
-
-
-        const row =
-            button.closest("tr");
-
-
-        selectedHospitalRow =
-            row;
-
-
-        const hospitalId =
-            row.cells[0]
-                .innerText
-                .trim();
-
-
-        const currentStatus =
-            row.cells[6]
-                .innerText
-                .trim();
-
-
-        document
-            .getElementById("hospitalStatusId")
-            .textContent =
-                hospitalId;
-
-
-        document
-            .getElementById("newHospitalStatus")
-            .value =
-                currentStatus;
-
-
-        closeHospitalActionMenus();
-
-
-        document
-            .getElementById("hospitalStatusModal")
-            .classList
-            .add("show");
-
+    function getHospitalPayloadFromForm(prefix) {
+        return {
+            name: document.getElementById(prefix + "HospitalName").value.trim(),
+            registrationNumber: document.getElementById(prefix + "HospitalRegistration").value.trim(),
+            city: document.getElementById(prefix + "HospitalCity").value,
+            contactPerson: document.getElementById(prefix + "HospitalContact").value.trim(),
+            phone: document.getElementById(prefix + "HospitalPhone").value.trim(),
+            email: document.getElementById(prefix + "HospitalEmail").value.trim(),
+            address: document.getElementById(prefix + "HospitalAddress").value.trim()
+        };
     }
 
 
-
-    /* =====================================================
-       CLOSE STATUS MODAL
-       ===================================================== */
-
-    function closeHospitalStatusModal() {
-
-        document
-            .getElementById("hospitalStatusModal")
-            .classList
-            .remove("show");
-
-
-        selectedHospitalRow =
-            null;
-
-    }
-
-
-
-    /* =====================================================
-       SAVE STATUS
-       ===================================================== */
-
-    function saveHospitalStatus() {
-
-
-        const row =
-            selectedHospitalRow;
-
-
-        if (!row) {
-
-            alert(
-                "Hospital could not be found."
-            );
-
-            return;
-
+    function validateHospitalPayload(payload) {
+        if (!payload.name) {
+            alert("Please enter hospital name.");
+            return false;
         }
 
-
-        const newStatus =
-            document
-                .getElementById("newHospitalStatus")
-                .value;
-
-
-        const hospitalId =
-            row.cells[0]
-                .innerText
-                .trim();
-
-
-        row.cells[6].innerHTML =
-            getHospitalStatusBadge(
-                newStatus
-            );
-
-
-        updateHospitalStats();
-
-        closeHospitalStatusModal();
-
-        filterHospitals();
-
-
-        alert(
-            "Status of " +
-            hospitalId +
-            " changed to " +
-            newStatus +
-            " successfully!"
-        );
-
-    }
-
-
-
-    /* =====================================================
-       REMOVE HOSPITAL
-       ===================================================== */
-
-    function removeHospital(button) {
-
-
-        const row =
-            button.closest("tr");
-
-
-        const hospitalId =
-            row.cells[0]
-                .innerText
-                .trim();
-
-
-        const hospitalName =
-            row.cells[1]
-                .innerText
-                .trim();
-
-
-        closeHospitalActionMenus();
-
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to remove " +
-                hospitalName +
-                " (" +
-                hospitalId +
-                ")?"
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
+        if (!payload.registrationNumber) {
+            alert("Please enter registration number.");
+            return false;
         }
 
+        if (!payload.contactPerson) {
+            alert("Please enter contact person.");
+            return false;
+        }
 
-        row.remove();
+        if (!/^[0-9]{10}$/.test(payload.phone)) {
+            alert("Please enter a valid 10-digit phone number.");
+            return false;
+        }
 
+        if (payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
 
-        updateHospitalStats();
+        if (!payload.address) {
+            alert("Please enter hospital address.");
+            return false;
+        }
 
-        filterHospitals();
-
-
-        alert(
-            "Hospital " +
-            hospitalId +
-            " removed successfully!"
-        );
-
+        return true;
     }
 
 
-
-    /* =====================================================
-       UPDATE HOSPITAL STATISTICS
-       ===================================================== */
-
-    function updateHospitalStats() {
+    function openHospitalModal() {
+        document.getElementById("hospitalModal").classList.add("show");
+    }
 
 
-        const rows =
-            document.querySelectorAll(
-                "#hospitalTable tbody tr"
-            );
+    function closeHospitalModal() {
+        document.getElementById("hospitalModal").classList.remove("show");
+    }
 
 
-        let total =
-            0;
+    async function loadHospitals() {
+        try {
+            const hospitals = await BloodConnectApi.getHospitals();
+
+            hospitalData = Array.isArray(hospitals) ? hospitals : [];
+
+            renderHospitals(hospitalData);
+
+            console.log("Hospitals loaded from backend:", hospitalData.length);
+        } catch (error) {
+            console.error("Failed to load hospitals:", error);
+            alert("Could not load hospitals from backend. Please make sure Spring Boot is running on port 8080.");
+        }
+    }
 
 
-        let active =
-            0;
+    function renderHospitals(hospitals) {
+        const tbody = document.querySelector("#hospitalTable tbody");
 
+        if (!tbody) {
+            return;
+        }
 
-        let requesting =
-            0;
+        tbody.innerHTML = "";
 
+        hospitals.forEach(function(hospital, index) {
+            const item = normalizeHospital(hospital, index);
 
-        let newHospitals =
-            0;
+            const row = document.createElement("tr");
 
+            row.dataset.backendId = item.backendId;
+            row.dataset.registration = item.registration;
+            row.dataset.email = item.email;
+            row.dataset.address = item.address;
+            row.dataset.created = formatHospitalDate(item.createdAt);
+            row.dataset.requestCount = item.requests;
 
+            row.innerHTML = `
+                <td>${escapeHospitalHTML(item.displayId)}</td>
+                <td>${escapeHospitalHTML(item.name)}</td>
+                <td>${escapeHospitalHTML(item.city)}</td>
+                <td>${escapeHospitalHTML(item.contact)}</td>
+                <td>${escapeHospitalHTML(item.phone)}</td>
+                <td>${escapeHospitalHTML(item.requests)}</td>
+                <td>${getHospitalStatusBadge(item.status)}</td>
+                <td>
+                    <div class="hospital-action-wrapper">
+                        <button
+                            class="hospital-action-trigger"
+                            onclick="toggleHospitalActionMenu(this, event)">
+                            ⋮
+                        </button>
 
-        rows.forEach(function(row) {
+                        <div class="hospital-action-menu">
+                            <button onclick="viewHospital(this)">
+                                👁 View Details
+                            </button>
 
+                            <button onclick="editHospital(this)">
+                                ✏ Edit Hospital
+                            </button>
 
-            total++;
+                            <button onclick="changeHospitalStatus(this)">
+                                🔄 Change Status
+                            </button>
 
+                            <hr>
 
-            const status =
-                row.cells[6]
-                    ? row.cells[6]
-                        .innerText
-                        .trim()
-                    : "";
+                            <button
+                                class="danger-action"
+                                onclick="removeHospital(this)">
+                                🗑 Remove Hospital
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            `;
 
-
-            const requestCount =
-                row.cells[5]
-                    ? parseInt(
-                        row.cells[5]
-                            .innerText
-                            .trim()
-                    ) || 0
-                    : 0;
-
-
-            if (status === "Active") {
-
-                active++;
-
-            }
-
-
-            if (requestCount > 0) {
-
-                requesting++;
-
-            }
-
-
-            if (
-                row.dataset.created
-                    .toLowerCase()
-                    .includes("sep")
-            ) {
-
-                newHospitals++;
-
-            }
-
-
+            tbody.appendChild(row);
         });
 
-
-
-        document
-            .getElementById("totalHospitals")
-            .textContent =
-                total;
-
-
-        document
-            .getElementById("activeHospitals")
-            .textContent =
-                active;
-
-
-        document
-            .getElementById("requestingHospitals")
-            .textContent =
-                requesting;
-
-
-        document
-            .getElementById("newHospitals")
-            .textContent =
-                newHospitals;
-
+        updateHospitalStats();
+        filterHospitals();
     }
 
 
+    async function registerHospital() {
+        const payload = getHospitalPayloadFromForm("new");
 
-    /* =====================================================
-       CLOSE MODALS BY CLICKING OUTSIDE
-       ===================================================== */
+        if (!validateHospitalPayload(payload)) {
+            return;
+        }
 
-    document.addEventListener(
-        "click",
-        function(event) {
+        try {
+            const createdHospital = await BloodConnectApi.createHospital(payload);
+
+            hospitalData.push(createdHospital);
+
+            renderHospitals(hospitalData);
+            clearHospitalForm();
+            closeHospitalModal();
+
+            const created = normalizeHospital(
+                createdHospital,
+                hospitalData.length - 1
+            );
+
+            alert(
+                "Hospital " +
+                created.displayId +
+                " registered successfully!"
+            );
+        } catch (error) {
+            console.error("Failed to register hospital:", error);
+            alert("Failed to register hospital: " + error.message);
+        }
+    }
 
 
-            const modals =
-                document.querySelectorAll(
-                    ".modal"
-                );
+    function clearHospitalForm() {
+        document.getElementById("newHospitalName").value = "";
+        document.getElementById("newHospitalRegistration").value = "";
+        document.getElementById("newHospitalCity").value = "Pune";
+        document.getElementById("newHospitalContact").value = "";
+        document.getElementById("newHospitalPhone").value = "";
+        document.getElementById("newHospitalEmail").value = "";
+        document.getElementById("newHospitalAddress").value = "";
+    }
 
 
-            modals.forEach(function(modal) {
+    function filterHospitals() {
+        const search = document.getElementById("hospitalSearch").value.toLowerCase().trim();
+        const city = document.getElementById("hospitalCityFilter").value;
+        const status = document.getElementById("hospitalStatusFilter").value;
 
+        const rows = document.querySelectorAll("#hospitalTable tbody tr");
+        let visibleCount = 0;
+
+        rows.forEach(function(row) {
+            const text = row.innerText.toLowerCase();
+            const rowCity = row.cells[2] ? row.cells[2].innerText.trim() : "";
+            const rowStatus = row.cells[6] ? row.cells[6].innerText.trim() : "";
+
+            const matchesSearch = !search || text.includes(search);
+            const matchesCity = !city || rowCity === city;
+            const matchesStatus = !status || rowStatus === status;
+
+            if (matchesSearch && matchesCity && matchesStatus) {
+                row.style.display = "";
+                visibleCount++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        document.getElementById("hospitalRecordCount").textContent =
+            visibleCount + (visibleCount === 1 ? " hospital" : " hospitals");
+    }
+
+
+    function syncTopHospitalSearch() {
+        const value = document.getElementById("hospitalTopSearch").value;
+        document.getElementById("hospitalSearch").value = value;
+        filterHospitals();
+    }
+
+
+    function resetHospitalFilters() {
+        document.getElementById("hospitalSearch").value = "";
+        document.getElementById("hospitalCityFilter").value = "";
+        document.getElementById("hospitalStatusFilter").value = "";
+        document.getElementById("hospitalTopSearch").value = "";
+        filterHospitals();
+    }
+
+
+    function toggleHospitalActionMenu(button, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        const wrapper = button.closest(".hospital-action-wrapper");
+
+        if (!wrapper) {
+            return;
+        }
+
+        const menu = wrapper.querySelector(".hospital-action-menu");
+
+        if (!menu) {
+            return;
+        }
+
+        const wasOpen = menu.classList.contains("show");
+
+        closeHospitalActionMenus();
+
+        if (wasOpen) {
+            return;
+        }
+
+        menu.__hospitalOriginalParent = wrapper;
+        menu.__hospitalRow = button.closest("tr");
+
+        document.body.appendChild(menu);
+
+        const rect = button.getBoundingClientRect();
+
+        menu.classList.add("show");
+
+        const menuWidth = menu.offsetWidth || 190;
+        const menuHeight = menu.offsetHeight || 190;
+
+        let left = rect.right - menuWidth;
+        let top = rect.bottom + 6;
+
+        if (left < 8) {
+            left = 8;
+        }
+
+        if (left + menuWidth > window.innerWidth - 8) {
+            left = window.innerWidth - menuWidth - 8;
+        }
+
+        if (top + menuHeight > window.innerHeight - 8) {
+            top = rect.top - menuHeight - 6;
+        }
+
+        if (top < 8) {
+            top = 8;
+        }
+
+        menu.style.position = "fixed";
+        menu.style.left = left + "px";
+        menu.style.top = top + "px";
+        menu.style.right = "auto";
+        menu.style.zIndex = "999999";
+    }
+
+
+    function closeHospitalActionMenus() {
+        document
+            .querySelectorAll(".hospital-action-menu.show")
+            .forEach(function(menu) {
+                menu.classList.remove("show");
 
                 if (
-                    event.target === modal
+                    menu.__hospitalOriginalParent &&
+                    menu.parentElement !== menu.__hospitalOriginalParent
                 ) {
-
-                    modal.classList.remove(
-                        "show"
-                    );
-
-                    selectedHospitalRow =
-                        null;
-
+                    menu.__hospitalOriginalParent.appendChild(menu);
                 }
 
+                menu.style.position = "";
+                menu.style.left = "";
+                menu.style.top = "";
+                menu.style.right = "";
+                menu.style.zIndex = "";
+            });
+    }
 
+
+    function getHospitalRowFromActionButton(button) {
+        const directRow = button.closest("tr");
+
+        if (directRow) {
+            return directRow;
+        }
+
+        const menu = button.closest(".hospital-action-menu");
+
+        if (menu && menu.__hospitalRow) {
+            return menu.__hospitalRow;
+        }
+
+        return null;
+    }
+
+
+    document.addEventListener("click", function(event) {
+        if (
+            !event.target.closest(".hospital-action-wrapper") &&
+            !event.target.closest(".hospital-action-menu")
+        ) {
+            closeHospitalActionMenus();
+        }
+    });
+
+
+    window.addEventListener("resize", function() {
+        closeHospitalActionMenus();
+    });
+
+
+    window.addEventListener("scroll", function() {
+        closeHospitalActionMenus();
+    }, true);
+
+
+    function getRowHospital(row) {
+        return {
+            backendId: getHospitalBackendId(row),
+            hospitalId: row.cells[0].innerText.trim(),
+            name: row.cells[1].innerText.trim(),
+            city: row.cells[2].innerText.trim(),
+            contact: row.cells[3].innerText.trim(),
+            phone: row.cells[4].innerText.trim(),
+            requests: row.cells[5].innerText.trim(),
+            status: row.cells[6].innerText.trim(),
+            registration: row.dataset.registration || "Not available",
+            email: row.dataset.email || "Not available",
+            address: row.dataset.address || "Not available",
+            created: row.dataset.created || "Not available"
+        };
+    }
+
+
+    function viewHospital(button) {
+        const row = getHospitalRowFromActionButton(button);
+
+        if (!row) {
+            alert("Hospital could not be found.");
+            closeHospitalActionMenus();
+            return;
+        }
+
+        const hospital = getRowHospital(row);
+
+        closeHospitalActionMenus();
+
+        document.getElementById("hospitalDetails").innerHTML = `
+            <div class="hospital-detail-grid">
+                <div class="hospital-detail-item">
+                    <span>Hospital ID</span>
+                    <strong>${escapeHospitalHTML(hospital.hospitalId)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Hospital Name</span>
+                    <strong>${escapeHospitalHTML(hospital.name)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Registration Number</span>
+                    <strong>${escapeHospitalHTML(hospital.registration)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>City</span>
+                    <strong>${escapeHospitalHTML(hospital.city)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Contact Person</span>
+                    <strong>${escapeHospitalHTML(hospital.contact)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Phone Number</span>
+                    <strong>${escapeHospitalHTML(hospital.phone)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Email</span>
+                    <strong>${escapeHospitalHTML(hospital.email)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Blood Requests</span>
+                    <strong>${escapeHospitalHTML(hospital.requests)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Status</span>
+                    <strong>${escapeHospitalHTML(hospital.status)}</strong>
+                </div>
+
+                <div class="hospital-detail-item">
+                    <span>Registered On</span>
+                    <strong>${escapeHospitalHTML(hospital.created)}</strong>
+                </div>
+
+                <div class="hospital-detail-item full">
+                    <span>Hospital Address</span>
+                    <strong>${escapeHospitalHTML(hospital.address)}</strong>
+                </div>
+            </div>
+        `;
+
+        document.getElementById("viewHospitalModal").classList.add("show");
+    }
+
+
+    function closeViewHospital() {
+        document.getElementById("viewHospitalModal").classList.remove("show");
+    }
+
+
+    function editHospital(button) {
+        const row = getHospitalRowFromActionButton(button);
+
+        if (!row) {
+            alert("Hospital could not be found.");
+            closeHospitalActionMenus();
+            return;
+        }
+
+        selectedHospitalRow = row;
+
+        document.getElementById("editHospitalId").value = row.cells[0].innerText.trim();
+        document.getElementById("editHospitalName").value = row.cells[1].innerText.trim();
+        document.getElementById("editHospitalCity").value = row.cells[2].innerText.trim();
+        document.getElementById("editHospitalContact").value = row.cells[3].innerText.trim();
+        document.getElementById("editHospitalPhone").value = row.cells[4].innerText.trim();
+        document.getElementById("editHospitalRegistration").value = row.dataset.registration || "";
+        document.getElementById("editHospitalEmail").value = row.dataset.email || "";
+        document.getElementById("editHospitalAddress").value = row.dataset.address || "";
+        document.getElementById("editHospitalStatus").value = row.cells[6].innerText.trim();
+
+        closeHospitalActionMenus();
+        document.getElementById("editHospitalModal").classList.add("show");
+    }
+
+
+    function closeEditHospitalModal() {
+        document.getElementById("editHospitalModal").classList.remove("show");
+        selectedHospitalRow = null;
+    }
+
+
+    async function saveEditedHospital() {
+        const row = selectedHospitalRow;
+
+        if (!row) {
+            alert("Hospital could not be found.");
+            return;
+        }
+
+        const backendId = getHospitalBackendId(row);
+
+        if (!backendId) {
+            alert("This hospital does not have a backend ID. Please reload the page.");
+            return;
+        }
+
+        const payload = getHospitalPayloadFromForm("edit");
+        const status = document.getElementById("editHospitalStatus").value;
+
+        if (!validateHospitalPayload(payload)) {
+            return;
+        }
+
+        payload.status = status;
+
+        try {
+            const updatedHospital = await BloodConnectApi.updateHospital(
+                backendId,
+                payload
+            );
+
+            const index = hospitalData.findIndex(function(item) {
+                return String(item.id || item.uuid || item.hospitalId) === String(backendId);
             });
 
+            if (index !== -1) {
+                hospitalData[index] = updatedHospital;
+            }
+
+            renderHospitals(hospitalData);
+            closeEditHospitalModal();
+
+            alert(
+                "Hospital " +
+                row.cells[0].innerText.trim() +
+                " updated successfully!"
+            );
+        } catch (error) {
+            console.error("Failed to update hospital:", error);
+            alert("Failed to update hospital: " + error.message);
         }
-    );
+    }
 
 
+    function changeHospitalStatus(button) {
+        const row = getHospitalRowFromActionButton(button);
 
-    /* =====================================================
-       INITIALIZE
-       ===================================================== */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-
-
-            updateHospitalStats();
-
-            filterHospitals();
-
-
+        if (!row) {
+            alert("Hospital could not be found.");
+            closeHospitalActionMenus();
+            return;
         }
-    );
 
+        selectedHospitalRow = row;
+
+        const hospitalId = row.cells[0].innerText.trim();
+        const currentStatus = row.cells[6].innerText.trim();
+
+        document.getElementById("hospitalStatusId").textContent = hospitalId;
+        document.getElementById("newHospitalStatus").value = currentStatus;
+
+        closeHospitalActionMenus();
+        document.getElementById("hospitalStatusModal").classList.add("show");
+    }
+
+
+    function closeHospitalStatusModal() {
+        document.getElementById("hospitalStatusModal").classList.remove("show");
+        selectedHospitalRow = null;
+    }
+
+
+    async function saveHospitalStatus() {
+        const row = selectedHospitalRow;
+
+        if (!row) {
+            alert("Hospital could not be found.");
+            return;
+        }
+
+        const backendId = getHospitalBackendId(row);
+        const newStatus = document.getElementById("newHospitalStatus").value;
+
+        if (!backendId) {
+            alert("This hospital does not have a backend ID. Please reload the page.");
+            return;
+        }
+
+        try {
+            const current = getRowHospital(row);
+
+            const payload = {
+                name: current.name,
+                registrationNumber: current.registration === "Not available" ? "" : current.registration,
+                city: current.city,
+                contactPerson: current.contact,
+                phone: current.phone,
+                email: current.email === "Not available" ? "" : current.email,
+                address: current.address === "Not available" ? "" : current.address,
+                status: newStatus
+            };
+
+            const updatedHospital = await BloodConnectApi.updateHospital(
+                backendId,
+                payload
+            );
+
+            const index = hospitalData.findIndex(function(item) {
+                return String(item.id || item.uuid || item.hospitalId) === String(backendId);
+            });
+
+            if (index !== -1) {
+                hospitalData[index] = updatedHospital;
+            }
+
+            renderHospitals(hospitalData);
+            closeHospitalStatusModal();
+
+            alert(
+                "Status of " +
+                current.hospitalId +
+                " changed to " +
+                newStatus +
+                " successfully!"
+            );
+        } catch (error) {
+            console.error("Failed to change hospital status:", error);
+            alert("Failed to change hospital status: " + error.message);
+        }
+    }
+
+
+    async function removeHospital(button) {
+        const row = getHospitalRowFromActionButton(button);
+
+        if (!row) {
+            alert("Hospital could not be found.");
+            closeHospitalActionMenus();
+            return;
+        }
+
+        const backendId = getHospitalBackendId(row);
+        const hospitalId = row.cells[0].innerText.trim();
+        const hospitalName = row.cells[1].innerText.trim();
+
+        closeHospitalActionMenus();
+
+        const confirmed = confirm(
+            "Are you sure you want to remove " +
+            hospitalName +
+            " (" +
+            hospitalId +
+            ")?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        if (!backendId) {
+            alert("This hospital does not have a backend ID. Please reload the page.");
+            return;
+        }
+
+        try {
+            await BloodConnectApi.deleteHospital(backendId);
+
+            hospitalData = hospitalData.filter(function(item) {
+                return String(item.id || item.uuid || item.hospitalId) !== String(backendId);
+            });
+
+            renderHospitals(hospitalData);
+
+            alert(
+                "Hospital " +
+                hospitalId +
+                " removed successfully!"
+            );
+        } catch (error) {
+            console.error("Failed to remove hospital:", error);
+            alert("Failed to remove hospital: " + error.message);
+        }
+    }
+
+
+    function updateHospitalStats() {
+        const rows = document.querySelectorAll("#hospitalTable tbody tr");
+
+        let total = 0;
+        let active = 0;
+        let requesting = 0;
+        let newHospitals = 0;
+
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+
+        rows.forEach(function(row) {
+            total++;
+
+            const status = row.cells[6] ? row.cells[6].innerText.trim() : "";
+            const requestCount = row.cells[5]
+                ? parseInt(row.cells[5].innerText.trim(), 10) || 0
+                : 0;
+
+            if (status === "Active") {
+                active++;
+            }
+
+            if (requestCount > 0) {
+                requesting++;
+            }
+
+            const createdValue = row.dataset.created || "";
+            const createdDate = new Date(createdValue);
+
+            if (!Number.isNaN(createdDate.getTime())) {
+                if (
+                    createdDate.getMonth() === currentMonth &&
+                    createdDate.getFullYear() === currentYear
+                ) {
+                    newHospitals++;
+                }
+            }
+        });
+
+        document.getElementById("totalHospitals").textContent = total;
+        document.getElementById("activeHospitals").textContent = active;
+        document.getElementById("requestingHospitals").textContent = requesting;
+        document.getElementById("newHospitals").textContent = newHospitals;
+    }
+
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest(".hospital-action-wrapper")) {
+            closeHospitalActionMenus();
+        }
+
+        const modals = document.querySelectorAll(".modal");
+
+        modals.forEach(function(modal) {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+                selectedHospitalRow = null;
+            }
+        });
+    });
+
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") {
+            closeHospitalActionMenus();
+
+            document.querySelectorAll(".modal.show").forEach(function(modal) {
+                modal.classList.remove("show");
+            });
+
+            selectedHospitalRow = null;
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadHospitals();
+    });
 
 </script>
 

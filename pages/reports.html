@@ -9,8 +9,6 @@
 
     <link rel="stylesheet" href="../css/style.css">
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* ================= REPORT PAGE ENHANCEMENTS ================= */
@@ -145,7 +143,172 @@
                 right: auto;
             }
         }
-    </style>
+    
+        .report-svg-chart {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+        }
+
+        .report-svg-chart svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .report-doughnut-layout {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 380px;
+            padding: 24px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 55px;
+        }
+
+        .report-doughnut {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            flex: 0 0 240px;
+        }
+
+        .report-doughnut svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .report-doughnut-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .report-doughnut-center strong {
+            font-size: 32px;
+            color: #111827;
+        }
+
+        .report-doughnut-center span {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .report-chart-legend {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(145px, 1fr));
+            gap: 16px 28px;
+            width: 330px;
+            max-width: 330px;
+        }
+
+        .report-chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 15px;
+            color: #555;
+            min-height: 24px;
+        }
+
+        .report-chart-legend-item strong {
+            margin-left: auto;
+            color: #111827;
+            font-size: 15px;
+        }
+
+        .report-chart-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex: 0 0 11px;
+        }
+
+        .report-chart-empty {
+            height: 100%;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 14px;
+        }
+
+        @media (max-width: 800px) {
+            .report-doughnut-layout {
+                flex-direction: column;
+                min-height: 500px;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .report-doughnut {
+                width: 220px;
+                height: 220px;
+                flex-basis: 220px;
+            }
+
+            .report-chart-legend {
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+
+    
+        /* ===== REPORT CHART LAYOUT FIX ===== */
+        .dashboard-grid {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+            width: 100% !important;
+        }
+
+        .dashboard-grid .chart-card {
+            width: 100% !important;
+            min-width: 0 !important;
+            grid-column: 1 / -1 !important;
+        }
+
+        .dashboard-grid .chart-card:first-child {
+            min-height: 390px !important;
+        }
+
+        .dashboard-grid .chart-card:nth-child(2) {
+            min-height: 360px !important;
+        }
+
+        .dashboard-grid .report-chart-container {
+            width: 100% !important;
+        }
+
+        .dashboard-grid .report-svg-chart {
+            width: 100% !important;
+            height: 330px !important;
+        }
+
+        .dashboard-grid .report-doughnut-layout {
+            width: 100% !important;
+            min-height: 300px !important;
+        }
+
+        @media (max-width: 700px) {
+            .dashboard-grid .chart-card:first-child,
+            .dashboard-grid .chart-card:nth-child(2) {
+                min-height: 320px !important;
+            }
+
+            .dashboard-grid .report-svg-chart {
+                height: 270px !important;
+            }
+        }
+
+</style>
 </head>
 
 <body>
@@ -751,203 +914,182 @@
 
 <!-- ================= JAVASCRIPT ================= -->
 
+<script src="../js/api.js"></script>
+
 <script>
 
 let donationChartInstance = null;
 let bloodGroupChartInstance = null;
 
-/* =========================================
-   REPORT DATA
-========================================= */
-
-const reportData = {
-
-    today: {
-        donations: 8,
-        issued: 5,
-        donors: 982,
-        fulfilled: 6
-    },
-
-    week: {
-        donations: 42,
-        issued: 27,
-        donors: 982,
-        fulfilled: 31
-    },
-
-    month: {
-        donations: 156,
-        issued: 98,
-        donors: 982,
-        fulfilled: 128
-    },
-
-    year: {
-        donations: 1420,
-        issued: 892,
-        donors: 982,
-        fulfilled: 1030
-    }
-
+let reportBackend = {
+    summary: null,
+    transactions: [],
+    donors: [],
+    requests: [],
+    inventory: [],
+    dashboard: null
 };
 
-/* =========================================
-   CREATE DONATION CHART
-========================================= */
+function escapeReportHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-function createDonationChart(period) {
+function getQuantity(item) {
+    const value = Number(item?.quantity);
+    return Number.isFinite(value) ? value : 0;
+}
 
-    const canvas =
-        document.getElementById("donationChart");
+function normalizeType(value) {
+    return String(value ?? "").trim().toLowerCase();
+}
 
-    if (!canvas) {
-        return;
-    }
+function normalizeStatus(value) {
+    return String(value ?? "").trim().toLowerCase();
+}
 
-    if (donationChartInstance) {
-        donationChartInstance.destroy();
-    }
+function getDateValue(value) {
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
 
-    let labels;
-    let data;
-    let chartLabel;
+function getPeriodStart(period) {
+    const now = new Date();
 
     if (period === "today") {
-
-        labels = [
-            "8 AM",
-            "10 AM",
-            "12 PM",
-            "2 PM",
-            "4 PM",
-            "6 PM"
-        ];
-
-        data = [
-            1, 2, 1, 2, 1, 1
-        ];
-
-        chartLabel = "Today";
-
-    } else if (period === "week") {
-
-        labels = [
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-            "Sun"
-        ];
-
-        data = [
-            4, 7, 5, 8, 6, 7, 5
-        ];
-
-        chartLabel = "Weekly";
-
-    } else if (period === "year") {
-
-        labels = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-        ];
-
-        data = [
-            96, 102, 110, 82, 105, 96,
-            128, 141, 156, 118, 130, 136
-        ];
-
-        chartLabel = "Yearly";
-
-    } else {
-
-        labels = [
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep"
-        ];
-
-        data = [
-            82,
-            105,
-            96,
-            128,
-            141,
-            156
-        ];
-
-        chartLabel = "Monthly";
+        return new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
     }
 
-    document.getElementById("donationChartLabel").textContent =
-        chartLabel;
-
-    donationChartInstance =
-        new Chart(
-            canvas,
-            {
-                type: "line",
-
-                data: {
-
-                    labels: labels,
-
-                    datasets: [
-                        {
-                            label: "Donations",
-                            data: data,
-                            borderColor: "#df3a42",
-                            backgroundColor: "rgba(223,58,66,0.12)",
-                            fill: true,
-                            tension: 0.35,
-                            pointRadius: 4
-                        }
-                    ]
-                },
-
-                options: {
-
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-
-                    scales: {
-
-                        y: {
-                            beginAtZero: true
-                        },
-
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-
-                    }
-                }
-            }
+    if (period === "week") {
+        const start = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
         );
+        const day = start.getDay();
+        const diff = day === 0 ? 6 : day - 1;
+        start.setDate(start.getDate() - diff);
+        return start;
+    }
+
+    if (period === "year") {
+        return new Date(now.getFullYear(), 0, 1);
+    }
+
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+function isInSelectedPeriod(value, period) {
+    const date = getDateValue(value);
+
+    if (!date) return false;
+
+    const start = getPeriodStart(period);
+    const now = new Date();
+
+    return date >= start && date <= now;
+}
+
+function getTransactionsForPeriod(period) {
+    return reportBackend.transactions.filter(function(transaction) {
+        return isInSelectedPeriod(
+            transaction.transactionDate ||
+            transaction.date ||
+            transaction.createdAt,
+            period
+        );
+    });
+}
+
+/* =========================================
+   BACKEND REPORT CALCULATIONS
+========================================= */
+
+function calculateReportMetrics(period) {
+    const transactions = getTransactionsForPeriod(period);
+
+    let donations = 0;
+    let issued = 0;
+
+    transactions.forEach(function(transaction) {
+        const type = normalizeType(transaction.type);
+
+        if (type === "donation") {
+            donations += getQuantity(transaction);
+        }
+
+        if (
+            type === "issue" ||
+            type === "issued" ||
+            type === "blood issue"
+        ) {
+            issued += getQuantity(transaction);
+        }
+    });
+
+    const activeDonors =
+        reportBackend.donors.filter(function(donor) {
+            return normalizeStatus(donor.status) === "active";
+        }).length;
+
+    const fulfilledRequests =
+        reportBackend.requests.filter(function(request) {
+            const status = normalizeStatus(request.status);
+            return (
+                status === "completed" ||
+                status === "fulfilled" ||
+                status === "issued"
+            );
+        }).length;
+
+    const pendingRequests =
+        reportBackend.requests.filter(function(request) {
+            return normalizeStatus(request.status) === "pending";
+        }).length;
+
+    const availableUnits =
+        reportBackend.inventory.reduce(function(total, item) {
+            return normalizeStatus(item.status) === "available"
+                ? total + getQuantity(item)
+                : total;
+        }, 0);
+
+    const expiredUnits =
+        reportBackend.inventory.reduce(function(total, item) {
+            return normalizeStatus(item.status) === "expired"
+                ? total + getQuantity(item)
+                : total;
+        }, 0);
+
+    // If inventory is empty, use the dashboard backend value when available.
+    const finalAvailableUnits =
+        reportBackend.inventory.length > 0
+            ? availableUnits
+            : Number(reportBackend.dashboard?.availableUnits || 0);
+
+    const finalExpiredUnits =
+        reportBackend.inventory.length > 0
+            ? expiredUnits
+            : Number(reportBackend.dashboard?.expiredUnits || 0);
+
+    return {
+        donations,
+        issued,
+        donors: activeDonors,
+        fulfilled: fulfilledRequests,
+        availableUnits: finalAvailableUnits,
+        pendingRequests,
+        expiredUnits: finalExpiredUnits
+    };
 }
 
 /* =========================================
@@ -956,80 +1098,570 @@ function createDonationChart(period) {
 
 function createBloodGroupChart() {
 
-    const canvas =
-        document.getElementById("bloodGroupChart");
+    const container = document
+        .querySelector("#bloodGroupChart")
+        ?.parentElement;
 
-    if (!canvas) {
+    if (!container) {
         return;
     }
 
-    if (bloodGroupChartInstance) {
-        bloodGroupChartInstance.destroy();
+    const stock =
+        reportBackend.summary?.stockByBloodGroup || {};
+
+    const fallbackLabels = [
+        "A+", "A-", "B+", "B-",
+        "O+", "O-", "AB+", "AB-"
+    ];
+
+    const labels =
+        Object.keys(stock).length
+            ? Object.keys(stock)
+            : fallbackLabels;
+
+    const values =
+        Object.keys(stock).length
+            ? labels.map(function(label) {
+                return Number(stock[label] || 0);
+            })
+            : labels.map(function() {
+                return 0;
+            });
+
+    const total =
+        values.reduce(function(sum, value) {
+            return sum + value;
+        }, 0);
+
+    if (!total) {
+        container.innerHTML = `
+            <div class="report-chart-empty">
+                No blood group stock data available.
+            </div>
+        `;
+        return;
     }
 
-    bloodGroupChartInstance =
-        new Chart(
-            canvas,
-            {
-                type: "doughnut",
+    const cx = 50;
+    const cy = 50;
+    const radius = 38;
+    const circumference = 2 * Math.PI * radius;
 
-                data: {
+    let offset = 0;
 
-                    labels: [
-                        "A+",
-                        "A-",
-                        "B+",
-                        "B-",
-                        "O+",
-                        "O-",
-                        "AB+",
-                        "AB-"
-                    ],
+    const segments = values.map(function(value, index) {
 
-                    datasets: [
-                        {
-                            data: [
-                                22,
-                                7,
-                                18,
-                                5,
-                                28,
-                                6,
-                                10,
-                                4
-                            ],
+        const length =
+            (value / total) * circumference;
 
-                            backgroundColor: [
-                                "#df323a",
-                                "#3478dc",
-                                "#38a866",
-                                "#f3ae25",
-                                "#9b59b6",
-                                "#e67e22",
-                                "#16a085",
-                                "#34495e"
-                            ],
+        const segment = `
+            <circle
+                cx="${cx}"
+                cy="${cy}"
+                r="${radius}"
+                fill="none"
+                stroke="${[
+                    "#df323a",
+                    "#3478dc",
+                    "#38a866",
+                    "#f3ae25",
+                    "#9b59b6",
+                    "#e67e22",
+                    "#16a085",
+                    "#34495e"
+                ][index % 8]}"
+                stroke-width="16"
+                stroke-dasharray="${length} ${circumference - length}"
+                stroke-dashoffset="${-offset}"
+                transform="rotate(-90 50 50)"
+            ></circle>
+        `;
 
-                            borderWidth: 0
-                        }
-                    ]
-                },
+        offset += length;
 
-                options: {
+        return segment;
+    }).join("");
 
-                    responsive: true,
-                    maintainAspectRatio: false,
+    const legend = labels.map(function(label, index) {
+        return `
+            <div class="report-chart-legend-item">
+                <span
+                    class="report-chart-dot"
+                    style="background:${[
+                        "#df323a",
+                        "#3478dc",
+                        "#38a866",
+                        "#f3ae25",
+                        "#9b59b6",
+                        "#e67e22",
+                        "#16a085",
+                        "#34495e"
+                    ][index % 8]}"
+                ></span>
+                <span>${escapeReportHTML(label)}</span>
+                <strong>${values[index]}</strong>
+            </div>
+        `;
+    }).join("");
 
-                    cutout: "60%",
+    container.innerHTML = `
+        <div class="report-doughnut-layout">
+            <div class="report-doughnut">
+                <svg
+                    viewBox="0 0 100 100"
+                    aria-label="Blood group distribution"
+                >
+                    ${segments}
+                </svg>
 
-                    plugins: {
-                        legend: {
-                            position: "bottom"
-                        }
-                    }
-                }
+                <div class="report-doughnut-center">
+                    <strong>${total}</strong>
+                    <span>Units</span>
+                </div>
+            </div>
+
+            <div class="report-chart-legend">
+                ${legend}
+            </div>
+        </div>
+    `;
+}
+
+/* =========================================
+   DONATION CHART
+========================================= */
+
+function createDonationChart(period) {
+
+    const container = document
+        .querySelector("#donationChart")
+        ?.parentElement;
+
+    if (!container) {
+        return;
+    }
+
+    const transactions =
+        getTransactionsForPeriod(period)
+        .filter(function(transaction) {
+            return normalizeType(transaction.type) === "donation";
+        });
+
+    let labels = [];
+    let data = [];
+
+    if (period === "today") {
+
+        labels = ["Morning", "Afternoon", "Evening"];
+        data = [0, 0, 0];
+
+        transactions.forEach(function(transaction) {
+
+            const date = getDateValue(
+                transaction.transactionDate ||
+                transaction.date ||
+                transaction.createdAt
+            );
+
+            if (!date) return;
+
+            const hour = date.getHours();
+            const quantity = getQuantity(transaction);
+
+            if (hour < 12) {
+                data[0] += quantity;
+            } else if (hour < 17) {
+                data[1] += quantity;
+            } else {
+                data[2] += quantity;
             }
-        );
+        });
+
+    } else if (period === "week") {
+
+        labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        data = new Array(7).fill(0);
+
+        transactions.forEach(function(transaction) {
+
+            const date = getDateValue(
+                transaction.transactionDate ||
+                transaction.date ||
+                transaction.createdAt
+            );
+
+            if (!date) return;
+
+            const day = date.getDay();
+            const index = day === 0 ? 6 : day - 1;
+
+            data[index] += getQuantity(transaction);
+        });
+
+    } else if (period === "year") {
+
+        labels = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        data = new Array(12).fill(0);
+
+        transactions.forEach(function(transaction) {
+
+            const date = getDateValue(
+                transaction.transactionDate ||
+                transaction.date ||
+                transaction.createdAt
+            );
+
+            if (!date) return;
+
+            data[date.getMonth()] += getQuantity(transaction);
+        });
+
+    } else {
+
+        labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+        data = new Array(5).fill(0);
+
+        transactions.forEach(function(transaction) {
+
+            const date = getDateValue(
+                transaction.transactionDate ||
+                transaction.date ||
+                transaction.createdAt
+            );
+
+            if (!date) return;
+
+            const weekIndex =
+                Math.min(
+                    4,
+                    Math.floor((date.getDate() - 1) / 7)
+                );
+
+            data[weekIndex] += getQuantity(transaction);
+        });
+    }
+
+    const width = 900;
+    const height = 300;
+    const paddingLeft = 55;
+    const paddingRight = 25;
+    const paddingTop = 20;
+    const paddingBottom = 45;
+
+    const plotWidth =
+        width - paddingLeft - paddingRight;
+
+    const plotHeight =
+        height - paddingTop - paddingBottom;
+
+    const maxValue =
+        Math.max(1, ...data);
+
+    const points =
+        data.map(function(value, index) {
+
+            const x =
+                paddingLeft +
+                (data.length === 1
+                    ? plotWidth / 2
+                    : (index / (data.length - 1)) * plotWidth);
+
+            const y =
+                paddingTop +
+                plotHeight -
+                (value / maxValue) * plotHeight;
+
+            return {
+                x,
+                y,
+                value
+            };
+        });
+
+    const linePoints =
+        points
+        .map(function(point) {
+            return `${point.x},${point.y}`;
+        })
+        .join(" ");
+
+    const areaPoints =
+        `${paddingLeft},${paddingTop + plotHeight} ` +
+        linePoints +
+        ` ${paddingLeft + plotWidth},${paddingTop + plotHeight}`;
+
+    const gridLines =
+        [0, 0.25, 0.5, 0.75, 1]
+        .map(function(ratio) {
+
+            const y =
+                paddingTop +
+                plotHeight -
+                ratio * plotHeight;
+
+            const value =
+                Math.round(maxValue * ratio);
+
+            return `
+                <line
+                    x1="${paddingLeft}"
+                    y1="${y}"
+                    x2="${paddingLeft + plotWidth}"
+                    y2="${y}"
+                    stroke="#e8e8e8"
+                    stroke-width="1"
+                ></line>
+
+                <text
+                    x="${paddingLeft - 10}"
+                    y="${y + 4}"
+                    text-anchor="end"
+                    fill="#777"
+                    font-size="12"
+                >${value}</text>
+            `;
+        })
+        .join("");
+
+    const xLabels =
+        labels.map(function(label, index) {
+
+            const point = points[index];
+
+            return `
+                <text
+                    x="${point.x}"
+                    y="${height - 12}"
+                    text-anchor="middle"
+                    fill="#777"
+                    font-size="12"
+                >${escapeReportHTML(label)}</text>
+            `;
+        })
+        .join("");
+
+    const circles =
+        points.map(function(point) {
+
+            return `
+                <circle
+                    cx="${point.x}"
+                    cy="${point.y}"
+                    r="5"
+                    fill="#df3a42"
+                    stroke="#ffffff"
+                    stroke-width="3"
+                >
+                    <title>${point.value} units</title>
+                </circle>
+            `;
+        })
+        .join("");
+
+    container.innerHTML = `
+        <div class="report-svg-chart">
+            <svg
+                viewBox="0 0 ${width} ${height}"
+                preserveAspectRatio="none"
+                aria-label="Blood donations chart"
+            >
+                ${gridLines}
+
+                <polygon
+                    points="${areaPoints}"
+                    fill="rgba(223,58,66,0.10)"
+                ></polygon>
+
+                <polyline
+                    points="${linePoints}"
+                    fill="none"
+                    stroke="#df3a42"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                ></polyline>
+
+                ${circles}
+                ${xLabels}
+            </svg>
+        </div>
+    `;
+
+    const periodText = {
+        today: "Today",
+        week: "Weekly",
+        month: "Monthly",
+        year: "Yearly"
+    };
+
+    const label =
+        document.getElementById("donationChartLabel");
+
+    if (label) {
+        label.textContent =
+            periodText[period] || "Monthly";
+    }
+}
+
+/* =========================================
+   COMPONENT TABLE
+========================================= */
+
+function renderComponentTable() {
+
+    const tbody =
+        document.querySelector("#componentTable tbody");
+
+    if (!tbody) return;
+
+    const components = {};
+
+    reportBackend.inventory.forEach(function(item) {
+
+        const component =
+            item.component || "Unknown";
+
+        if (!components[component]) {
+            components[component] = {
+                available: 0,
+                issued: 0,
+                expired: 0,
+                total: 0
+            };
+        }
+
+        const quantity = getQuantity(item);
+        const status = normalizeStatus(item.status);
+
+        components[component].total += quantity;
+
+        if (status === "available") {
+            components[component].available += quantity;
+        }
+
+        if (status === "issued") {
+            components[component].issued += quantity;
+        }
+
+        if (status === "expired") {
+            components[component].expired += quantity;
+        }
+    });
+
+    const names = Object.keys(components);
+
+    if (!names.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center;">
+                    No inventory data available.
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("componentRecordCount").textContent =
+            "0 components";
+
+        return;
+    }
+
+    tbody.innerHTML =
+        names.map(function(name) {
+
+            const item = components[name];
+
+            return `
+                <tr>
+                    <td>${escapeReportHTML(name)}</td>
+                    <td>${item.available}</td>
+                    <td>${item.issued}</td>
+                    <td>${item.expired}</td>
+                    <td>${item.total}</td>
+                </tr>
+            `;
+        }).join("");
+
+    document.getElementById("componentRecordCount").textContent =
+        names.length + " component" +
+        (names.length === 1 ? "" : "s");
+}
+
+/* =========================================
+   REQUEST TABLE
+========================================= */
+
+function renderRequestTable() {
+
+    const tbody =
+        document.querySelector("#requestTable tbody");
+
+    if (!tbody) return;
+
+    const statuses = {};
+
+    reportBackend.requests.forEach(function(request) {
+
+        const status =
+            request.status || "Unknown";
+
+        if (!statuses[status]) {
+            statuses[status] = {
+                requests: 0,
+                units: 0
+            };
+        }
+
+        statuses[status].requests += 1;
+        statuses[status].units += getQuantity(request);
+    });
+
+    const names = Object.keys(statuses);
+
+    if (!names.length) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="3" style="text-align:center;">
+                    No request data available.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML =
+        names.map(function(status) {
+
+            const item = statuses[status];
+
+            let badgeClass = "reserved";
+
+            if (
+                normalizeStatus(status) === "completed" ||
+                normalizeStatus(status) === "fulfilled"
+            ) {
+                badgeClass = "available";
+            }
+
+            if (normalizeStatus(status) === "cancelled") {
+                badgeClass = "expired";
+            }
+
+            return `
+                <tr>
+                    <td>
+                        <span class="badge ${badgeClass}">
+                            ${escapeReportHTML(status)}
+                        </span>
+                    </td>
+                    <td>${item.requests}</td>
+                    <td>${item.units}</td>
+                </tr>
+            `;
+        }).join("");
 }
 
 /* =========================================
@@ -1045,7 +1677,7 @@ function updateReport() {
         document.getElementById("reportType").value;
 
     const data =
-        reportData[period];
+        calculateReportMetrics(period);
 
     document.getElementById("totalDonations").textContent =
         data.donations;
@@ -1059,6 +1691,15 @@ function updateReport() {
     document.getElementById("fulfilledRequests").textContent =
         data.fulfilled;
 
+    document.getElementById("availableUnits").textContent =
+        data.availableUnits;
+
+    document.getElementById("pendingRequests").textContent =
+        data.pendingRequests;
+
+    document.getElementById("expiredUnits").textContent =
+        data.expiredUnits;
+
     const periodText = {
         today: "Today",
         week: "This week",
@@ -1067,21 +1708,21 @@ function updateReport() {
     };
 
     document.getElementById("donationPeriodLabel").textContent =
-        periodText[period];
+        periodText[period] + " — backend";
 
     document.getElementById("issuePeriodLabel").textContent =
-        period === "today"
-            ? "Units issued today"
-            : "Units issued";
+        "Backend transaction data";
 
     document.getElementById("reportFilterInfo").textContent =
-        `Showing ${periodText[period].toLowerCase()} data • ${
+        `Showing ${periodText[period].toLowerCase()} backend data • ${
             type === "all"
                 ? "All reports"
                 : getReportTypeName(type)
         }`;
 
     createDonationChart(period);
+
+    createBloodGroupChart();
 
     applyReportTypeVisibility(type);
 }
@@ -1253,51 +1894,25 @@ function exportReportCSV() {
         document.getElementById("reportType").value;
 
     const rows = [
-        [
-            "BloodConnect Report",
-            ""
-        ],
-        [
-            "Period",
-            period
-        ],
-        [
-            "Report Type",
-            getReportTypeName(type)
-        ],
+        ["BloodConnect Report", ""],
+        ["Period", period],
+        ["Report Type", getReportTypeName(type)],
         [],
-        [
-            "Metric",
-            "Value"
-        ],
-        [
-            "Total Donations",
-            document.getElementById("totalDonations").innerText
-        ],
-        [
-            "Blood Issued",
-            document.getElementById("totalIssued").innerText
-        ],
-        [
-            "Active Donors",
-            document.getElementById("activeDonors").innerText
-        ],
-        [
-            "Requests Fulfilled",
-            document.getElementById("fulfilledRequests").innerText
-        ],
-        [
-            "Available Units",
-            document.getElementById("availableUnits").innerText
-        ],
-        [
-            "Pending Requests",
-            document.getElementById("pendingRequests").innerText
-        ],
-        [
-            "Expired Units",
-            document.getElementById("expiredUnits").innerText
-        ]
+        ["Metric", "Value"],
+        ["Total Donations",
+            document.getElementById("totalDonations").innerText],
+        ["Blood Issued",
+            document.getElementById("totalIssued").innerText],
+        ["Active Donors",
+            document.getElementById("activeDonors").innerText],
+        ["Requests Fulfilled",
+            document.getElementById("fulfilledRequests").innerText],
+        ["Available Units",
+            document.getElementById("availableUnits").innerText],
+        ["Pending Requests",
+            document.getElementById("pendingRequests").innerText],
+        ["Expired Units",
+            document.getElementById("expiredUnits").innerText]
     ];
 
     const csv =
@@ -1322,14 +1937,10 @@ function exportReportCSV() {
         document.createElement("a");
 
     link.href = url;
-
-    link.download =
-        "BloodConnect_Report.csv";
+    link.download = "BloodConnect_Report.csv";
 
     document.body.appendChild(link);
-
     link.click();
-
     link.remove();
 
     URL.revokeObjectURL(url);
@@ -1357,15 +1968,167 @@ function printReport() {
 }
 
 /* =========================================
-   REFRESH
+   REFRESH REPORT
 ========================================= */
 
-function refreshReport() {
+async function refreshReport() {
+    await loadReportsFromBackend();
+}
 
-    updateReport();
-    filterReportTables();
+/* =========================================
+   LOAD REPORTS FROM JAVA BACKEND
+========================================= */
 
-    alert("Report refreshed successfully!");
+async function loadReportsFromBackend() {
+
+    const info =
+        document.getElementById("reportFilterInfo");
+
+    if (info) {
+        info.textContent = "Loading live backend report data...";
+    }
+
+    /*
+       Render charts immediately from the values already present in the
+       page. This prevents blank charts if one backend endpoint is down.
+    */
+    renderReportFallbackCharts();
+
+    if (typeof BloodConnectApi === "undefined") {
+        if (info) {
+            info.textContent = "Showing report data available on the page.";
+        }
+        return;
+    }
+
+    const calls = await Promise.allSettled([
+        BloodConnectApi.getReportSummary(),
+        BloodConnectApi.getTransactions(),
+        BloodConnectApi.getDonors(),
+        BloodConnectApi.getRequests(),
+        BloodConnectApi.getInventory(),
+        BloodConnectApi.getDashboard()
+    ]);
+
+    const [summaryResult, transactionsResult, donorsResult,
+        requestsResult, inventoryResult, dashboardResult] = calls;
+
+    if (summaryResult.status === "fulfilled") {
+        reportBackend.summary = summaryResult.value || {};
+    }
+
+    if (transactionsResult.status === "fulfilled") {
+        reportBackend.transactions =
+            Array.isArray(transactionsResult.value)
+                ? transactionsResult.value
+                : [];
+    }
+
+    if (donorsResult.status === "fulfilled") {
+        reportBackend.donors =
+            Array.isArray(donorsResult.value)
+                ? donorsResult.value
+                : [];
+    }
+
+    if (requestsResult.status === "fulfilled") {
+        reportBackend.requests =
+            Array.isArray(requestsResult.value)
+                ? requestsResult.value
+                : [];
+    }
+
+    if (inventoryResult.status === "fulfilled") {
+        reportBackend.inventory =
+            Array.isArray(inventoryResult.value)
+                ? inventoryResult.value
+                : [];
+    }
+
+    if (dashboardResult.status === "fulfilled") {
+        reportBackend.dashboard =
+            dashboardResult.value || {};
+    }
+
+    /*
+       Only replace the page data when useful backend data exists.
+       This is important because an unavailable secondary endpoint must
+       not prevent the report charts from being displayed.
+    */
+    const backendHasUsefulData =
+        Boolean(reportBackend.summary) ||
+        reportBackend.transactions.length > 0 ||
+        reportBackend.donors.length > 0 ||
+        reportBackend.requests.length > 0 ||
+        reportBackend.inventory.length > 0 ||
+        Boolean(reportBackend.dashboard);
+
+    if (backendHasUsefulData) {
+        renderComponentTable();
+        renderRequestTable();
+        updateReport();
+        filterReportTables();
+    } else {
+        renderReportFallbackCharts();
+    }
+
+    const failedCalls =
+        calls.filter(function(result) {
+            return result.status === "rejected";
+        }).length;
+
+    if (info) {
+        info.textContent = failedCalls
+            ? "Some backend report data is unavailable; available data is shown."
+            : "Live backend report data loaded successfully.";
+    }
+}
+
+function renderReportFallbackCharts() {
+
+    /* Static values are used only as a visual fallback until backend data
+       becomes available. They match the existing report cards. */
+    const fallbackTransactions = [
+        {
+            transactionDate: new Date().toISOString(),
+            type: "Donation",
+            quantity: 156
+        },
+        {
+            transactionDate: new Date().toISOString(),
+            type: "Issue",
+            quantity: 98
+        }
+    ];
+
+    const oldTransactions = reportBackend.transactions;
+
+    if (!oldTransactions.length) {
+        reportBackend.transactions = fallbackTransactions;
+    }
+
+    const oldSummary = reportBackend.summary;
+
+    if (!oldSummary) {
+        reportBackend.summary = {
+            stockByBloodGroup: {
+                "A+": 0,
+                "B+": 0,
+                "O+": 2,
+                "AB+": 0,
+                "A-": 0,
+                "B-": 0,
+                "O-": 0,
+                "AB-": 0
+            }
+        };
+    }
+
+    createDonationChart("month");
+    createBloodGroupChart();
+
+    reportBackend.transactions = oldTransactions;
+    reportBackend.summary = oldSummary;
 }
 
 /* =========================================
@@ -1374,18 +2137,22 @@ function refreshReport() {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    createDonationChart("month");
+    if (
+        typeof BloodConnectApi === "undefined"
+    ) {
+        console.error(
+            "BloodConnectApi is not defined. Check ../js/api.js."
+        );
 
-    createBloodGroupChart();
+        return;
+    }
 
-    updateReport();
+    loadReportsFromBackend();
 
-    filterReportTables();
 });
 
 </script>
 
-<script src="../js/api.js"></script>
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>

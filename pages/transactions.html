@@ -60,6 +60,69 @@
 }
 </style>
 
+
+<style id="transactions-backend-style">
+.transaction-backend-message {
+    text-align:center;
+    padding:28px !important;
+    color:#777;
+}
+.transaction-backend-error {
+    text-align:center;
+    padding:28px !important;
+    color:#b42318;
+}
+.transaction-action-wrapper {
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+.transaction-menu-button {
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:34px !important;
+    height:34px !important;
+    min-width:34px !important;
+    padding:0 !important;
+    border:1px solid #e3e6eb !important;
+    border-radius:50% !important;
+    background:#f7f8fa !important;
+    color:#1f2937 !important;
+    font-size:22px !important;
+    line-height:1 !important;
+    cursor:pointer !important;
+}
+.transaction-menu-button:hover { background:#eeeeee !important; }
+.transaction-action-menu {
+    display:none;
+    position:fixed;
+    min-width:190px;
+    background:#fff;
+    border:1px solid #e8e8e8;
+    border-radius:10px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    padding:6px;
+    z-index:999999;
+}
+.transaction-action-menu.show { display:block; }
+.transaction-action-menu button {
+    width:100%;
+    border:0;
+    background:#fff;
+    text-align:left;
+    padding:10px 12px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:13px;
+    color:#222;
+}
+.transaction-action-menu button:hover { background:#f6f6f6; }
+.transaction-action-menu button.danger { color:#c62828; }
+.transaction-action-menu hr { border:0; border-top:1px solid #eee; margin:5px 0; }
+</style>
+
 </head>
 
 
@@ -1011,22 +1074,24 @@
     </div>
 </div>
 
+<script src="../js/api.js"></script>
+
 <!-- ================= JAVASCRIPT ================= -->
 
 
 
 
+
 <script>
-let selectedTransactionRow = null;
-let editingTransactionRow = null;
+/* =========================================================
+   BLOODCONNECT TRANSACTIONS - BACKEND CRUD INTEGRATION
+   ========================================================= */
 
-const transactionMenu = document.getElementById("transactionActionMenu");
+let transactionData = [];
+let editingTransactionId = null;
+let selectedTransactionId = null;
 
-/* =========================================
-   HELPERS
-========================================= */
-
-function escapeHtml(value) {
+function escapeTransactionHTML(value) {
     return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -1035,10 +1100,13 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 }
 
-function formatDisplayDate(dateValue) {
-    if (!dateValue) return "";
+function formatTransactionDate(value) {
+    if (!value) return "—";
 
-    const date = new Date(dateValue + "T00:00:00");
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return escapeTransactionHTML(value);
+    }
 
     return date.toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -1047,175 +1115,398 @@ function formatDisplayDate(dateValue) {
     });
 }
 
-function dateForInput(displayDate) {
-    const parts = displayDate.trim().split(" ");
+function transactionDateInputValue(value) {
+    if (!value) return "";
 
-    if (parts.length !== 3) return "";
+    const stringValue = String(value);
 
-    const monthMap = {
-        Jan: "01", Feb: "02", Mar: "03",
-        Apr: "04", May: "05", Jun: "06",
-        Jul: "07", Aug: "08", Sep: "09",
-        Oct: "10", Nov: "11", Dec: "12"
-    };
-
-    return `${parts[2]}-${monthMap[parts[1]] || "01"}-${parts[0].padStart(2, "0")}`;
-}
-
-function statusBadge(status) {
-    let className = "available";
-
-    if (status === "Pending") {
-        className = "reserved";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(stringValue)) {
+        return stringValue;
     }
 
-    if (status === "Cancelled") {
-        className = "expired";
+    return stringValue.slice(0, 10);
+}
+
+function transactionDateTimeValue(value) {
+    if (!value) {
+        return new Date().toISOString().slice(0, 19);
     }
 
-    return `<span class="badge ${className}">${escapeHtml(status)}</span>`;
+    return `${value}T00:00:00`;
 }
 
-function getTransactionData(row) {
-    return {
-        id: row.cells[0].innerText.trim(),
-        date: row.cells[1].innerText.trim(),
-        type: row.cells[2].innerText.trim(),
-        group: row.cells[3].innerText.trim(),
-        component: row.cells[4].innerText.trim(),
-        quantity: row.cells[5].innerText.trim(),
-        reference: row.cells[6].innerText.trim(),
-        status: row.cells[7].innerText.trim()
-    };
-}
+function generateTransactionId() {
+    let maxNumber = 5000;
 
-/* =========================================
-   FILTER TRANSACTIONS
-========================================= */
+    transactionData.forEach(function(transaction) {
+        const match = String(transaction.id || "").match(/^TXN-(\d+)$/i);
 
-function filterTransactions() {
-
-    const search =
-        document.getElementById("transactionSearch").value
-        .toLowerCase()
-        .trim();
-
-    const type =
-        document.getElementById("transactionTypeFilter").value;
-
-    const status =
-        document.getElementById("transactionStatusFilter").value;
-
-    const rows =
-        document.querySelectorAll("#transactionTable tbody tr");
-
-    let visibleCount = 0;
-
-    rows.forEach(function(row) {
-
-        const text = row.innerText.toLowerCase();
-
-        const rowType =
-            row.cells[2]
-            ? row.cells[2].innerText.trim()
-            : "";
-
-        const rowStatus =
-            row.cells[7]
-            ? row.cells[7].innerText.trim()
-            : "";
-
-        const matchesSearch =
-            !search || text.includes(search);
-
-        const matchesType =
-            !type || rowType === type;
-
-        const matchesStatus =
-            !status || rowStatus === status;
-
-        const shouldShow =
-            matchesSearch &&
-            matchesType &&
-            matchesStatus;
-
-        row.style.display =
-            shouldShow ? "" : "none";
-
-        if (shouldShow) {
-            visibleCount++;
+        if (match) {
+            maxNumber = Math.max(maxNumber, Number(match[1]));
         }
     });
 
-    document.getElementById("transactionRecordCount").textContent =
-        `${visibleCount} transaction${visibleCount === 1 ? "" : "s"}`;
+    return `TXN-${maxNumber + 1}`;
 }
 
-/* =========================================
-   TOP SEARCH
-========================================= */
+function transactionStatusClass(status) {
+    const value = String(status || "").toLowerCase();
 
-function syncTopTransactionSearch() {
+    if (value === "completed") return "issued";
+    if (value === "pending") return "reserved";
+    if (value === "cancelled" || value === "rejected") return "expired";
+    if (value === "approved") return "available";
 
-    document.getElementById("transactionSearch").value =
-        document.getElementById("topTransactionSearch").value;
-
-    filterTransactions();
+    return "reserved";
 }
 
-/* =========================================
-   RESET FILTERS
-========================================= */
+function transactionActionMenuHTML(id) {
+    const encodedId = encodeURIComponent(String(id ?? ""));
 
-function resetTransactionFilters() {
+    return `
+        <div class="transaction-action-wrapper">
+            <button
+                type="button"
+                class="transaction-menu-button"
+                onclick="toggleTransactionActionMenu(this, event)"
+                aria-label="Transaction actions">
+                ⋮
+            </button>
 
-    document.getElementById("transactionSearch").value = "";
-    document.getElementById("topTransactionSearch").value = "";
-    document.getElementById("transactionTypeFilter").value = "";
-    document.getElementById("transactionStatusFilter").value = "";
+            <div class="transaction-action-menu">
+                <button type="button" onclick="viewBackendTransaction('${encodedId}')">
+                    👁 View Details
+                </button>
 
-    filterTransactions();
+                <button type="button" onclick="editBackendTransaction('${encodedId}')">
+                    ✏ Edit Transaction
+                </button>
+
+                <button type="button" onclick="changeBackendTransactionStatus('${encodedId}')">
+                    🔄 Change Status
+                </button>
+
+                <hr>
+
+                <button
+                    type="button"
+                    class="danger"
+                    onclick="deleteBackendTransaction('${encodedId}')">
+                    🗑 Remove Transaction
+                </button>
+            </div>
+        </div>
+    `;
 }
 
-/* =========================================
-   ACTION MENU
-========================================= */
+function renderBackendTransactions(items) {
+    const tbody = document.querySelector("#transactionTable tbody");
 
-function closeTransactionActionMenu() {
+    if (!tbody) return;
 
-    transactionMenu.classList.remove("show");
+    if (!Array.isArray(items) || items.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="transaction-backend-message">
+                    No transactions found in the backend.
+                </td>
+            </tr>
+        `;
 
-    selectedTransactionRow = null;
-}
-
-function toggleTransactionActionMenu(button) {
-
-    const row = button.closest("tr");
-
-    if (
-        transactionMenu.classList.contains("show") &&
-        selectedTransactionRow === row
-    ) {
-        closeTransactionActionMenu();
+        updateTransactionStats([]);
+        updateTransactionRecordCount();
         return;
     }
 
-    selectedTransactionRow = row;
+    tbody.innerHTML = "";
 
-    transactionMenu._transactionRow = row;
-    transactionMenu._transactionButton = button;
+    items.forEach(function(transaction) {
+        const row = document.createElement("tr");
 
-    document.body.appendChild(transactionMenu);
+        row.dataset.backendId = transaction.id || "";
 
-    transactionMenu.classList.add("show");
+        const reference = transaction.reference || "—";
+        const type = transaction.type || "—";
+        const bloodGroup = transaction.bloodGroup || "—";
+        const component = transaction.component || "—";
+        const quantity = transaction.quantity ?? "—";
+        const status = transaction.status || "—";
+
+        row.innerHTML = `
+            <td>${escapeTransactionHTML(transaction.id || "—")}</td>
+
+            <td>
+                ${escapeTransactionHTML(formatTransactionDate(transaction.transactionDate))}
+            </td>
+
+            <td>${escapeTransactionHTML(type)}</td>
+
+            <td>
+                <strong>${escapeTransactionHTML(bloodGroup)}</strong>
+            </td>
+
+            <td>${escapeTransactionHTML(component)}</td>
+
+            <td>${escapeTransactionHTML(quantity)}</td>
+
+            <td>${escapeTransactionHTML(reference)}</td>
+
+            <td>
+                <span class="badge ${transactionStatusClass(status)}">
+                    ${escapeTransactionHTML(status)}
+                </span>
+            </td>
+
+            <td>
+                ${transactionActionMenuHTML(transaction.id || "")}
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    updateTransactionStats(items);
+    filterTransactions();
+    updateTransactionRecordCount();
+}
+
+function updateTransactionStats(items) {
+    const data = Array.isArray(items) ? items : [];
+
+    const total = data.length;
+
+    const donations = data.filter(function(item) {
+        return String(item.type || "").toLowerCase() === "donation";
+    }).length;
+
+    const issues = data.filter(function(item) {
+        return String(item.type || "").toLowerCase() === "issue";
+    }).length;
+
+    const other = Math.max(0, total - donations - issues);
+
+    const totalEl = document.getElementById("totalTransactions");
+    const donationEl = document.getElementById("donationTransactions");
+    const issueEl = document.getElementById("issueTransactions");
+    const otherEl = document.getElementById("otherTransactions");
+
+    if (totalEl) totalEl.textContent = total;
+    if (donationEl) donationEl.textContent = donations;
+    if (issueEl) issueEl.textContent = issues;
+    if (otherEl) otherEl.textContent = other;
+}
+
+function updateTransactionRecordCount() {
+    const countElement =
+        document.getElementById("transactionRecordCount");
+
+    if (!countElement) return;
+
+    const rows = Array.from(
+        document.querySelectorAll("#transactionTable tbody tr")
+    ).filter(function(row) {
+        return row.cells && row.cells.length >= 9;
+    });
+
+    const visibleRows = rows.filter(function(row) {
+        return row.style.display !== "none";
+    }).length;
+
+    countElement.textContent =
+        `${visibleRows} transaction${visibleRows === 1 ? "" : "s"}`;
+}
+
+async function loadTransactions() {
+    const tbody = document.querySelector("#transactionTable tbody");
+
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="transaction-backend-message">
+                    Loading transactions...
+                </td>
+            </tr>
+        `;
+    }
+
+    try {
+        const data = await BloodConnectApi.getTransactions();
+
+        transactionData = Array.isArray(data) ? data : [];
+
+        renderBackendTransactions(transactionData);
+
+        console.log(
+            "Transactions loaded from backend:",
+            transactionData
+        );
+
+    } catch (error) {
+        transactionData = [];
+
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="transaction-backend-error">
+                        Unable to load transactions.
+                        ${escapeTransactionHTML(error.message)}
+                    </td>
+                </tr>
+            `;
+        }
+
+        updateTransactionStats([]);
+        updateTransactionRecordCount();
+
+        console.error(
+            "Failed to load transactions:",
+            error
+        );
+    }
+}
+
+/* =========================================================
+   SEARCH / FILTER
+   ========================================================= */
+
+function filterTransactions() {
+    const searchElement =
+        document.getElementById("transactionSearch");
+
+    const typeElement =
+        document.getElementById("transactionTypeFilter");
+
+    const statusElement =
+        document.getElementById("transactionStatusFilter");
+
+    if (!searchElement || !typeElement || !statusElement) return;
+
+    const search = searchElement.value.toLowerCase().trim();
+    const type = typeElement.value;
+    const status = statusElement.value;
+
+    const rows = document.querySelectorAll(
+        "#transactionTable tbody tr"
+    );
+
+    rows.forEach(function(row) {
+        if (!row.cells || row.cells.length < 9) return;
+
+        const text = row.innerText.toLowerCase();
+
+        const rowType = row.cells[2]
+            ? row.cells[2].innerText.trim()
+            : "";
+
+        const rowStatus = row.cells[7]
+            ? row.cells[7].innerText.trim()
+            : "";
+
+        const matchesSearch = !search || text.includes(search);
+        const matchesType = !type || rowType === type;
+        const matchesStatus = !status || rowStatus === status;
+
+        row.style.display =
+            matchesSearch && matchesType && matchesStatus
+                ? ""
+                : "none";
+    });
+
+    updateTransactionRecordCount();
+}
+
+function resetTransactionFilters() {
+    const search = document.getElementById("transactionSearch");
+    const type = document.getElementById("transactionTypeFilter");
+    const status = document.getElementById("transactionStatusFilter");
+    const top = document.getElementById("topTransactionSearch");
+
+    if (search) search.value = "";
+    if (type) type.value = "";
+    if (status) status.value = "";
+    if (top) top.value = "";
+
+    filterTransactions();
+}
+
+function syncTopTransactionSearch() {
+    const top = document.getElementById("topTransactionSearch");
+    const search = document.getElementById("transactionSearch");
+
+    if (!top || !search) return;
+
+    search.value = top.value;
+    filterTransactions();
+}
+
+/* =========================================================
+   ACTION MENU
+   ========================================================= */
+
+function closeTransactionActionMenus() {
+    document
+        .querySelectorAll(".transaction-action-menu.show")
+        .forEach(function(menu) {
+            menu.classList.remove("show");
+        });
+}
+
+function toggleTransactionActionMenu(button, event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    /*
+     * Keep the selected transaction ID available for the
+     * common action menu. This also supports the older
+     * static rows that do not have an inline menu.
+     */
+    const row = button.closest("tr");
+    let rowId = row?.dataset?.backendId || "";
+
+    if (!rowId && row && row.cells && row.cells[0]) {
+        rowId = row.cells[0].textContent.trim();
+    }
+
+    if (rowId) {
+        selectedTransactionId = String(rowId);
+    }
+
+    /* First try the menu rendered inside this transaction row. */
+    const wrapper = button.closest(".transaction-action-wrapper");
+    let menu = wrapper
+        ? wrapper.querySelector(".transaction-action-menu")
+        : null;
+
+    /*
+     * If this is an older/static row, use the single global
+     * action menu already present at the bottom of the page.
+     */
+    if (!menu) {
+        menu = document.getElementById("transactionActionMenu");
+    }
+
+    if (!menu) {
+        console.error("Transaction action menu not found.");
+        return;
+    }
+
+    const wasOpen = menu.classList.contains("show");
+
+    closeTransactionActionMenus();
+
+    if (wasOpen) {
+        return;
+    }
 
     const rect = button.getBoundingClientRect();
-
     const menuWidth = 210;
-    const menuHeight = 190;
+    const menuHeight = 185;
+    const gap = 6;
 
     let left = rect.right - menuWidth;
-    let top = rect.bottom + 6;
+    let top = rect.bottom + gap;
 
     if (left < 10) {
         left = 10;
@@ -1226,600 +1517,509 @@ function toggleTransactionActionMenu(button) {
     }
 
     if (top + menuHeight > window.innerHeight - 10) {
-        top = rect.top - menuHeight - 6;
+        top = rect.top - menuHeight - gap;
     }
 
     if (top < 10) {
         top = 10;
     }
 
-    transactionMenu.style.left = `${left}px`;
-    transactionMenu.style.top = `${top}px`;
+    /*
+     * Move row menus to body so table overflow/z-index cannot
+     * hide them. The global menu is already in body.
+     */
+    if (menu.parentElement !== document.body) {
+        document.body.appendChild(menu);
+    }
+
+    menu.style.position = "fixed";
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.zIndex = "999999";
+    menu.classList.add("show");
 }
 
-document.addEventListener("click", function(event) {
-
-    if (
-        transactionMenu.classList.contains("show") &&
-        !transactionMenu.contains(event.target) &&
-        !event.target.closest(".transaction-action-wrap")
-    ) {
-        closeTransactionActionMenu();
-    }
+document.addEventListener("click", function() {
+    closeTransactionActionMenus();
 });
 
 document.addEventListener("keydown", function(event) {
-
     if (event.key === "Escape") {
-
-        closeTransactionActionMenu();
+        closeTransactionActionMenus();
         closeTransactionModal();
         closeTransactionFormModal();
         closeTransactionStatusModal();
     }
 });
 
-window.addEventListener("resize", closeTransactionActionMenu);
-window.addEventListener("scroll", closeTransactionActionMenu, true);
+window.addEventListener("resize", closeTransactionActionMenus);
+window.addEventListener("scroll", closeTransactionActionMenus, true);
 
-/* =========================================
+/* =========================================================
    VIEW TRANSACTION
-========================================= */
+   ========================================================= */
 
-function viewSelectedTransaction() {
+function viewBackendTransaction(encodedId) {
+    closeTransactionActionMenus();
 
-    const row =
-        selectedTransactionRow ||
-        transactionMenu._transactionRow;
+    const id = decodeURIComponent(encodedId);
 
-    if (!row) {
+    const transaction = transactionData.find(function(item) {
+        return String(item.id) === String(id);
+    });
+
+    if (!transaction) {
+        alert("Transaction could not be found.");
         return;
     }
 
-    const data = getTransactionData(row);
+    const details = document.getElementById("transactionDetails");
 
-    closeTransactionActionMenu();
+    if (!details) return;
 
-    document.getElementById("transactionDetails").innerHTML = `
+    details.innerHTML = `
         <div class="transaction-details-grid">
-
             <div class="transaction-detail-item">
                 <span>Transaction ID</span>
-                <strong>${escapeHtml(data.id)}</strong>
+                <strong>${escapeTransactionHTML(transaction.id)}</strong>
             </div>
 
             <div class="transaction-detail-item">
                 <span>Date</span>
-                <strong>${escapeHtml(data.date)}</strong>
+                <strong>${escapeTransactionHTML(
+                    formatTransactionDate(transaction.transactionDate)
+                )}</strong>
             </div>
 
             <div class="transaction-detail-item">
-                <span>Transaction Type</span>
-                <strong>${escapeHtml(data.type)}</strong>
-            </div>
-
-            <div class="transaction-detail-item">
-                <span>Blood Group</span>
-                <strong>${escapeHtml(data.group)}</strong>
-            </div>
-
-            <div class="transaction-detail-item">
-                <span>Component</span>
-                <strong>${escapeHtml(data.component)}</strong>
-            </div>
-
-            <div class="transaction-detail-item">
-                <span>Quantity</span>
-                <strong>${escapeHtml(data.quantity)} unit(s)</strong>
-            </div>
-
-            <div class="transaction-detail-item">
-                <span>Reference</span>
-                <strong>${escapeHtml(data.reference)}</strong>
+                <span>Type</span>
+                <strong>${escapeTransactionHTML(transaction.type)}</strong>
             </div>
 
             <div class="transaction-detail-item">
                 <span>Status</span>
-                <strong>${escapeHtml(data.status)}</strong>
+                <strong>${escapeTransactionHTML(transaction.status)}</strong>
             </div>
 
+            <div class="transaction-detail-item">
+                <span>Blood Group</span>
+                <strong>${escapeTransactionHTML(transaction.bloodGroup)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Component</span>
+                <strong>${escapeTransactionHTML(transaction.component)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Quantity</span>
+                <strong>${escapeTransactionHTML(transaction.quantity)}</strong>
+            </div>
+
+            <div class="transaction-detail-item">
+                <span>Reference</span>
+                <strong>${escapeTransactionHTML(transaction.reference || "—")}</strong>
+            </div>
         </div>
     `;
 
-    document
-        .getElementById("transactionModal")
-        .classList
-        .add("show");
+    const modal = document.getElementById("transactionModal");
+
+    if (modal) modal.classList.add("show");
 }
 
-/* Keep compatibility with old onclick calls */
 function viewTransaction(transactionId) {
-
-    const rows =
-        document.querySelectorAll("#transactionTable tbody tr");
-
-    for (const row of rows) {
-
-        if (
-            row.cells[0].innerText.trim() === transactionId
-        ) {
-
-            selectedTransactionRow = row;
-            viewSelectedTransaction();
-            return;
-        }
-    }
+    viewBackendTransaction(encodeURIComponent(transactionId));
 }
-
-/* =========================================
-   CLOSE VIEW MODAL
-========================================= */
 
 function closeTransactionModal() {
-
-    document
-        .getElementById("transactionModal")
-        .classList
-        .remove("show");
+    const modal = document.getElementById("transactionModal");
+    if (modal) modal.classList.remove("show");
 }
 
-/* =========================================
+/* =========================================================
    ADD TRANSACTION
-========================================= */
-
-function getNextTransactionId() {
-
-    const rows =
-        document.querySelectorAll("#transactionTable tbody tr");
-
-    let maxId = 5000;
-
-    rows.forEach(function(row) {
-
-        const match =
-            row.cells[0].innerText.match(/TXN-(\d+)/);
-
-        if (match) {
-            maxId =
-                Math.max(
-                    maxId,
-                    Number(match[1])
-                );
-        }
-    });
-
-    return `TXN-${maxId + 1}`;
-}
+   ========================================================= */
 
 function openAddTransactionModal() {
+    editingTransactionId = null;
+    selectedTransactionId = null;
 
-    editingTransactionRow = null;
+    const form = document.getElementById("transactionForm");
+    if (form) form.reset();
 
-    document.getElementById("transactionFormTitle").textContent =
-        "Add Transaction";
+    const title = document.getElementById("transactionFormTitle");
+    const id = document.getElementById("transactionId");
+    const date = document.getElementById("transactionDate");
+    const status = document.getElementById("transactionFormStatus");
+    const modal = document.getElementById("transactionFormModal");
 
-    document.getElementById("transactionId").value =
-        getNextTransactionId();
+    if (title) title.textContent = "Add Transaction";
+    if (id) id.value = generateTransactionId();
+    if (date) date.value = new Date().toISOString().slice(0, 10);
+    if (status) status.value = "Completed";
 
-    document.getElementById("transactionDate").value =
-        new Date().toISOString().split("T")[0];
-
-    document.getElementById("transactionType").value = "";
-    document.getElementById("transactionBloodGroup").value = "";
-    document.getElementById("transactionComponent").value = "";
-    document.getElementById("transactionQuantity").value = "";
-    document.getElementById("transactionReference").value = "";
-    document.getElementById("transactionFormStatus").value =
-        "Completed";
-
-    document
-        .getElementById("transactionFormModal")
-        .classList
-        .add("show");
+    if (modal) modal.classList.add("show");
 }
 
 function closeTransactionFormModal() {
+    const modal = document.getElementById("transactionFormModal");
+    if (modal) modal.classList.remove("show");
 
-    document
-        .getElementById("transactionFormModal")
-        .classList
-        .remove("show");
-
-    editingTransactionRow = null;
+    editingTransactionId = null;
 }
 
-/* =========================================
-   EDIT TRANSACTION
-========================================= */
+function editBackendTransaction(encodedId) {
+    closeTransactionActionMenus();
 
-function editSelectedTransaction() {
+    const id = decodeURIComponent(encodedId);
 
-    const row =
-        selectedTransactionRow ||
-        transactionMenu._transactionRow;
+    const transaction = transactionData.find(function(item) {
+        return String(item.id) === String(id);
+    });
 
-    if (!row) {
+    if (!transaction) {
+        alert("Transaction could not be found.");
         return;
     }
 
-    const data = getTransactionData(row);
+    editingTransactionId = String(transaction.id);
 
-    editingTransactionRow = row;
+    const title = document.getElementById("transactionFormTitle");
+    const idInput = document.getElementById("transactionId");
+    const date = document.getElementById("transactionDate");
+    const type = document.getElementById("transactionType");
+    const bloodGroup = document.getElementById("transactionBloodGroup");
+    const component = document.getElementById("transactionComponent");
+    const quantity = document.getElementById("transactionQuantity");
+    const reference = document.getElementById("transactionReference");
+    const status = document.getElementById("transactionFormStatus");
+    const modal = document.getElementById("transactionFormModal");
 
-    closeTransactionActionMenu();
+    if (title) title.textContent = "Edit Transaction";
+    if (idInput) idInput.value = transaction.id || "";
+    if (date) date.value = transactionDateInputValue(transaction.transactionDate);
+    if (type) type.value = transaction.type || "";
+    if (bloodGroup) bloodGroup.value = transaction.bloodGroup || "";
+    if (component) component.value = transaction.component || "";
+    if (quantity) quantity.value = transaction.quantity ?? "";
+    if (reference) reference.value = transaction.reference || "";
+    if (status) status.value = transaction.status || "Completed";
 
-    document.getElementById("transactionFormTitle").textContent =
-        "Edit Transaction";
-
-    document.getElementById("transactionId").value =
-        data.id;
-
-    document.getElementById("transactionDate").value =
-        dateForInput(data.date);
-
-    document.getElementById("transactionType").value =
-        data.type;
-
-    document.getElementById("transactionBloodGroup").value =
-        data.group;
-
-    document.getElementById("transactionComponent").value =
-        data.component;
-
-    document.getElementById("transactionQuantity").value =
-        data.quantity;
-
-    document.getElementById("transactionReference").value =
-        data.reference;
-
-    document.getElementById("transactionFormStatus").value =
-        data.status;
-
-    document
-        .getElementById("transactionFormModal")
-        .classList
-        .add("show");
+    if (modal) modal.classList.add("show");
 }
 
-function saveTransaction(event) {
+async function saveTransaction(event) {
+    if (event) event.preventDefault();
 
-    event.preventDefault();
+    const id = document.getElementById("transactionId")?.value.trim();
+    const date = document.getElementById("transactionDate")?.value;
+    const type = document.getElementById("transactionType")?.value;
+    const bloodGroup = document.getElementById("transactionBloodGroup")?.value;
+    const component = document.getElementById("transactionComponent")?.value;
+    const quantityValue = document.getElementById("transactionQuantity")?.value;
+    const reference = document.getElementById("transactionReference")?.value.trim();
+    const status = document.getElementById("transactionFormStatus")?.value;
 
-    const id =
-        document.getElementById("transactionId").value.trim();
+    const quantity = Number(quantityValue);
 
-    const date =
-        document.getElementById("transactionDate").value;
-
-    const type =
-        document.getElementById("transactionType").value;
-
-    const group =
-        document.getElementById("transactionBloodGroup").value;
-
-    const component =
-        document.getElementById("transactionComponent").value;
-
-    const quantity =
-        document.getElementById("transactionQuantity").value;
-
-    const reference =
-        document.getElementById("transactionReference").value.trim();
-
-    const status =
-        document.getElementById("transactionFormStatus").value;
-
-    if (
-        !id ||
-        !date ||
-        !type ||
-        !group ||
-        !component ||
-        !quantity ||
-        !reference ||
-        !status
-    ) {
-
-        alert("Please fill all transaction fields.");
+    if (!id || !date || !type || !bloodGroup || !component ||
+        !Number.isInteger(quantity) || quantity < 1 || !reference || !status) {
+        alert("Please fill all transaction fields correctly.");
         return;
     }
 
-    if (editingTransactionRow) {
+    const payload = {
+        id: id,
+        transactionDate: transactionDateTimeValue(date),
+        type: type,
+        bloodGroup: bloodGroup,
+        component: component,
+        quantity: quantity,
+        reference: reference,
+        status: status
+    };
 
-        const row = editingTransactionRow;
-
-        row.cells[0].textContent = id;
-        row.cells[1].textContent = formatDisplayDate(date);
-        row.cells[2].textContent = type;
-        row.cells[3].textContent = group;
-        row.cells[4].textContent = component;
-        row.cells[5].textContent = quantity;
-        row.cells[6].textContent = reference;
-        row.cells[7].innerHTML = statusBadge(status);
-
-        alert(`${id} updated successfully!`);
-
-    } else {
-
-        const tbody =
-            document.querySelector(
-                "#transactionTable tbody"
+    try {
+        if (editingTransactionId) {
+            await BloodConnectApi.updateTransaction(
+                editingTransactionId,
+                payload
             );
 
-        const row =
-            document.createElement("tr");
+            alert("Transaction updated successfully!");
+        } else {
+            await BloodConnectApi.createTransaction(payload);
 
-        row.innerHTML = `
-            <td>${escapeHtml(id)}</td>
-            <td>${escapeHtml(formatDisplayDate(date))}</td>
-            <td>${escapeHtml(type)}</td>
-            <td>${escapeHtml(group)}</td>
-            <td>${escapeHtml(component)}</td>
-            <td>${escapeHtml(quantity)}</td>
-            <td>${escapeHtml(reference)}</td>
-            <td>${statusBadge(status)}</td>
+            alert("Transaction added successfully!");
+        }
 
-            <td>
-                <div class="transaction-action-wrap">
+        closeTransactionFormModal();
+        await loadTransactions();
 
-                    <button
-                        class="icon-btn"
-                        onclick="toggleTransactionActionMenu(this)">
-                        ⋮
-                    </button>
+    } catch (error) {
+        console.error("Failed to save transaction:", error);
 
-                </div>
-            </td>
-        `;
-
-        tbody.prepend(row);
-
-        alert(`${id} added successfully!`);
+        alert(
+            "Unable to save transaction.\n\n" +
+            error.message
+        );
     }
-
-    closeTransactionFormModal();
-
-    updateTransactionStats();
-
-    filterTransactions();
 }
 
-/* =========================================
+/* =========================================================
    CHANGE STATUS
-========================================= */
+   ========================================================= */
 
-function changeSelectedTransactionStatus() {
+function changeBackendTransactionStatus(encodedId) {
+    closeTransactionActionMenus();
 
-    const row =
-        selectedTransactionRow ||
-        transactionMenu._transactionRow;
+    const id = decodeURIComponent(encodedId);
 
-    if (!row) {
+    const transaction = transactionData.find(function(item) {
+        return String(item.id) === String(id);
+    });
+
+    if (!transaction) {
+        alert("Transaction could not be found.");
         return;
     }
 
-    document.getElementById("statusTransactionId").textContent =
-        row.cells[0].innerText.trim();
+    selectedTransactionId = String(transaction.id);
 
-    document.getElementById("newTransactionStatus").value =
-        row.cells[7].innerText.trim();
+    const idElement = document.getElementById("statusTransactionId");
+    const statusElement = document.getElementById("newTransactionStatus");
+    const modal = document.getElementById("transactionStatusModal");
 
-    selectedTransactionRow = row;
+    if (idElement) idElement.textContent = transaction.id || "—";
+    if (statusElement) statusElement.value = transaction.status || "Completed";
 
-    closeTransactionActionMenu();
-
-    document
-        .getElementById("transactionStatusModal")
-        .classList
-        .add("show");
+    if (modal) modal.classList.add("show");
 }
 
 function closeTransactionStatusModal() {
+    const modal = document.getElementById("transactionStatusModal");
+    if (modal) modal.classList.remove("show");
 
-    document
-        .getElementById("transactionStatusModal")
-        .classList
-        .remove("show");
+    selectedTransactionId = null;
 }
 
-function saveTransactionStatus() {
+async function saveTransactionStatus() {
+    if (!selectedTransactionId) {
+        alert("No transaction selected.");
+        return;
+    }
 
-    const row = selectedTransactionRow;
+    const transaction = transactionData.find(function(item) {
+        return String(item.id) === String(selectedTransactionId);
+    });
 
-    if (!row) {
-
+    if (!transaction) {
         alert("Transaction could not be found.");
         return;
     }
 
     const newStatus =
-        document.getElementById("newTransactionStatus").value;
+        document.getElementById("newTransactionStatus")?.value;
 
-    const transactionId =
-        row.cells[0].innerText.trim();
-
-    row.cells[7].innerHTML =
-        statusBadge(newStatus);
-
-    closeTransactionStatusModal();
-
-    updateTransactionStats();
-
-    filterTransactions();
-
-    alert(
-        `Status of ${transactionId} changed to ${newStatus} successfully!`
-    );
-}
-
-/* =========================================
-   REMOVE TRANSACTION
-========================================= */
-
-function removeSelectedTransaction() {
-
-    const row =
-        selectedTransactionRow ||
-        transactionMenu._transactionRow;
-
-    if (!row) {
+    if (!newStatus) {
+        alert("Please select a status.");
         return;
     }
 
-    const transactionId =
-        row.cells[0].innerText.trim();
+    const payload = {
+        id: transaction.id,
+        transactionDate: transaction.transactionDate,
+        type: transaction.type,
+        bloodGroup: transaction.bloodGroup,
+        component: transaction.component,
+        quantity: Number(transaction.quantity),
+        reference: transaction.reference || "",
+        status: newStatus
+    };
 
-    closeTransactionActionMenu();
-
-    if (
-        !confirm(
-            `Are you sure you want to remove transaction ${transactionId}?`
-        )
-    ) {
-        return;
-    }
-
-    row.remove();
-
-    updateTransactionStats();
-
-    filterTransactions();
-
-    alert(
-        `${transactionId} removed successfully!`
-    );
-}
-
-/* =========================================
-   UPDATE STATISTICS
-========================================= */
-
-function updateTransactionStats() {
-
-    const rows =
-        Array.from(
-            document.querySelectorAll(
-                "#transactionTable tbody tr"
-            )
+    try {
+        await BloodConnectApi.updateTransaction(
+            selectedTransactionId,
+            payload
         );
 
-    const donations =
-        rows.filter(
-            row =>
-                row.cells[2]?.innerText.trim() === "Donation"
-        ).length;
+        closeTransactionStatusModal();
+        await loadTransactions();
 
-    const issues =
-        rows.filter(
-            row =>
-                row.cells[2]?.innerText.trim() === "Issue"
-        ).length;
+        alert("Transaction status updated successfully!");
 
-    const others =
-        rows.length -
-        donations -
-        issues;
-
-    document.getElementById("totalTransactions").textContent =
-        rows.length;
-
-    document.getElementById("donationTransactions").textContent =
-        donations;
-
-    document.getElementById("issueTransactions").textContent =
-        issues;
-
-    document.getElementById("otherTransactions").textContent =
-        others;
-}
-
-/* =========================================
-   EXPORT CSV
-========================================= */
-
-function exportTransactions() {
-
-    const rows =
-        Array.from(
-            document.querySelectorAll(
-                "#transactionTable tr"
-            )
-        ).filter(
-            row => row.style.display !== "none"
+    } catch (error) {
+        console.error(
+            "Failed to update transaction status:",
+            error
         );
-
-    if (rows.length <= 1) {
 
         alert(
-            "No transactions available to export."
+            "Unable to update transaction status.\n\n" +
+            error.message
         );
+    }
+}
 
+/* =========================================================
+   DELETE TRANSACTION
+   ========================================================= */
+
+async function deleteBackendTransaction(encodedId) {
+    closeTransactionActionMenus();
+
+    const id = decodeURIComponent(encodedId);
+
+    const transaction = transactionData.find(function(item) {
+        return String(item.id) === String(id);
+    });
+
+    if (!transaction) {
+        alert("Transaction could not be found.");
         return;
     }
 
-    const csvRows =
-        rows.map(function(row) {
+    const confirmed = confirm(
+        `Are you sure you want to remove transaction ${transaction.id}?`
+    );
 
-            return Array.from(row.cells)
-                .slice(0, 8)
-                .map(
-                    cell =>
-                        `"${cell.innerText
-                            .trim()
-                            .replace(/"/g, '""')}"`
-                )
-                .join(",");
-        });
+    if (!confirmed) return;
 
-    const csv =
-        csvRows.join("\n");
+    try {
+        await BloodConnectApi.deleteTransaction(transaction.id);
 
-    const blob =
-        new Blob(
-            [csv],
-            {
-                type: "text/csv;charset=utf-8;"
-            }
+        await loadTransactions();
+
+        alert(
+            `Transaction ${transaction.id} removed successfully!`
         );
 
-    const url =
-        URL.createObjectURL(blob);
+    } catch (error) {
+        console.error(
+            "Failed to remove transaction:",
+            error
+        );
 
-    const link =
-        document.createElement("a");
+        alert(
+            "Unable to remove transaction.\n\n" +
+            error.message
+        );
+    }
+}
+
+/* Compatibility helpers for the existing action-menu names */
+function viewSelectedTransaction() {
+    if (selectedTransactionId) {
+        viewBackendTransaction(
+            encodeURIComponent(selectedTransactionId)
+        );
+    }
+}
+
+function editSelectedTransaction() {
+    if (selectedTransactionId) {
+        editBackendTransaction(
+            encodeURIComponent(selectedTransactionId)
+        );
+    }
+}
+
+function changeSelectedTransactionStatus() {
+    if (selectedTransactionId) {
+        changeBackendTransactionStatus(
+            encodeURIComponent(selectedTransactionId)
+        );
+    }
+}
+
+function removeSelectedTransaction() {
+    if (selectedTransactionId) {
+        deleteBackendTransaction(
+            encodeURIComponent(selectedTransactionId)
+        );
+    }
+}
+
+/* =========================================================
+   EXPORT
+   ========================================================= */
+
+function exportTransactions() {
+    if (!transactionData.length) {
+        alert("There are no transactions to export.");
+        return;
+    }
+
+    const headers = [
+        "Transaction ID",
+        "Date",
+        "Type",
+        "Blood Group",
+        "Component",
+        "Quantity",
+        "Reference",
+        "Status"
+    ];
+
+    const rows = transactionData.map(function(item) {
+        return [
+            item.id || "",
+            item.transactionDate || "",
+            item.type || "",
+            item.bloodGroup || "",
+            item.component || "",
+            item.quantity ?? "",
+            item.reference || "",
+            item.status || ""
+        ];
+    });
+
+    const csv = [headers, ...rows]
+        .map(function(row) {
+            return row
+                .map(function(value) {
+                    return `"${String(value).replace(/"/g, '""')}"`;
+                })
+                .join(",");
+        })
+        .join("\n");
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
 
     link.href = url;
-
-    link.download =
-        "BloodConnect_Transactions.csv";
-
+    link.download = "bloodconnect-transactions.csv";
     document.body.appendChild(link);
-
     link.click();
-
     link.remove();
 
     URL.revokeObjectURL(url);
-
-    alert(
-        "Transaction report exported successfully!"
-    );
 }
 
-/* =========================================
-   INITIAL LOAD
-========================================= */
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
-updateTransactionStats();
-filterTransactions();
+document.addEventListener("DOMContentLoaded", function() {
+    loadTransactions();
 
+    const top = document.getElementById("topTransactionSearch");
+    const search = document.getElementById("transactionSearch");
+
+    if (top && search) {
+        top.addEventListener("input", function() {
+            search.value = top.value;
+            filterTransactions();
+        });
+    }
+});
 </script>
 
-
-<script src="../js/api.js"></script>
-<script src="../js/dashboard.js"></script>
-<script src="../js/backend.js"></script>
-<script src="../js/common.js"></script>
 </body>
 
 </html>

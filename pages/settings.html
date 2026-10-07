@@ -1302,6 +1302,8 @@
 ></div>
 
 
+<script src="../js/api.js"></script>
+
 <script>
 
 /* =====================================================
@@ -1622,48 +1624,59 @@ function bloodConnectApplySettings(settings) {
 
 function bloodConnectLoadSettings() {
 
-    let settings =
-        bloodConnectDefaultSettings;
-
+    /* Keep appearance preferences locally because the current Java
+       settings API does not provide appearance fields. */
+    let localSettings = { ...bloodConnectDefaultSettings };
 
     try {
-
-        const saved =
-            localStorage.getItem(
-                bloodConnectSettingsKey
-            );
-
-
+        const saved = localStorage.getItem(bloodConnectSettingsKey);
         if (saved) {
-
-            const parsed =
-                JSON.parse(saved);
-
-
-            settings = {
-
-                ...bloodConnectDefaultSettings,
-                ...parsed
-
+            localSettings = {
+                ...localSettings,
+                ...JSON.parse(saved)
             };
-
         }
-
     } catch (error) {
-
-        console.error(
-            "Settings loading error:",
-            error
-        );
-
+        console.error("Local settings loading error:", error);
     }
 
+    if (typeof BloodConnectApi === "undefined") {
+        bloodConnectApplySettings(localSettings);
+        bloodConnectShowToast("Backend API is unavailable. Using local settings.", "info");
+        return;
+    }
 
-    bloodConnectApplySettings(
-        settings
-    );
+    BloodConnectApi.getSettings()
+        .then(function(apiSettings) {
+
+            const settings = {
+                ...localSettings,
+                firstName: apiSettings.firstName ?? localSettings.firstName,
+                lastName: apiSettings.lastName ?? localSettings.lastName,
+                email: apiSettings.email ?? localSettings.email,
+                phone: apiSettings.phone ?? localSettings.phone,
+                bankName: apiSettings.bloodBankName ?? localSettings.bankName,
+                bankLocation: apiSettings.location ?? localSettings.bankLocation,
+                bankContact: apiSettings.contactNumber ?? localSettings.bankContact,
+                bankCode: apiSettings.bloodBankCode ?? localSettings.bankCode,
+                lowStockAlert: apiSettings.lowStockAlerts ?? localSettings.lowStockAlert,
+                expiryAlert: apiSettings.expiryAlerts ?? localSettings.expiryAlert,
+                requestAlert: apiSettings.requestAlerts ?? localSettings.requestAlert,
+                defaultComponent: apiSettings.defaultComponent ?? localSettings.defaultComponent,
+                defaultRequestStatus: apiSettings.defaultRequestStatus ?? localSettings.defaultRequestStatus,
+                recordsPerPage: String(apiSettings.recordsPerPage ?? localSettings.recordsPerPage)
+            };
+
+            bloodConnectApplySettings(settings);
+            localStorage.setItem(bloodConnectSettingsKey, JSON.stringify(settings));
+            console.log("BloodConnect settings loaded from backend:", apiSettings);
+        })
+        .catch(function(error) {
+            console.error("Backend settings load error:", error);
+            bloodConnectApplySettings(localSettings);
+            bloodConnectShowToast("Unable to load backend settings. Using local settings.", "error");
+        });
 }
-
 
 /* VALIDATE */
 
@@ -1800,207 +1813,139 @@ function bloodConnectClearValidation() {
 
 /* SAVE SETTINGS */
 
-function bloodConnectSaveSettings() {
+async function bloodConnectSaveSettings() {
 
-    console.log(
-        "BloodConnect: Save Settings clicked"
+    console.log("BloodConnect: Save Settings clicked");
+
+    if (!bloodConnectValidateSettings()) {
+        bloodConnectShowToast("Please correct the highlighted fields.", "error");
+        return;
+    }
+
+    const currentPassword = document.getElementById("currentPassword").value.trim();
+    const newPassword = document.getElementById("newPassword").value.trim();
+
+    if (newPassword && !currentPassword) {
+        bloodConnectShowToast("Enter your current password first.", "error");
+        document.getElementById("currentPassword").focus();
+        return;
+    }
+
+    if (newPassword && newPassword.length < 6) {
+        bloodConnectShowToast("New password must contain at least 6 characters.", "error");
+        return;
+    }
+
+    const settings = bloodConnectGetSettings();
+
+    /* Save appearance/local-only values locally. */
+    localStorage.setItem(
+        bloodConnectSettingsKey,
+        JSON.stringify(settings)
     );
 
-
-    if (
-        !bloodConnectValidateSettings()
-    ) {
-
-        bloodConnectShowToast(
-            "Please correct the highlighted fields.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    const currentPassword =
-        document
-            .getElementById(
-                "currentPassword"
-            )
-            .value
-            .trim();
-
-
-    const newPassword =
-        document
-            .getElementById(
-                "newPassword"
-            )
-            .value
-            .trim();
-
-
-    if (
-        newPassword &&
-        !currentPassword
-    ) {
-
-        bloodConnectShowToast(
-            "Enter your current password first.",
-            "error"
-        );
-
-        document
-            .getElementById(
-                "currentPassword"
-            )
-            .focus();
-
-        return;
-    }
-
-
-    if (
-        newPassword &&
-        newPassword.length < 6
-    ) {
-
-        bloodConnectShowToast(
-            "New password must contain at least 6 characters.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    const settings =
-        bloodConnectGetSettings();
-
+    /* Convert frontend field names to the Java Settings model. */
+    const backendSettings = {
+        firstName: settings.firstName,
+        lastName: settings.lastName,
+        email: settings.email,
+        phone: settings.phone,
+        bloodBankName: settings.bankName,
+        location: settings.bankLocation,
+        contactNumber: settings.bankContact,
+        bloodBankCode: settings.bankCode,
+        lowStockAlerts: settings.lowStockAlert,
+        expiryAlerts: settings.expiryAlert,
+        requestAlerts: settings.requestAlert,
+        defaultComponent: settings.defaultComponent,
+        defaultRequestStatus: settings.defaultRequestStatus,
+        recordsPerPage: Number(settings.recordsPerPage) || 10
+    };
 
     try {
 
-        localStorage.setItem(
-            bloodConnectSettingsKey,
-            JSON.stringify(settings)
-        );
+        if (typeof BloodConnectApi === "undefined") {
+            throw new Error("BloodConnectApi is not defined");
+        }
 
+        await BloodConnectApi.updateSettings(backendSettings);
 
         if (newPassword) {
-
             localStorage.setItem(
                 "bloodConnectPasswordUpdated",
                 new Date().toISOString()
             );
-
         }
 
-
-        document
-            .getElementById(
-                "currentPassword"
-            )
-            .value = "";
-
-
-        document
-            .getElementById(
-                "newPassword"
-            )
-            .value = "";
-
-
-        document
-            .getElementById(
-                "passwordStrength"
-            )
-            .textContent =
+        document.getElementById("currentPassword").value = "";
+        document.getElementById("newPassword").value = "";
+        document.getElementById("passwordStrength").textContent =
             "Password change is optional.";
-
-
-        document
-            .getElementById(
-                "passwordStrength"
-            )
-            .className =
+        document.getElementById("passwordStrength").className =
             "password-strength";
 
-
         bloodConnectMarkSaved();
-
-
-        bloodConnectShowToast(
-            "✓ Settings saved successfully!",
-            "success"
-        );
-
-
-        console.log(
-            "BloodConnect settings saved:",
-            settings
-        );
-
+        bloodConnectShowToast("✓ Settings saved to backend successfully!", "success");
+        console.log("BloodConnect settings saved to backend:", backendSettings);
 
     } catch (error) {
 
-        console.error(
-            "Settings save error:",
-            error
-        );
-
-
+        console.error("Settings backend save error:", error);
         bloodConnectShowToast(
-            "Unable to save settings.",
+            "Backend save failed: " + error.message,
             "error"
         );
-
     }
 }
 
-
 /* RESET */
 
-function bloodConnectResetSettings() {
+async function bloodConnectResetSettings() {
 
-    const confirmed =
-        confirm(
-            "Are you sure you want to reset all settings to their default values?"
-        );
-
+    const confirmed = confirm(
+        "Are you sure you want to reset all settings to their default values?"
+    );
 
     if (!confirmed) {
         return;
     }
 
+    try {
+        if (typeof BloodConnectApi !== "undefined") {
+            await BloodConnectApi.updateSettings({
+                firstName: bloodConnectDefaultSettings.firstName,
+                lastName: bloodConnectDefaultSettings.lastName,
+                email: bloodConnectDefaultSettings.email,
+                phone: bloodConnectDefaultSettings.phone,
+                bloodBankName: bloodConnectDefaultSettings.bankName,
+                location: bloodConnectDefaultSettings.bankLocation,
+                contactNumber: bloodConnectDefaultSettings.bankContact,
+                bloodBankCode: bloodConnectDefaultSettings.bankCode,
+                lowStockAlerts: bloodConnectDefaultSettings.lowStockAlert,
+                expiryAlerts: bloodConnectDefaultSettings.expiryAlert,
+                requestAlerts: bloodConnectDefaultSettings.requestAlert,
+                defaultComponent: bloodConnectDefaultSettings.defaultComponent,
+                defaultRequestStatus: bloodConnectDefaultSettings.defaultRequestStatus,
+                recordsPerPage: Number(bloodConnectDefaultSettings.recordsPerPage) || 10
+            });
+        }
 
-    localStorage.removeItem(
-        bloodConnectSettingsKey
-    );
+        localStorage.removeItem(bloodConnectSettingsKey);
+        bloodConnectApplySettings(bloodConnectDefaultSettings);
 
+        document.getElementById("currentPassword").value = "";
+        document.getElementById("newPassword").value = "";
 
-    bloodConnectApplySettings(
-        bloodConnectDefaultSettings
-    );
+        bloodConnectShowToast("Settings reset successfully.", "info");
 
-
-    document
-        .getElementById(
-            "currentPassword"
-        )
-        .value = "";
-
-
-    document
-        .getElementById(
-            "newPassword"
-        )
-        .value = "";
-
-
-    bloodConnectShowToast(
-        "Settings reset successfully.",
-        "info"
-    );
+    } catch (error) {
+        console.error("Settings reset error:", error);
+        bloodConnectShowToast(
+            "Unable to reset backend settings: " + error.message,
+            "error"
+        );
+    }
 }
-
 
 /* MARK SAVED */
 
@@ -2451,11 +2396,10 @@ document.addEventListener(
 
 
 <!-- EXISTING PROJECT SCRIPTS -->
-
-<script src="../js/api.js"></script>
 <script src="../js/dashboard.js"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/common.js"></script>
+<script src="../js/theme.js"></script>
 
 </body>
 </html>
